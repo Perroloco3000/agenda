@@ -42,11 +42,11 @@ export default function BookingPage() {
         router.push("/")
     }
 
-    const handleBooking = (timeSlot: string) => {
+    const handleBooking = async (timeSlot: string) => {
         if (!currentUser) return
 
         try {
-            createBooking(currentUser.id, selectedDate, timeSlot)
+            await createBooking(currentUser.id, selectedDate, timeSlot)
             setSuccessMessage(`¡Reserva confirmada para ${timeSlot}!`)
             setErrorMessage("")
             // Refresh data

@@ -27,16 +27,16 @@ export default function LoginPage() {
         return null
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
 
         try {
             if (isLogin) {
-                login(formData.email, formData.password)
+                await login(formData.email, formData.password)
                 router.push("/booking")
             } else {
-                register({
+                await register({
                     name: formData.name,
                     email: formData.email,
                     phone: formData.phone

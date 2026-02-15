@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext, ReactNode } from "react"
+import { supabase } from "./supabase"
 
 // Types (compatible with FlowGym)
 export type User = {
@@ -14,9 +15,9 @@ export type User = {
 
 export type Booking = {
   id: string
-  memberId: string // Changed from userId to match FlowGym
-  memberName: string // Changed from userName to match FlowGym
-  memberEmail: string // Changed from userEmail to match FlowGym
+  memberId: string
+  memberName: string
+  memberEmail: string
   date: string // YYYY-MM-DD
   timeSlot: string // "07:00-08:30"
   status: "confirmed" | "cancelled"
@@ -52,78 +53,169 @@ export function useAppStore() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // Load from localStorage (SYNC WITH FLOWGYM)
+  // Load Initial Data from Supabase
   useEffect(() => {
-    const loadData = () => {
-      // Use FlowGym keys for synchronization
-      const savedUsers = localStorage.getItem("flowgym_members")
-      const savedBookings = localStorage.getItem("flowgym_reservations")
-      const savedCurrentUser = localStorage.getItem("agenda_current_user")
+    const loadInitialData = async () => {
+      try {
+        // Load Current User from localStorage (still local session)
+        const savedCurrentUser = localStorage.getItem("agenda_current_user")
+        if (savedCurrentUser) setCurrentUser(JSON.parse(savedCurrentUser))
 
-      if (savedUsers) setUsers(JSON.parse(savedUsers))
-      if (savedBookings) setBookings(JSON.parse(savedBookings))
-      if (savedCurrentUser) setCurrentUser(JSON.parse(savedCurrentUser))
+        // Fetch Members
+        const { data: members, error: mError } = await supabase
+          .from('members')
+          .select('*')
 
-      setIsLoaded(true)
-    }
-    loadData()
-  }, [])
+        if (members) {
+          setUsers(members.map(m => ({
+            id: m.id,
+            name: m.name,
+            email: m.email,
+            phone: m.phone,
+            role: m.role,
+            createdAt: m.created_at
+          })))
+        }
 
-  // Save to localStorage (SYNC WITH FLOWGYM)
-  useEffect(() => {
-    if (isLoaded) {
-      // Use FlowGym keys for synchronization
-      localStorage.setItem("flowgym_members", JSON.stringify(users))
-      localStorage.setItem("flowgym_reservations", JSON.stringify(bookings))
-      if (currentUser) {
-        localStorage.setItem("agenda_current_user", JSON.stringify(currentUser))
-      } else {
-        localStorage.removeItem("agenda_current_user")
+        // Fetch Reservations
+        const { data: reservations, error: rError } = await supabase
+          .from('reservations')
+          .select('*')
+          .eq('status', 'confirmed')
+
+        if (reservations) {
+          setBookings(reservations.map(r => ({
+            id: r.id,
+            memberId: r.member_id,
+            memberName: r.member_name,
+            memberEmail: r.member_email,
+            date: r.date,
+            timeSlot: r.time_slot,
+            status: r.status,
+            createdAt: r.created_at
+          })))
+        }
+
+        setIsLoaded(true)
+      } catch (error) {
+        console.error("Error loading data from Supabase:", error)
       }
     }
-  }, [users, bookings, currentUser, isLoaded])
+
+    loadInitialData()
+
+    // Real-time Subscriptions
+    const membersSubscription = supabase
+      .channel('members-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
+        if (payload.eventType === 'INSERT') {
+          setUsers(prev => [...prev, payload.new as User])
+        }
+      })
+      .subscribe()
+
+    const reservationsSubscription = supabase
+      .channel('reservations-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, payload => {
+        if (payload.eventType === 'INSERT') {
+          const newRes = payload.new as any
+          setBookings(prev => [...prev, {
+            id: newRes.id,
+            memberId: newRes.member_id,
+            memberName: newRes.member_name,
+            memberEmail: newRes.member_email,
+            date: newRes.date,
+            timeSlot: newRes.time_slot,
+            status: newRes.status,
+            createdAt: newRes.created_at
+          }])
+        } else if (payload.eventType === 'UPDATE') {
+          const updatedRes = payload.new as any
+          if (updatedRes.status === 'cancelled') {
+            setBookings(prev => prev.filter(b => b.id !== updatedRes.id))
+          }
+        }
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(membersSubscription)
+      supabase.removeChannel(reservationsSubscription)
+    }
+  }, [])
+
+  // Save Session Locally
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("agenda_current_user", JSON.stringify(currentUser))
+    } else {
+      localStorage.removeItem("agenda_current_user")
+    }
+  }, [currentUser])
 
   // Auth Actions
-  const register = (userData: Omit<User, "id" | "createdAt" | "role">) => {
-    const existingUser = users.find(u => u.email === userData.email)
-    if (existingUser) {
-      throw new Error("El email ya está registrado")
-    }
-
+  const register = async (userData: Omit<User, "id" | "createdAt" | "role">) => {
+    const id = Math.random().toString(36).substr(2, 9)
     const newUser: User = {
       ...userData,
-      id: Math.random().toString(36).substr(2, 9),
+      id,
       role: "user",
       createdAt: new Date().toISOString()
     }
-    setUsers([...users, newUser])
+
+    const { error } = await supabase
+      .from('members')
+      .insert([{
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+        role: newUser.role,
+        status: 'Activo'
+      }])
+
+    if (error) throw new Error(error.message)
+
     setCurrentUser(newUser)
     return newUser
   }
 
-  const login = (email: string, password: string) => {
-    const user = users.find(u => u.email === email)
-    if (!user) {
-      throw new Error("Usuario no encontrado")
-    }
-    // Block admin users from logging in to agenda app
+  const login = async (email: string, password: string) => {
+    const { data: user, error } = await supabase
+      .from('members')
+      .select('*')
+      .eq('email', email)
+      .single()
+
+    if (error || !user) throw new Error("Usuario no encontrado")
+
     if (user.role === "admin") {
       throw new Error("Los administradores deben usar el panel de FlowGym")
     }
-    setCurrentUser(user)
-    return user
+
+    const loggedUser: User = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      createdAt: user.created_at
+    }
+
+    setCurrentUser(loggedUser)
+    return loggedUser
   }
 
   const logout = () => {
     setCurrentUser(null)
   }
 
-  // Booking Actions (compatible with FlowGym UserReservation structure)
-  const createBooking = (userId: string, date: string, timeSlot: string) => {
+  // Booking Actions
+  const createBooking = async (userId: string, date: string, timeSlot: string) => {
     const user = users.find(u => u.id === userId)
     if (!user) throw new Error("Usuario no encontrado")
 
-    // Check if slot is full
+    // Check availability
     const slotBookings = bookings.filter(
       b => b.date === date && b.timeSlot === timeSlot && b.status === "confirmed"
     )
@@ -131,34 +223,33 @@ export function useAppStore() {
       throw new Error("Este turno está lleno")
     }
 
-    // Check if user already has a booking for this slot
-    const existingBooking = bookings.find(
-      b => b.memberId === userId && b.date === date && b.timeSlot === timeSlot && b.status === "confirmed"
-    )
-    if (existingBooking) {
-      throw new Error("Ya tienes una reserva para este turno")
-    }
+    const id = Math.random().toString(36).substr(2, 9)
+    const { error } = await supabase
+      .from('reservations')
+      .insert([{
+        id,
+        member_id: userId,
+        member_name: user.name,
+        member_email: user.email,
+        date,
+        time_slot: timeSlot,
+        status: 'confirmed'
+      }])
 
-    // Create booking with FlowGym-compatible structure
-    const newBooking: Booking = {
-      id: Math.random().toString(36).substr(2, 9),
-      memberId: userId,
-      memberName: user.name,
-      memberEmail: user.email,
-      date,
-      timeSlot,
-      status: "confirmed",
-      createdAt: new Date().toISOString()
-    }
+    if (error) throw new Error(error.message)
 
-    setBookings([...bookings, newBooking])
-    return newBooking
+    return { id, memberId: userId, date, timeSlot }
   }
 
-  const cancelBooking = (bookingId: string) => {
-    setBookings(bookings.map(b =>
-      b.id === bookingId ? { ...b, status: "cancelled" as const } : b
-    ))
+  const cancelBooking = async (bookingId: string) => {
+    const { error } = await supabase
+      .from('reservations')
+      .update({ status: 'cancelled' })
+      .eq('id', bookingId)
+
+    if (error) throw new Error(error.message)
+
+    setBookings(prev => prev.filter(b => b.id !== bookingId))
   }
 
   const getAvailableSlots = (date: string): TimeSlot[] => {
@@ -195,7 +286,7 @@ export function useAppStore() {
   }
 }
 
-// Context for easier access
+// Context
 const StoreContext = createContext<ReturnType<typeof useAppStore> | null>(null)
 
 export function StoreProvider({ children }: { children: ReactNode }) {
@@ -205,8 +296,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
 export function useStore() {
   const context = useContext(StoreContext)
-  if (!context) {
-    throw new Error("useStore must be used within StoreProvider")
-  }
+  if (!context) throw new Error("useStore must be used within StoreProvider")
   return context
 }
