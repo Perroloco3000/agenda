@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accessibility, UserPlus, LogIn } from "lucide-react"
+import { Accessibility, UserPlus, LogIn, ChevronRight, Sparkles } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -17,19 +18,24 @@ export default function LoginPage() {
         name: "",
         email: "",
         phone: "",
-        password: "123456" // Simple password for demo
+        password: "123456"
     })
     const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
     // Redirect if already logged in
-    if (currentUser) {
-        router.push("/booking")
-        return null
-    }
+    useEffect(() => {
+        if (currentUser) {
+            router.push("/booking")
+        }
+    }, [currentUser, router])
+
+    if (currentUser) return null
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
+        setIsLoading(true)
 
         try {
             if (isLogin) {
@@ -45,113 +51,175 @@ export default function LoginPage() {
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Error al procesar")
+        } finally {
+            setIsLoading(false)
         }
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex items-center justify-center p-4">
-            <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {/* Logo Section */}
-                <div className="flex flex-col items-center gap-4 text-center">
-                    <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
-                        <Accessibility className="h-10 w-10 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-4xl font-black tracking-tighter text-white uppercase">KaiCenter SC</h1>
-                        <p className="text-emerald-400 font-bold tracking-[0.2em] uppercase text-xs mt-1">Training Osteomuscular</p>
+        <div className="min-h-screen bg-black text-white selection:bg-emerald-500/30 overflow-hidden flex items-center justify-center p-4">
+            {/* Background Effects */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 blur-[120px] rounded-full animate-pulse" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-500/10 blur-[120px] rounded-full animate-pulse delay-700" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.05)_0%,transparent_70%)]" />
+            </div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="w-full max-w-lg relative z-10"
+            >
+                {/* Brand Header */}
+                <div className="flex flex-col items-center mb-12">
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_50px_-10px_rgba(16,185,129,0.4)] mb-6 cursor-pointer"
+                    >
+                        <Accessibility className="h-12 w-12 text-white" />
+                    </motion.div>
+                    <div className="text-center space-y-2">
+                        <motion.h1
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-5xl font-black tracking-tighter uppercase leading-none"
+                        >
+                            KaiCenter <span className="text-emerald-500">SC</span>
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="text-emerald-400/60 font-medium tracking-[0.4em] uppercase text-[10px]"
+                        >
+                            Training Osteomuscular & Wellness
+                        </motion.p>
                     </div>
                 </div>
 
-                {/* Login/Register Card */}
-                <Card className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl">
-                    <CardHeader>
-                        <CardTitle className="text-2xl font-black text-white">
-                            {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
-                        </CardTitle>
-                        <CardDescription className="text-slate-400">
-                            {isLogin ? "Accede a tu cuenta para reservar" : "Regístrate para comenzar"}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            {!isLogin && (
-                                <div className="space-y-2">
-                                    <Label htmlFor="name" className="text-white">Nombre Completo</Label>
-                                    <Input
-                                        id="name"
-                                        type="text"
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="bg-slate-800/50 border-slate-700 text-white"
-                                    />
-                                </div>
-                            )}
-
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-white">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                    className="bg-slate-800/50 border-slate-700 text-white"
-                                    placeholder="tu@email.com"
-                                />
+                {/* Form Container */}
+                <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-green-500/20 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                    <Card className="relative border-white/5 bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden">
+                        <CardHeader className="pt-10 px-10 pb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <CardTitle className="text-3xl font-black tracking-tight text-white uppercase">
+                                    {isLogin ? "Bienvenido" : "Únete"}
+                                </CardTitle>
+                                <Sparkles className="h-5 w-5 text-emerald-500 animate-pulse" />
                             </div>
+                            <CardDescription className="text-white/40 font-medium text-sm">
+                                {isLogin ? "Accede a tu cuenta para continuar" : "Completa tus datos para empezar"}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-10 pt-4">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <AnimatePresence mode="wait">
+                                    {!isLogin && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="space-y-6 overflow-hidden"
+                                        >
+                                            <div className="space-y-2">
+                                                <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Nombre Completo</Label>
+                                                <div className="relative group/field">
+                                                    <Input
+                                                        required
+                                                        value={formData.name}
+                                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                                    />
+                                                </div>
+                                            </div>
 
-                            {!isLogin && (
+                                            <div className="space-y-2">
+                                                <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Teléfono</Label>
+                                                <Input
+                                                    type="tel"
+                                                    required
+                                                    value={formData.phone}
+                                                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                                    className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                                    placeholder="Ej: +54 9..."
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="phone" className="text-white">Teléfono</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Correo Electrónico</Label>
                                     <Input
-                                        id="phone"
-                                        type="tel"
+                                        type="email"
                                         required
-                                        value={formData.phone}
-                                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                        className="bg-slate-800/50 border-slate-700 text-white"
-                                        placeholder="555-1234"
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                        placeholder="usuario@kaicenter.com"
                                     />
                                 </div>
-                            )}
 
-                            {error && (
-                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                                    {error}
-                                </div>
-                            )}
-
-                            <Button type="submit" className="w-full h-12 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider shadow-lg shadow-emerald-500/20">
-                                {isLogin ? (
-                                    <>
-                                        <LogIn className="mr-2 h-5 w-5" />
-                                        Entrar
-                                    </>
-                                ) : (
-                                    <>
-                                        <UserPlus className="mr-2 h-5 w-5" />
-                                        Registrarse
-                                    </>
+                                {error && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-3"
+                                    >
+                                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                        {error}
+                                    </motion.div>
                                 )}
-                            </Button>
 
-                            <div className="text-center">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsLogin(!isLogin)
-                                        setError("")
-                                    }}
-                                    className="text-sm text-emerald-400 hover:text-emerald-300 font-medium"
+                                <Button
+                                    disabled={isLoading}
+                                    type="submit"
+                                    className="w-full h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-[0.2em] shadow-xl shadow-emerald-500/20 border-t border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
-                                    {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
-                                </button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
-            </div>
+                                    {isLoading ? (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Procesando...
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2">
+                                            {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
+                                            <ChevronRight className="h-5 w-5" />
+                                        </div>
+                                    )}
+                                </Button>
+
+                                <div className="text-center pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsLogin(!isLogin)
+                                            setError("")
+                                        }}
+                                        className="text-xs font-black uppercase tracking-[0.2em] text-white/30 hover:text-emerald-400 transition-colors"
+                                    >
+                                        {isLogin ? "¿No tienes cuenta? Registrate" : "¿Ya eres miembro? Acceder"}
+                                    </button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Footer Quote */}
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                    className="text-center mt-8 text-white/20 text-[10px] font-medium uppercase tracking-[0.4em]"
+                >
+                    Excellence is not an act, but a habit.
+                </motion.p>
+            </motion.div>
         </div>
     )
 }
