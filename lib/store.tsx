@@ -119,21 +119,26 @@ export function useAppStore() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, payload => {
         if (payload.eventType === 'INSERT') {
           const newRes = payload.new as any
-          setBookings(prev => [...prev, {
-            id: newRes.id,
-            memberId: newRes.member_id,
-            memberName: newRes.member_name,
-            memberEmail: newRes.member_email,
-            date: newRes.date,
-            timeSlot: newRes.time_slot,
-            status: newRes.status,
-            createdAt: newRes.created_at
-          }])
+          setBookings(prev => {
+            if (prev.find(b => b.id === newRes.id)) return prev
+            return [...prev, {
+              id: newRes.id,
+              memberId: newRes.member_id,
+              memberName: newRes.member_name,
+              memberEmail: newRes.member_email,
+              date: newRes.date,
+              timeSlot: newRes.time_slot,
+              status: newRes.status,
+              createdAt: newRes.created_at
+            }]
+          })
         } else if (payload.eventType === 'UPDATE') {
           const updatedRes = payload.new as any
           if (updatedRes.status === 'cancelled') {
             setBookings(prev => prev.filter(b => b.id !== updatedRes.id))
           }
+        } else if (payload.eventType === 'DELETE') {
+          setBookings(prev => prev.filter(b => b.id !== payload.old.id))
         }
       })
       .subscribe()
@@ -224,6 +229,20 @@ export function useAppStore() {
     }
 
     const id = Math.random().toString(36).substr(2, 9)
+
+    // Optimistic Update
+    const optimisticBooking: Booking = {
+      id,
+      memberId: userId,
+      memberName: user.name,
+      memberEmail: user.email,
+      date,
+      timeSlot,
+      status: 'confirmed',
+      createdAt: new Date().toISOString()
+    }
+    setBookings(prev => [...prev, optimisticBooking])
+
     const { error } = await supabase
       .from('reservations')
       .insert([{
@@ -236,7 +255,10 @@ export function useAppStore() {
         status: 'confirmed'
       }])
 
-    if (error) throw new Error(error.message)
+    if (error) {
+      setBookings(prev => prev.filter(b => b.id !== id))
+      throw new Error(error.message)
+    }
 
     return { id, memberId: userId, date, timeSlot }
   }
@@ -291,7 +313,7 @@ const StoreContext = createContext<ReturnType<typeof useAppStore> | null>(null)
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const store = useAppStore()
-  return <StoreContext.Provider value={ store }> { children } </StoreContext.Provider>
+  return <StoreContext.Provider value={store}> {children} </StoreContext.Provider>
 }
 
 export function useStore() {
