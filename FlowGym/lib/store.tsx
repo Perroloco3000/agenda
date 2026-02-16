@@ -33,6 +33,8 @@ export type WorkoutStat = {
     work: string
     rest: string
     color: string
+    day?: string
+    difficulty?: "Intro" | "Power" | "Elite"
 }
 
 export type UserReservation = {
@@ -258,6 +260,12 @@ export function useAppStoreLogic() {
         setMembers(prev => prev.filter(m => m.id !== id))
     }, [])
 
+    const updateMember = useCallback(async (id: string, updates: Partial<Omit<Member, "id" | "joinDate">>) => {
+        const { error } = await supabase.from('members').update(updates).eq('id', id)
+        if (error) throw error
+        setMembers(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m))
+    }, [])
+
     const toggleMemberStatus = useCallback(async (id: string) => {
         setMembers(prev => {
             const member = prev.find(m => m.id === id)
@@ -339,6 +347,7 @@ export function useAppStoreLogic() {
         reservations,
         addMember,
         removeMember,
+        updateMember,
         toggleMemberStatus,
         addWorkout,
         deleteWorkout,

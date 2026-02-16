@@ -134,7 +134,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
-                            <p className="font-bold leading-none">Admin User</p>
+                            <p className="font-bold leading-none">Admin Eduardo</p>
                             <p className="text-sm text-muted-foreground">Gym Owner</p>
                         </div>
                         <Button

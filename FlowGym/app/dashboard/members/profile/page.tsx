@@ -6,14 +6,42 @@ import { useSearchParams } from "next/navigation"
 import { ArrowLeft, Mail, Phone, Calendar, CreditCard, Activity } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Suspense } from "react"
+import { Suspense, useState, useEffect } from "react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
 
 function MemberProfileContent() {
-    const { members } = useAppStore()
+    const { members, updateMember } = useAppStore()
     const searchParams = useSearchParams()
     const memberId = searchParams.get("id")
 
     const member = members.find(m => m.id === memberId)
+    const [isEditing, setIsEditing] = useState(false)
+    const [editData, setEditData] = useState<any>(null)
+
+    useEffect(() => {
+        if (member) setEditData({ ...member })
+    }, [member])
+
+    const handleSave = async () => {
+        if (!memberId || !editData) return
+        try {
+            await updateMember(memberId, {
+                name: editData.name,
+                email: editData.email,
+                phone: editData.phone,
+                plan: editData.plan,
+                status: editData.status
+            })
+            setIsEditing(false)
+            toast.success("Perfil actualizado correctamente")
+        } catch (err) {
+            console.error(err)
+            toast.error("Error al actualizar perfil")
+        }
+    }
 
     if (!member) {
         return (
@@ -48,15 +76,44 @@ function MemberProfileContent() {
                     {/* Main Info Card */}
                     <div className="lg:col-span-2 bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm space-y-8">
                         <div className="flex items-center gap-8">
-                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-black text-primary text-5xl border-4 border-primary/10">
-                                {member.name.charAt(0)}
+                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-black text-primary text-5xl border-4 border-primary/10 transition-transform hover:scale-105">
+                                {editData?.name?.charAt(0) || "M"}
                             </div>
                             <div className="flex-1">
-                                <h3 className="text-4xl font-black tracking-tight mb-2">{member.name}</h3>
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-green-500 animate-pulse' : 'bg-destructive/50'}`} />
-                                    <span className="font-bold text-lg">{member.status}</span>
-                                </div>
+                                {isEditing ? (
+                                    <div className="space-y-4">
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nombre Completo</Label>
+                                            <Input
+                                                value={editData.name}
+                                                onChange={e => setEditData({ ...editData, name: e.target.value })}
+                                                className="text-2xl font-black h-12 rounded-xl"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex-1">
+                                                <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Estado</Label>
+                                                <Select value={editData.status} onValueChange={v => setEditData({ ...editData, status: v })}>
+                                                    <SelectTrigger className="h-10 rounded-xl font-bold">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Activo">Activo</SelectItem>
+                                                        <SelectItem value="Inactivo">Inactivo</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <h3 className="text-4xl font-black tracking-tight mb-2">{member.name}</h3>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-green-500 animate-pulse' : 'bg-destructive/50'}`} />
+                                            <span className="font-bold text-lg">{member.status}</span>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -66,7 +123,16 @@ function MemberProfileContent() {
                                     <Mail className="h-5 w-5 text-primary" />
                                     <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</span>
                                 </div>
-                                <p className="font-bold text-lg">{member.email}</p>
+                                {isEditing ? (
+                                    <Input
+                                        type="email"
+                                        value={editData.email}
+                                        onChange={e => setEditData({ ...editData, email: e.target.value })}
+                                        className="font-bold rounded-xl"
+                                    />
+                                ) : (
+                                    <p className="font-bold text-lg">{member.email}</p>
+                                )}
                             </div>
 
                             <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
@@ -74,7 +140,16 @@ function MemberProfileContent() {
                                     <Phone className="h-5 w-5 text-primary" />
                                     <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Teléfono</span>
                                 </div>
-                                <p className="font-bold text-lg">{member.phone}</p>
+                                {isEditing ? (
+                                    <Input
+                                        type="tel"
+                                        value={editData.phone}
+                                        onChange={e => setEditData({ ...editData, phone: e.target.value })}
+                                        className="font-bold rounded-xl"
+                                    />
+                                ) : (
+                                    <p className="font-bold text-lg">{member.phone}</p>
+                                )}
                             </div>
 
                             <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
@@ -90,9 +165,22 @@ function MemberProfileContent() {
                                     <CreditCard className="h-5 w-5 text-primary" />
                                     <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Plan</span>
                                 </div>
-                                <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20">
-                                    <span className="font-black text-primary uppercase tracking-widest">{member.plan}</span>
-                                </div>
+                                {isEditing ? (
+                                    <Select value={editData.plan} onValueChange={v => setEditData({ ...editData, plan: v })}>
+                                        <SelectTrigger className="h-10 rounded-xl font-bold">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Premium">Premium</SelectItem>
+                                            <SelectItem value="VIP">VIP</SelectItem>
+                                            <SelectItem value="Básico">Básico</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20">
+                                        <span className="font-black text-primary uppercase tracking-widest">{member.plan}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -120,9 +208,31 @@ function MemberProfileContent() {
                                     <Activity className="mr-2 h-5 w-5" />
                                     Ver Historial
                                 </Button>
-                                <Button variant="outline" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest">
-                                    Editar Perfil
-                                </Button>
+                                {isEditing ? (
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setIsEditing(false)}
+                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest"
+                                        >
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            onClick={handleSave}
+                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest bg-emerald-500 hover:bg-emerald-600"
+                                        >
+                                            Guardar
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setIsEditing(true)}
+                                        className="w-full h-14 rounded-2xl font-black uppercase tracking-widest"
+                                    >
+                                        Editar Perfil
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>

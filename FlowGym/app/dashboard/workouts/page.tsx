@@ -25,7 +25,14 @@ export default function WorkoutsPage() {
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [editingWorkout, setEditingWorkout] = useState<WorkoutStat | null>(null)
     const [newWorkout, setNewWorkout] = useState<Partial<WorkoutStat>>({
-        name: "", type: "Hybrid", stations: 0, work: "45s", rest: "15s", color: "bg-purple-500"
+        name: "",
+        type: "Hybrid",
+        stations: 0,
+        work: "45s",
+        rest: "15s",
+        color: "bg-purple-500",
+        day: "Lunes",
+        difficulty: "Power"
     })
 
     const handleCreate = async () => {
@@ -37,8 +44,10 @@ export default function WorkoutsPage() {
                     stations: Number(newWorkout.stations),
                     work: newWorkout.work || "45s",
                     rest: newWorkout.rest || "15s",
-                    color: newWorkout.color || "bg-purple-500"
-                })
+                    color: getColorByDifficulty(newWorkout.difficulty || "Power"),
+                    day: newWorkout.day || "Lunes",
+                    difficulty: newWorkout.difficulty || "Power"
+                } as any)
                 setIsCreateOpen(false)
                 setNewWorkout({ name: "", type: "Hybrid", stations: 0, work: "45s", rest: "15s", color: "bg-purple-500" })
             } catch (err) {
@@ -61,7 +70,9 @@ export default function WorkoutsPage() {
                     stations: editingWorkout.stations,
                     work: editingWorkout.work,
                     rest: editingWorkout.rest,
-                    color: editingWorkout.color
+                    color: getColorByDifficulty(editingWorkout.difficulty || "Power"),
+                    day: editingWorkout.day,
+                    difficulty: editingWorkout.difficulty
                 })
                 setIsEditOpen(false)
                 setEditingWorkout(null)
@@ -116,11 +127,35 @@ export default function WorkoutsPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
-                                        <Label>Trabajo</Label>
+                                        <Label>Día</Label>
+                                        <Select value={newWorkout.day} onValueChange={v => setNewWorkout({ ...newWorkout, day: v })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"].map(d => (
+                                                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Dificultad</Label>
+                                        <Select value={newWorkout.difficulty} onValueChange={v => setNewWorkout({ ...newWorkout, difficulty: v as any })}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Intro">Intro (Verde)</SelectItem>
+                                                <SelectItem value="Power">Power (Azul)</SelectItem>
+                                                <SelectItem value="Elite">Elite (Rojo)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
+                                        <Label>Trabajo (ej: 45s)</Label>
                                         <Input value={newWorkout.work} onChange={e => setNewWorkout({ ...newWorkout, work: e.target.value })} />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label>Descanso</Label>
+                                        <Label>Descanso (ej: 15s)</Label>
                                         <Input value={newWorkout.rest} onChange={e => setNewWorkout({ ...newWorkout, rest: e.target.value })} />
                                     </div>
                                 </div>
@@ -162,6 +197,30 @@ export default function WorkoutsPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
+                                        <Label>Día</Label>
+                                        <Select value={editingWorkout?.day} onValueChange={v => setEditingWorkout(editingWorkout ? { ...editingWorkout, day: v } : null)}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"].map(d => (
+                                                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Dificultad</Label>
+                                        <Select value={editingWorkout?.difficulty} onValueChange={v => setEditingWorkout(editingWorkout ? { ...editingWorkout, difficulty: v as any } : null)}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Intro">Intro (Verde)</SelectItem>
+                                                <SelectItem value="Power">Power (Azul)</SelectItem>
+                                                <SelectItem value="Elite">Elite (Rojo)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid gap-2">
                                         <Label>Trabajo</Label>
                                         <Input value={editingWorkout?.work || ""} onChange={e => setEditingWorkout(editingWorkout ? { ...editingWorkout, work: e.target.value } : null)} />
                                     </div>
@@ -183,7 +242,6 @@ export default function WorkoutsPage() {
                         <div key={workout.id} className="group relative bg-card rounded-[3rem] border border-border/50 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-2">
                             {/* Card Header */}
                             <div className={`${workout.color} p-10 relative overflow-hidden`}>
-                                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform duration-700" />
                                 <div className="relative z-10 flex justify-between items-start">
                                     <div className="bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl text-white font-black text-xs uppercase tracking-widest border border-white/10">
                                         {workout.type}
@@ -193,8 +251,16 @@ export default function WorkoutsPage() {
                                     </Button>
                                 </div>
                                 <div className="relative z-10 mt-8">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-[10px] font-black bg-white/20 px-2 py-0.5 rounded-md text-white uppercase tracking-tighter decoration-emerald-500">
+                                            {workout.day}
+                                        </span>
+                                        <span className="text-[10px] font-black bg-black/20 px-2 py-0.5 rounded-md text-white uppercase tracking-tighter">
+                                            {workout.difficulty}
+                                        </span>
+                                    </div>
                                     <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none mb-2">{workout.name}</h3>
-                                    <p className="text-white/80 font-bold uppercase tracking-widest text-sm">KaiCenter SC Signature</p>
+                                    <p className="text-white/80 font-bold uppercase tracking-widest text-sm italic">KaiCenter SC Signature</p>
                                 </div>
                             </div>
 
@@ -258,4 +324,13 @@ export default function WorkoutsPage() {
             </section>
         </DashboardShell>
     )
+}
+
+function getColorByDifficulty(difficulty: string) {
+    switch (difficulty) {
+        case "Intro": return "bg-emerald-500";
+        case "Power": return "bg-blue-600";
+        case "Elite": return "bg-rose-600";
+        default: return "bg-purple-500";
+    }
 }

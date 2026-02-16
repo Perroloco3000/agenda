@@ -56,52 +56,64 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-                    <div className="bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm">
+                    <div className="bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm transition-all hover:shadow-lg">
                         <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-3">
                             <Calendar className="h-6 w-6 text-primary" />
-                            Próximas Clases
+                            Próximas Reservas
                         </h3>
                         <div className="space-y-6">
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-colors">
+                            {reservations.filter(r => r.status === 'confirmed').slice(0, 4).map((res) => (
+                                <div key={res.id} className="flex items-center justify-between p-6 rounded-3xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-colors">
                                     <div className="flex items-center gap-6">
                                         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex flex-col items-center justify-center font-black">
-                                            <span className="text-primary text-xs uppercase leading-none mb-1">Feb</span>
-                                            <span className="text-2xl leading-none">1{i}</span>
+                                            <span className="text-primary text-[10px] uppercase leading-none mb-1">HOY</span>
+                                            <span className="text-xl leading-none">{res.timeSlot?.split(':')[0] || '12'}</span>
                                         </div>
                                         <div>
-                                            <p className="font-black text-xl tracking-tight">CARDIO BLAST - ROMANS</p>
-                                            <p className="text-muted-foreground font-medium">09:00 AM • Instructor: Sergio</p>
+                                            <p className="font-black text-xl tracking-tight uppercase">{res.member_name || 'Miembro'}</p>
+                                            <p className="text-muted-foreground font-medium">{res.timeSlot} • {res.date}</p>
                                         </div>
                                     </div>
-                                    <button className="bg-primary text-primary-foreground font-black px-6 py-3 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
-                                        Gestionar
-                                    </button>
+                                    <Link href={`/dashboard/reservations`}>
+                                        <button className="bg-primary text-primary-foreground font-black px-6 py-3 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
+                                            Gestionar
+                                        </button>
+                                    </Link>
                                 </div>
                             ))}
+                            {reservations.filter(r => r.status === 'confirmed').length === 0 && (
+                                <p className="text-center text-muted-foreground py-10 font-bold">No hay reservas próximas.</p>
+                            )}
                         </div>
                     </div>
 
-                    <div className="bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm">
+                    <div className="bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm transition-all hover:shadow-lg">
                         <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-3">
                             <Users className="h-6 w-6 text-primary" />
                             Nuevos Miembros
                         </h3>
                         <div className="space-y-6">
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-colors">
+                            {members.slice(0, 4).map((member) => (
+                                <div key={member.id} className="flex items-center justify-between p-6 rounded-3xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-colors">
                                     <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/10" />
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/10 flex items-center justify-center font-black text-primary text-xl">
+                                            {member.name.charAt(0)}
+                                        </div>
                                         <div>
-                                            <p className="font-black text-xl tracking-tight">Miembro #{i}00{i}</p>
-                                            <p className="text-muted-foreground font-medium">Unido hace 2 horas • Plan Premium</p>
+                                            <p className="font-black text-xl tracking-tight">{member.name}</p>
+                                            <p className="text-muted-foreground font-medium">Plan {member.plan} • {member.status}</p>
                                         </div>
                                     </div>
-                                    <button className="text-primary font-black px-6 py-3 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-colors">
-                                        Ver Perfil
-                                    </button>
+                                    <Link href={`/dashboard/members/profile?id=${member.id}`}>
+                                        <button className="text-primary font-black px-6 py-3 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-colors">
+                                            Ver Perfil
+                                        </button>
+                                    </Link>
                                 </div>
                             ))}
+                            {members.length === 0 && (
+                                <p className="text-center text-muted-foreground py-10 font-bold">No hay miembros registrados.</p>
+                            )}
                         </div>
                     </div>
                 </div>
