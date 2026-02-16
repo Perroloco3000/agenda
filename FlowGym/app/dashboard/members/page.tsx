@@ -20,7 +20,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Link from "next/link"
 
 export default function MembersPage() {
-    const { members, addMember, removeMember, toggleMemberStatus } = useAppStore()
+    const { members, addMember, removeMember, toggleMemberStatus, isLoaded } = useAppStore()
+    console.log("RENDER MembersPage:", members.length, "members, loaded:", isLoaded)
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [newMember, setNewMember] = useState<Partial<Member>>({
@@ -49,6 +50,19 @@ export default function MembersPage() {
         (m.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
         (m.email || "").toLowerCase().includes(searchTerm.toLowerCase())
     )
+
+    if (!isLoaded) {
+        return (
+            <DashboardShell>
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                        <p className="font-bold text-muted-foreground italic">Cargando base de datos...</p>
+                    </div>
+                </div>
+            </DashboardShell>
+        )
+    }
 
     return (
         <DashboardShell>
