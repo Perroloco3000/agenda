@@ -13,7 +13,8 @@ import {
     Menu,
     X,
     Accessibility,
-    RefreshCw
+    RefreshCw,
+    Bell
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -55,8 +56,9 @@ const navigation = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const { refreshData } = useAppStore()
+    const { refreshData, notifications, clearNotifications } = useAppStore()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isNotifOpen, setIsNotifOpen] = useState(false)
 
     return (
         <div className="flex h-screen bg-muted/30 overflow-hidden">
@@ -136,6 +138,51 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         <div className="text-right hidden sm:block">
                             <p className="font-bold leading-none">Admin Eduardo</p>
                             <p className="text-sm text-muted-foreground">Gym Owner</p>
+                        </div>
+                        <div className="relative group">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-10 w-10 rounded-xl bg-card border-border hover:bg-muted relative"
+                                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                            >
+                                <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                {notifications.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center border-2 border-card">
+                                        {notifications.length}
+                                    </span>
+                                )}
+                            </Button>
+
+                            {/* Notifications Dropdown */}
+                            {isNotifOpen && (
+                                <div className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                    <div className="p-4 border-b border-border flex justify-between items-center bg-muted/30">
+                                        <h3 className="font-bold text-sm">Notificaciones</h3>
+                                        {notifications.length > 0 && (
+                                            <button onClick={clearNotifications} className="text-[10px] text-primary hover:underline font-bold uppercase">Limpiar</button>
+                                        )}
+                                    </div>
+                                    <div className="max-h-96 overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-8 text-center text-muted-foreground text-xs italic">
+                                                No hay notificaciones nuevas
+                                            </div>
+                                        ) : (
+                                            notifications.map(n => (
+                                                <div key={n.id} className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
+                                                    <p className="font-bold text-xs flex items-center gap-2">
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                                                        {n.title}
+                                                    </p>
+                                                    <p className="text-[11px] text-muted-foreground mt-1">{n.description}</p>
+                                                    <p className="text-[9px] text-muted-foreground/60 mt-1 uppercase font-bold">{n.time}</p>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         <Button
                             variant="outline"

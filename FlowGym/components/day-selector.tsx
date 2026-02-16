@@ -1,6 +1,7 @@
 "use client"
 
-import { weeklyWorkouts, dayNames } from "@/lib/workout-data"
+import { useAppStore } from "@/lib/store"
+import { dayNames, weeklyWorkouts } from "@/lib/workout-data"
 import { cn } from "@/lib/utils"
 import { Flame, Dumbbell, Zap } from "lucide-react"
 
@@ -11,20 +12,33 @@ interface DaySelectorProps {
 
 const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
-const typeIcons = {
+const typeIcons: Record<string, any> = {
   cardio: Flame,
   resistance: Dumbbell,
   hybrid: Zap,
 }
 
 export function DaySelector({ selectedDay, onSelectDay }: DaySelectorProps) {
+  const { workouts } = useAppStore()
+
   return (
     <div className="space-y-2">
       <h2 className="text-lg font-semibold text-foreground mb-4">Rutinas Semanales</h2>
       <div className="space-y-2">
         {dayOrder.map((dayKey) => {
-          const workout = weeklyWorkouts[dayKey]
-          const Icon = typeIcons[workout.type]
+          const dayName = dayNames[dayKey]
+          const workoutFromStore = workouts.find(w => w.day === dayName)
+
+          // Use store data if available, otherwise fallback to template
+          const workout = workoutFromStore ? {
+            name: workoutFromStore.name,
+            type: (workoutFromStore.type?.toLowerCase() as any) || "cardio",
+            color: workoutFromStore.color,
+            exercises: workoutFromStore.exercises || [],
+            sets: workoutFromStore.stations || 3
+          } : weeklyWorkouts[dayKey]
+
+          const Icon = typeIcons[workout.type] || Zap
           const isSelected = selectedDay === dayKey
 
           return (
@@ -52,17 +66,17 @@ export function DaySelector({ selectedDay, onSelectDay }: DaySelectorProps) {
                       {dayNames[dayKey]}
                     </span>
                     {isSelected && (
-                      <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                      <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full uppercase font-black italic tracking-tighter">
                         HOY
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
+                  <p className="text-sm text-muted-foreground truncate font-bold">
                     {workout.name}
                   </p>
                 </div>
-                <div className="text-right text-xs text-muted-foreground">
-                  <div>{workout.exercises.length} ejercicios</div>
+                <div className="text-right text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">
+                  <div>{workout.exercises.length} ej.</div>
                   <div>{workout.sets} sets</div>
                 </div>
               </div>

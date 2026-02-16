@@ -46,7 +46,9 @@ export default function WorkoutsPage() {
                     rest: newWorkout.rest || "15s",
                     color: getColorByDifficulty(newWorkout.difficulty || "Power"),
                     day: newWorkout.day || "Lunes",
-                    difficulty: newWorkout.difficulty || "Power"
+                    difficulty: newWorkout.difficulty || "Power",
+                    video_url: newWorkout.videoUrl,
+                    exercises: newWorkout.exercises || []
                 } as any)
                 setIsCreateOpen(false)
                 setNewWorkout({ name: "", type: "Hybrid", stations: 0, work: "45s", rest: "15s", color: "bg-purple-500" })
@@ -72,8 +74,10 @@ export default function WorkoutsPage() {
                     rest: editingWorkout.rest,
                     color: getColorByDifficulty(editingWorkout.difficulty || "Power"),
                     day: editingWorkout.day,
-                    difficulty: editingWorkout.difficulty
-                })
+                    difficulty: editingWorkout.difficulty,
+                    video_url: editingWorkout.videoUrl,
+                    exercises: editingWorkout.exercises || []
+                } as any)
                 setIsEditOpen(false)
                 setEditingWorkout(null)
             } catch (err) {
@@ -98,7 +102,7 @@ export default function WorkoutsPage() {
                                 Nueva Rutina
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                                 <DialogTitle>Crear Nueva Rutina</DialogTitle>
                                 <DialogDescription>Configura los detalles del entrenamiento.</DialogDescription>
@@ -159,16 +163,61 @@ export default function WorkoutsPage() {
                                         <Input value={newWorkout.rest} onChange={e => setNewWorkout({ ...newWorkout, rest: e.target.value })} />
                                     </div>
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label>Video Tutorial Principal (Link)</Label>
+                                    <Input placeholder="https://youtube.com/..." value={newWorkout.videoUrl} onChange={e => setNewWorkout({ ...newWorkout, videoUrl: e.target.value })} />
+                                </div>
+
+                                <div className="mt-4 border-t pt-4">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <Label className="text-lg font-bold">Ejercicios</Label>
+                                        <Button variant="outline" size="sm" onClick={() => {
+                                            const exs = [...(newWorkout.exercises || [])]
+                                            exs.push({ id: Math.random().toString(36).substr(2, 9), name: "Nuevo Ejercicio", videoUrl: "" })
+                                            setNewWorkout({ ...newWorkout, exercises: exs })
+                                        }}>
+                                            <Plus className="h-4 w-4 mr-2" /> Añadir
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {(newWorkout.exercises || []).map((ex: any, idx: number) => (
+                                            <div key={ex.id} className="p-3 border rounded-xl bg-muted/50 space-y-2 relative">
+                                                <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 text-muted-foreground hover:text-red-500" onClick={() => {
+                                                    const exs = (newWorkout.exercises || []).filter((_: any, i: number) => i !== idx)
+                                                    setNewWorkout({ ...newWorkout, exercises: exs })
+                                                }}>
+                                                    <Trash2 className="h-3 w-3" />
+                                                </Button>
+                                                <div className="grid gap-1">
+                                                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Nombre</Label>
+                                                    <Input className="h-8 text-sm" value={ex.name} onChange={e => {
+                                                        const exs = [...(newWorkout.exercises || [])]
+                                                        exs[idx].name = e.target.value
+                                                        setNewWorkout({ ...newWorkout, exercises: exs })
+                                                    }} />
+                                                </div>
+                                                <div className="grid gap-1">
+                                                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Link Video (Opcional)</Label>
+                                                    <Input className="h-8 text-sm" placeholder="https://..." value={ex.videoUrl} onChange={e => {
+                                                        const exs = [...(newWorkout.exercises || [])]
+                                                        exs[idx].videoUrl = e.target.value
+                                                        setNewWorkout({ ...newWorkout, exercises: exs })
+                                                    }} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleCreate}>Crear Rutina</Button>
+                                <Button onClick={handleCreate} className="w-full">Crear Rutina</Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
 
                     {/* Edit Workout Dialog */}
                     <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                                 <DialogTitle>Editar Rutina</DialogTitle>
                                 <DialogDescription>Modifica los detalles del entrenamiento.</DialogDescription>
@@ -229,9 +278,58 @@ export default function WorkoutsPage() {
                                         <Input value={editingWorkout?.rest || ""} onChange={e => setEditingWorkout(editingWorkout ? { ...editingWorkout, rest: e.target.value } : null)} />
                                     </div>
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label>Video Tutorial Principal (Link)</Label>
+                                    <Input placeholder="https://youtube.com/..." value={editingWorkout?.videoUrl || ""} onChange={e => setEditingWorkout(editingWorkout ? { ...editingWorkout, videoUrl: e.target.value } : null)} />
+                                </div>
+
+                                <div className="mt-4 border-t pt-4">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <Label className="text-lg font-bold">Ejercicios</Label>
+                                        <Button variant="outline" size="sm" onClick={() => {
+                                            if (!editingWorkout) return
+                                            const exs = [...(editingWorkout.exercises || [])]
+                                            exs.push({ id: Math.random().toString(36).substr(2, 9), name: "Nuevo Ejercicio", videoUrl: "" })
+                                            setEditingWorkout({ ...editingWorkout, exercises: exs })
+                                        }}>
+                                            <Plus className="h-4 w-4 mr-2" /> Añadir
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {(editingWorkout?.exercises || []).map((ex: any, idx: number) => (
+                                            <div key={ex.id} className="p-3 border rounded-xl bg-muted/50 space-y-2 relative">
+                                                <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 text-muted-foreground hover:text-red-500" onClick={() => {
+                                                    if (!editingWorkout) return
+                                                    const exs = (editingWorkout.exercises || []).filter((_: any, i: number) => i !== idx)
+                                                    setEditingWorkout({ ...editingWorkout, exercises: exs })
+                                                }}>
+                                                    <Trash2 className="h-3 w-3" />
+                                                </Button>
+                                                <div className="grid gap-1">
+                                                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Nombre</Label>
+                                                    <Input className="h-8 text-sm" value={ex.name} onChange={e => {
+                                                        if (!editingWorkout) return
+                                                        const exs = [...(editingWorkout.exercises || [])]
+                                                        exs[idx].name = e.target.value
+                                                        setEditingWorkout({ ...editingWorkout, exercises: exs })
+                                                    }} />
+                                                </div>
+                                                <div className="grid gap-1">
+                                                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Link Video (Opcional)</Label>
+                                                    <Input className="h-8 text-sm" placeholder="https://..." value={ex.videoUrl} onChange={e => {
+                                                        if (!editingWorkout) return
+                                                        const exs = [...(editingWorkout.exercises || [])]
+                                                        exs[idx].videoUrl = e.target.value
+                                                        setEditingWorkout({ ...editingWorkout, exercises: exs })
+                                                    }} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleUpdate}>Guardar Cambios</Button>
+                                <Button onClick={handleUpdate} className="w-full">Guardar Cambios</Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
@@ -242,12 +340,14 @@ export default function WorkoutsPage() {
                         <div key={workout.id} className="group relative bg-card rounded-[3rem] border border-border/50 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-2">
                             {/* Card Header */}
                             <div className={`${workout.color} p-10 relative overflow-hidden`}>
-                                <div className="relative z-10 flex justify-between items-start">
-                                    <div className="bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl text-white font-black text-xs uppercase tracking-widest border border-white/10">
-                                        {workout.type}
-                                    </div>
-                                    <Button onClick={async () => await deleteWorkout(workout.id)} variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-white/10 border border-white/10 text-white hover:bg-red-500/80 hover:border-red-500">
-                                        <Trash2 className="h-5 w-5" />
+                                <div className="flex items-center gap-2">
+                                    <Link href={`/dashboard/workouts/play?id=${workout.id}`} className="flex-1">
+                                        <Button className="w-full h-14 rounded-2xl bg-white text-black hover:bg-white/90 font-black uppercase tracking-tighter italic flex items-center justify-center gap-2 group-hover:scale-105 transition-transform">
+                                            <Play className="h-5 w-5 fill-current" /> Entrenar Ahora
+                                        </Button>
+                                    </Link>
+                                    <Button onClick={() => handleEdit(workout)} variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-white/20 bg-white/10 text-white hover:bg-white hover:text-black transition-all">
+                                        <Settings2 className="h-5 w-5" />
                                     </Button>
                                 </div>
                                 <div className="relative z-10 mt-8">
@@ -258,6 +358,11 @@ export default function WorkoutsPage() {
                                         <span className="text-[10px] font-black bg-black/20 px-2 py-0.5 rounded-md text-white uppercase tracking-tighter">
                                             {workout.difficulty}
                                         </span>
+                                        {workout.videoUrl && (
+                                            <span className="text-[10px] font-black bg-rose-600 px-2 py-0.5 rounded-md text-white uppercase tracking-tighter flex items-center gap-1">
+                                                <Play className="h-2 w-2 fill-current" /> VIDEO
+                                            </span>
+                                        )}
                                     </div>
                                     <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none mb-2">{workout.name}</h3>
                                     <p className="text-white/80 font-bold uppercase tracking-widest text-sm italic">KaiCenter SC Signature</p>
@@ -291,7 +396,7 @@ export default function WorkoutsPage() {
                                         <Settings2 className="mr-2 h-5 w-5" />
                                         Editar
                                     </Button>
-                                    <Link href={`/?day=${workout.name.toLowerCase()}`} className="flex-1">
+                                    <Link href={`/dashboard/workouts/play?id=${workout.id}`} className="flex-1">
                                         <Button className="w-full h-14 rounded-2xl bg-primary shadow-lg shadow-primary/20 font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
                                             <Play className="mr-2 h-5 w-5 fill-current" />
                                             Iniciar
@@ -322,7 +427,7 @@ export default function WorkoutsPage() {
                     </button>
                 </div>
             </section>
-        </DashboardShell>
+        </DashboardShell >
     )
 }
 

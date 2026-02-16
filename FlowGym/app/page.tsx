@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { weeklyWorkouts, getCurrentDayKey, dayNames } from "@/lib/workout-data"
+import { useAppStore, WorkoutStat } from "@/lib/store"
+import { dayNames, getCurrentDayKey } from "@/lib/workout-data"
 import Link from "next/link"
 import { DaySelector } from "@/components/day-selector"
 import { F45Timer } from "@/components/f45-timer"
@@ -10,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Accessibility } from "lucide-react"
 
 export default function GymApp() {
-  const [selectedDay, setSelectedDay] = useState<string>("")
+  const { workouts } = useAppStore()
+  const [selectedDayKey, setSelectedDayKey] = useState<string>("")
   const [phraseIndex, setPhraseIndex] = useState(0)
 
   const phrases = [
@@ -24,17 +26,33 @@ export default function GymApp() {
   ]
 
   useEffect(() => {
-    setSelectedDay(getCurrentDayKey())
+    setSelectedDayKey(getCurrentDayKey())
     const interval = setInterval(() => {
       setPhraseIndex((prev) => (prev + 1) % phrases.length)
     }, 5000)
     return () => clearInterval(interval)
   }, [phrases.length])
 
-  const currentWorkout = weeklyWorkouts[selectedDay] || weeklyWorkouts.monday
+  // Find the workout for the selected day in our Supabase data
+  const selectedDayName = dayNames[selectedDayKey]
+  const workoutFromStore = workouts.find(w => w.day === selectedDayName)
+
+  // Map WorkoutStat to WorkoutDay format for components
+  const currentWorkout = workoutFromStore ? {
+    id: workoutFromStore.id,
+    name: workoutFromStore.name,
+    type: workoutFromStore.type?.toLowerCase() as any || "cardio",
+    color: workoutFromStore.color,
+    workTime: parseInt(workoutFromStore.work) || 45,
+    restTime: parseInt(workoutFromStore.rest) || 15,
+    sets: workoutFromStore.stations || 3,
+    exercises: workoutFromStore.exercises || [],
+    hydrationInterval: 4,
+    hydrationDuration: 30
+  } : null
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-screen flex flex-col bg-background overflow-hidden font-sans">
       {/* Header */}
       <header className="bg-card/50 backdrop-blur-md border-b border-border px-8 py-4 flex-none flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -65,9 +83,9 @@ export default function GymApp() {
           <div className="w-px h-6 bg-border mx-2" />
           <div className="flex items-center gap-3 bg-muted/50 px-4 py-2 rounded-2xl border border-border/50">
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-primary font-bold text-sm">A</span>
+              <span className="text-primary font-bold text-sm">E</span>
             </div>
-            <span className="font-bold text-sm hidden sm:inline">Admin User</span>
+            <span className="font-bold text-sm hidden sm:inline">Admin Eduardo</span>
           </div>
         </div>
       </header>
@@ -77,22 +95,30 @@ export default function GymApp() {
         {/* Left Panel - Day Selector */}
         <aside className="w-72 border-r border-border bg-card p-4 overflow-y-auto hidden md:block">
           <DaySelector
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
+            selectedDay={selectedDayKey}
+            onSelectDay={setSelectedDayKey}
           />
         </aside>
 
         {/* Center Panel - Timer */}
         <section className="flex-1 p-6 bg-background overflow-hidden flex flex-col">
-          <F45Timer
-            key={selectedDay}
-            workout={currentWorkout}
-          />
+          {currentWorkout ? (
+            <F45Timer
+              key={selectedDayKey}
+              workout={currentWorkout}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+              <div className="text-6xl animate-bounce">🏋️‍♂️</div>
+              <h2 className="text-3xl font-black uppercase tracking-tighter">Preparando el entrenamiento...</h2>
+              <p className="text-muted-foreground max-w-md">No hemos encontrado una rutina para este día en el sistema. Asegúrate de configurarla en el panel de control.</p>
+            </div>
+          )}
         </section>
 
         {/* Right Panel - Exercise List */}
         <aside className="w-80 border-l border-border bg-card p-4 overflow-y-auto hidden lg:block">
-          <ExerciseList workout={currentWorkout} />
+          {currentWorkout && <ExerciseList workout={currentWorkout} />}
         </aside>
       </main>
     </div>

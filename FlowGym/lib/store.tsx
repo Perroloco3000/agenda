@@ -3,6 +3,7 @@
 import { useState, useEffect, createContext, useContext, useCallback, ReactNode } from "react"
 import { supabase } from "./supabase"
 import { toast } from "sonner"
+import { weeklyWorkouts, dayNames } from "./workout-data"
 
 // Types
 export type Member = {
@@ -35,6 +36,17 @@ export type WorkoutStat = {
     color: string
     day?: string
     difficulty?: "Intro" | "Power" | "Elite"
+    videoUrl?: string
+    exercises?: any[]
+}
+
+export type Notification = {
+    id: string
+    title: string
+    description: string
+    time: string
+    type: "info" | "success" | "warning"
+    read: boolean
 }
 
 export type UserReservation = {
@@ -76,8 +88,21 @@ export function useAppStoreLogic() {
     const [bookings, setBookings] = useState<Booking[]>([])
     const [workouts, setWorkouts] = useState<WorkoutStat[]>([])
     const [reservations, setReservations] = useState<UserReservation[]>([])
+    const [notifications, setNotifications] = useState<Notification[]>([])
     const [isLoaded, setIsLoaded] = useState(false)
     const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "error">("connecting")
+
+    const addNotification = useCallback((n: Omit<Notification, "id" | "time" | "read">) => {
+        const newNotif = {
+            ...n,
+            id: Math.random().toString(36).substr(2, 9),
+            time: "Recién ahora",
+            read: false
+        }
+        setNotifications(prev => [newNotif, ...prev].slice(0, 10))
+    }, [])
+
+    const clearNotifications = useCallback(() => setNotifications([]), [])
 
     // Load Data from Supabase
     const loadSupabaseData = useCallback(async () => {
@@ -111,7 +136,42 @@ export function useAppStoreLogic() {
 
             const fetchWorkouts = async () => {
                 const { data } = await supabase.from('workouts').select('*')
-                if (data) setWorkouts(data)
+                let currentWorkouts = data || []
+
+                // Check if template routines are missing
+                const templateNames = Object.values(weeklyWorkouts).filter(w => w.id !== 'sunday').map(w => w.name)
+                const existingNames = currentWorkouts.map(w => w.name)
+                const missingTemplates = Object.values(weeklyWorkouts)
+                    .filter(w => w.id !== 'sunday' && !existingNames.includes(w.name))
+
+                if (missingTemplates.length > 0) {
+                    console.log(`Seeding ${missingTemplates.length} missing template routines...`)
+                    const seedData = missingTemplates.map(w => ({
+                        id: Math.random().toString(36).substr(2, 9),
+                        name: w.name,
+                        type: w.type.charAt(0).toUpperCase() + w.type.slice(1),
+                        stations: 12,
+                        work: `${w.workTime}s`,
+                        rest: `${w.restTime}s`,
+                        color: w.color.includes('from-') ? "bg-purple-600" : w.color,
+                        day: dayNames[w.id] || 'Lunes',
+                        difficulty: 'Power',
+                        exercises: w.exercises
+                    }))
+
+                    const { error: seedError } = await supabase.from('workouts').insert(seedData)
+                    if (!seedError) {
+                        currentWorkouts = [...currentWorkouts, ...seedData]
+                    }
+                }
+
+                setWorkouts(currentWorkouts.map(w => ({
+                    ...w,
+                    day: w.day || 'Lunes',
+                    difficulty: w.difficulty || 'Power',
+                    videoUrl: w.video_url || w.videoUrl || '',
+                    exercises: w.exercises || []
+                })))
             }
 
             const fetchBookings = async () => {
@@ -163,6 +223,11 @@ export function useAppStoreLogic() {
                         description: `Se ha registrado un nuevo usuario: ${nm.email}`,
                         duration: 8000
                     })
+                    addNotification({
+                        title: "Nuevo Miembro",
+                        description: `${nm.name} se ha unido al gimnasio.`,
+                        type: "success"
+                    })
                     setMembers(prev => {
                         if (prev.find(m => m.id === nm.id)) return prev
                         return [...prev, {
@@ -197,6 +262,11 @@ export function useAppStoreLogic() {
                     toast.success("NUEVA RESERVA", {
                         description: `${nr.member_name} ha reservado para el ${nr.date} a las ${nr.time_slot}`,
                         duration: 8000
+                    })
+                    addNotification({
+                        title: "Nueva Reserva",
+                        description: `${nr.member_name} para el ${nr.date}`,
+                        type: "info"
                     })
                     setReservations(prev => {
                         if (prev.find(r => r.id === nr.id)) return prev
@@ -233,11 +303,52 @@ export function useAppStoreLogic() {
                 }
             }).subscribe()
 
+        const workoutsSub = supabase.channel('workouts-all')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'workouts' }, payload => {
+                if (payload.eventType === 'INSERT') {
+                    const nw = payload.new as any
+                    setWorkouts(prev => {
+                        if (prev.find(w => w.id === nw.id)) return prev
+                        return [...prev, {
+                            id: nw.id,
+                            name: nw.name,
+                            type: nw.type,
+                            stations: nw.stations,
+                            work: nw.work,
+                            rest: nw.rest,
+                            color: nw.color,
+                            day: nw.day || 'Lunes',
+                            difficulty: nw.difficulty || 'Power',
+                            videoUrl: nw.video_url || nw.videoUrl || '',
+                            exercises: nw.exercises || []
+                        }]
+                    })
+                } else if (payload.eventType === 'UPDATE') {
+                    const uw = payload.new as any
+                    setWorkouts(prev => prev.map(w => w.id === uw.id ? {
+                        ...w,
+                        name: uw.name,
+                        type: uw.type,
+                        stations: uw.stations,
+                        work: uw.work,
+                        rest: uw.rest,
+                        color: uw.color,
+                        day: uw.day || w.day,
+                        difficulty: uw.difficulty || w.difficulty,
+                        videoUrl: uw.video_url || uw.videoUrl || w.videoUrl,
+                        exercises: uw.exercises || w.exercises || []
+                    } : w))
+                } else if (payload.eventType === 'DELETE') {
+                    setWorkouts(prev => prev.filter(w => w.id !== payload.old.id))
+                }
+            }).subscribe()
+
         return () => {
             supabase.removeChannel(membersSub)
             supabase.removeChannel(reservationsSub)
+            supabase.removeChannel(workoutsSub)
         }
-    }, [])
+    }, [loadSupabaseData, supabase, addNotification])
 
     // New Store Actions with useCallback for stability
     const addMember = useCallback(async (member: Omit<Member, "id" | "joinDate">) => {
@@ -358,7 +469,9 @@ export function useAppStoreLogic() {
         getMemberReservations,
         isLoaded,
         syncStatus,
-        refreshData: loadSupabaseData
+        refreshData: loadSupabaseData,
+        notifications,
+        clearNotifications
     }
 }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Coffee, Maximize2, Droplets, Armchair } from "lucide-react"
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Coffee, Maximize2, Armchair, Dumbbell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { WorkoutDay, Exercise } from "@/lib/workout-data"
 
@@ -26,7 +26,7 @@ export function F45Timer({ workout }: F45TimerProps) {
   const rootRef = useRef<HTMLDivElement>(null)
 
   // Sunday / Rest Day Logic
-  if (workout.id === 'sunday' || workout.type === 'rest' || workout.exercises.length === 0) {
+  if (workout.id === 'sunday' || (workout.type as string) === 'rest' || !workout.exercises || workout.exercises.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-slate-900 text-white p-8">
         <div className="bg-slate-800 p-12 rounded-[3rem] border border-slate-700 shadow-2xl text-center max-w-2xl animate-in zoom-in duration-500">
@@ -291,20 +291,33 @@ export function F45Timer({ workout }: F45TimerProps) {
                 {currentExercise.name}
               </h3>
 
-              {/* Water Drop Indicator during Rest */}
-              {phase === 'rest' && (
+              {/* Hydration Indicator during Hydration Phase */}
+              {phase === 'hydration' && (
                 <div className="mb-4 animate-bounce">
-                  <Droplets className="h-12 w-12 text-cyan-300 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
+                  <Coffee className="h-12 w-12 text-cyan-300 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
                 </div>
               )}
 
-              <div className="w-full flex-1 min-h-0 relative flex items-center justify-center">
-                {currentExercise.gifUrl && (
+              <div className="w-full flex-1 min-h-0 relative flex items-center justify-center overflow-hidden">
+                {currentExercise?.videoUrl ? (
+                  <div className="w-full h-full max-w-4xl max-h-[80vh] aspect-video rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/5">
+                    <iframe
+                      src={currentExercise.videoUrl.replace("watch?v=", "embed/").split("&")[0] + "?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&disablekb=1&playlist=" + (currentExercise.videoUrl.includes("v=") ? currentExercise.videoUrl.split("v=")[1].split("&")[0] : "")}
+                      className="w-full h-full pointer-events-none"
+                      allow="autoplay; encrypted-media"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                ) : currentExercise?.gifUrl ? (
                   <img
                     src={currentExercise.gifUrl}
                     alt={currentExercise.name}
-                    className="max-w-full max-h-full object-contain mix-blend-multiply dark:mix-blend-screen rounded-[2rem] shadow-lg" // Added rounded corners and slight shadow
+                    className="max-w-full max-h-full object-contain mix-blend-multiply dark:mix-blend-screen rounded-[2rem] shadow-lg"
                   />
+                ) : (
+                  <div className="bg-white/5 w-64 h-64 rounded-full flex items-center justify-center animate-pulse">
+                    <Dumbbell className="h-24 w-24 text-white/10" />
+                  </div>
                 )}
               </div>
             </div>
@@ -330,11 +343,11 @@ export function F45Timer({ workout }: F45TimerProps) {
               <div
                 key={i}
                 className={`flex-1 h-full rounded-full transition-all duration-500 ${isActive
-                    ? (phase === 'countdown' ? 'bg-slate-800' : 'bg-white shadow-[0_0_10px_white]')
-                    : (phase === 'countdown' ? 'bg-slate-300' : 'bg-white/20')
+                  ? (phase === 'countdown' ? 'bg-slate-800' : 'bg-white shadow-[0_0_10px_white]')
+                  : (phase === 'countdown' ? 'bg-slate-300' : 'bg-white/20')
                   } ${isHydration ? 'relative' : ''}`}
               >
-                {isHydration && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px]">💧</div>}
+                {isHydration && <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px]">☕</div>}
               </div>
             )
           })}

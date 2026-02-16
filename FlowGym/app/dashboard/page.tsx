@@ -4,6 +4,7 @@ import { DashboardShell } from "@/components/dashboard-shell"
 import { Users, Dumbbell, Calendar, TrendingUp } from "lucide-react"
 import { useAppStore } from "@/lib/store"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export default function DashboardPage() {
     const { members, workouts, reservations, isLoaded } = useAppStore()

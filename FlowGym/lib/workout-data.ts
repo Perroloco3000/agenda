@@ -2,6 +2,7 @@ export type Exercise = {
   id: string
   name: string
   gifUrl: string
+  videoUrl?: string
   duration: number // seconds
   description: string
   muscleGroups: string[]
