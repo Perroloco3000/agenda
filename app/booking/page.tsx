@@ -215,7 +215,7 @@ export default function BookingPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-3">
-                                {myBookings.map(booking => (
+                                {myBookings.map((booking: Booking) => (
                                     <div key={booking.id} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
