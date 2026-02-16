@@ -68,54 +68,69 @@ export function useAppStoreLogic() {
     const [workouts, setWorkouts] = useState<WorkoutStat[]>([])
     const [reservations, setReservations] = useState<UserReservation[]>([])
     const [isLoaded, setIsLoaded] = useState(false)
+    const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "error">("connecting")
 
     // Load Data from Supabase
-    useEffect(() => {
-        const loadSupabaseData = async () => {
-            try {
-                // Members
-                const { data: mData } = await supabase.from('members').select('*')
-                if (mData) {
-                    setMembers(mData.map(m => ({
-                        id: m.id,
-                        name: m.name,
-                        email: m.email,
-                        phone: m.phone,
-                        plan: m.plan || 'Premium',
-                        status: m.status || 'Activo',
-                        joinDate: m.created_at
-                    })))
-                }
-
-                // Workouts
-                const { data: wData } = await supabase.from('workouts').select('*')
-                if (wData) setWorkouts(wData)
-
-                // Scheduled Bookings (Classes)
-                const { data: bData } = await supabase.from('scheduled_bookings').select('*')
-                if (bData) setBookings(bData)
-
-                // User Reservations (Turn Bookings)
-                const { data: rData } = await supabase.from('reservations').select('*').eq('status', 'confirmed')
-                if (rData) {
-                    setReservations(rData.map(r => ({
-                        id: r.id,
-                        memberId: r.member_id,
-                        memberName: r.member_name,
-                        memberEmail: r.member_email,
-                        date: r.date,
-                        timeSlot: r.time_slot,
-                        status: r.status,
-                        createdAt: r.created_at
-                    })))
-                }
-
-                setIsLoaded(true)
-            } catch (error) {
-                console.error("Error loading FlowGym data from Supabase:", error)
+    const loadSupabaseData = useCallback(async () => {
+        setSyncStatus("connecting")
+        try {
+            // Fetch each table individually to avoid one error blocking everything
+            const fetchMembers = async () => {
+                const { data, error } = await supabase.from('members').select('*')
+                if (error) throw error
+                if (data) setMembers(data.map(m => ({
+                    id: m.id,
+                    name: m.name,
+                    email: m.email,
+                    phone: m.phone,
+                    plan: m.plan || 'Premium',
+                    status: m.status || 'Activo',
+                    joinDate: m.created_at
+                })))
             }
-        }
 
+            const fetchWorkouts = async () => {
+                const { data } = await supabase.from('workouts').select('*')
+                if (data) setWorkouts(data)
+            }
+
+            const fetchBookings = async () => {
+                const { data } = await supabase.from('scheduled_bookings').select('*')
+                if (data) setBookings(data)
+            }
+
+            const fetchReservations = async () => {
+                const { data, error } = await supabase.from('reservations').select('*').eq('status', 'confirmed')
+                if (error) throw error
+                if (data) setReservations(data.map(r => ({
+                    id: r.id,
+                    memberId: r.member_id,
+                    memberName: r.member_name,
+                    memberEmail: r.member_email,
+                    date: r.date,
+                    timeSlot: r.time_slot,
+                    status: r.status,
+                    createdAt: r.created_at
+                })))
+            }
+
+            await Promise.allSettled([
+                fetchMembers(),
+                fetchWorkouts(),
+                fetchBookings(),
+                fetchReservations()
+            ])
+
+            setIsLoaded(true)
+            setSyncStatus("connected")
+        } catch (error) {
+            console.error("Error loading FlowGym data:", error)
+            setSyncStatus("error")
+            setIsLoaded(true) // Set loaded anyway to show UI
+        }
+    }, [supabase])
+
+    useEffect(() => {
         loadSupabaseData()
 
         // Sync Subscriptions
@@ -313,7 +328,9 @@ export function useAppStoreLogic() {
         cancelReservation,
         getAvailableSlots,
         getMemberReservations,
-        isLoaded
+        isLoaded,
+        syncStatus,
+        refreshData: loadSupabaseData
     }
 }
 

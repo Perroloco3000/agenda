@@ -195,8 +195,25 @@ export default function BookingPage() {
                 {myBookings.length > 0 && (
                     <Card className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl">
                         <CardHeader>
-                            <CardTitle className="text-2xl font-black text-white">Mis Reservas</CardTitle>
-                            <CardDescription className="text-slate-400">Tus próximos entrenamientos</CardDescription>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-2xl font-black text-white">Mis Reservas</CardTitle>
+                                    <CardDescription className="text-slate-400">Tus próximos entrenamientos</CardDescription>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={async () => {
+                                        if (confirm("¿Seguro que quieres borrar TODAS tus reservas?")) {
+                                            const { cancelAllUserBookings } = useStore()
+                                            await cancelAllUserBookings(currentUser.id)
+                                        }
+                                    }}
+                                    className="border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold"
+                                >
+                                    Borrar Todas
+                                </Button>
+                            </div>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-3">

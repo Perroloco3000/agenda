@@ -16,6 +16,33 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { useAppStore } from "@/lib/store"
+
+function SyncStatus() {
+    const { syncStatus } = useAppStore()
+
+    if (syncStatus === "connecting") return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-tighter">Sincronizando...</span>
+        </div>
+    )
+
+    if (syncStatus === "error") return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
+            <div className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="text-[10px] font-bold text-red-500 uppercase tracking-tighter">Error de Conexión</span>
+        </div>
+    )
+
+    return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-[10px] font-bold text-green-500 uppercase tracking-tighter">En Línea</span>
+        </div>
+    )
+}
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -27,6 +54,7 @@ const navigation = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
+    const { refreshData } = useAppStore()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     return (
@@ -98,13 +126,24 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         >
                             <Menu className="h-6 w-6" />
                         </button>
-                        <h1 className="text-lg md:text-xl font-black uppercase tracking-widest text-muted-foreground">Admin Panel</h1>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-lg md:text-xl font-black uppercase tracking-widest text-muted-foreground">Admin Panel</h1>
+                            <SyncStatus />
+                        </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
                             <p className="font-bold leading-none">Admin User</p>
                             <p className="text-sm text-muted-foreground">Gym Owner</p>
                         </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={refreshData}
+                            className="h-10 w-10 rounded-full hover:bg-muted"
+                        >
+                            <Calendar className="h-5 w-5 text-muted-foreground" />
+                        </Button>
                         <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                             <Users className="h-5 w-5 text-primary" />
                         </div>

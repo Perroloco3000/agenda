@@ -6,7 +6,7 @@ import { useAppStore } from "@/lib/store"
 import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
-    const { members, workouts, bookings, isLoaded } = useAppStore()
+    const { members, workouts, reservations, isLoaded } = useAppStore()
     const [stats, setStats] = useState([
         { name: 'Miembros Activos', value: '0', icon: Users, color: 'bg-blue-500' },
         { name: 'Rutinas Guardadas', value: '0', icon: Dumbbell, color: 'bg-purple-500' },
@@ -16,7 +16,7 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (isLoaded) {
-            const today = new Date().toISOString().split('T')[0]
+            const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD local
             const activeMembers = members.filter(m => m.status === 'Activo').length
             const todayBookingsCount = reservations.filter(r => r.date === today && r.status === 'confirmed').length
 

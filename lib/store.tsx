@@ -285,6 +285,17 @@ export function useAppStore() {
     setBookings(prev => prev.filter(b => b.id !== bookingId))
   }
 
+  const cancelAllUserBookings = async (userId: string) => {
+    const { error } = await supabase
+      .from('reservations')
+      .update({ status: 'cancelled' })
+      .eq('member_id', userId)
+
+    if (error) throw new Error(error.message)
+
+    setBookings(prev => prev.filter(b => b.memberId !== userId))
+  }
+
   const clearAllTestData = async () => {
     const { error: rError } = await supabase.from('reservations').delete().neq('id', '0')
     const { error: mError } = await supabase.from('members').delete().neq('role', 'admin')
@@ -326,6 +337,7 @@ export function useAppStore() {
     logout,
     createBooking,
     cancelBooking,
+    cancelAllUserBookings,
     getAvailableSlots,
     getUserBookings,
     clearAllTestData
