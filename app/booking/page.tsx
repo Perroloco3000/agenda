@@ -211,8 +211,23 @@ export default function BookingPage() {
                                                 <p className="text-sm text-slate-400">{new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                             </div>
                                         </div>
-                                        <div className="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20">
-                                            <span className="text-green-400 font-bold text-sm">Confirmado</span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20">
+                                                <span className="text-green-400 font-bold text-sm">Confirmado</span>
+                                            </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => {
+                                                    if (confirm("¿Seguro que quieres cancelar tu reserva?")) {
+                                                        const { cancelBooking } = useStore()
+                                                        cancelBooking(booking.id)
+                                                    }
+                                                }}
+                                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                            >
+                                                <XCircle className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </div>
                                 ))}
@@ -220,6 +235,24 @@ export default function BookingPage() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Dev Tools */}
+                <div className="pt-12 flex justify-center opacity-20 hover:opacity-100 transition-opacity">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={async () => {
+                            const { clearAllTestData } = useStore()
+                            if (confirm("¿Deseas eliminar todos los datos de prueba (Miembros y Reservas)?")) {
+                                await clearAllTestData()
+                                window.location.reload()
+                            }
+                        }}
+                        className="text-[10px] text-slate-500 uppercase tracking-widest font-bold"
+                    >
+                        Limpiar Datos de Prueba
+                    </Button>
+                </div>
             </main>
         </div>
     )

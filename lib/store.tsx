@@ -109,7 +109,18 @@ export function useAppStore() {
       .channel('members-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
         if (payload.eventType === 'INSERT') {
-          setUsers(prev => [...prev, payload.new as User])
+          const newMember = payload.new as any
+          setUsers(prev => {
+            if (prev.find(u => u.id === newMember.id)) return prev
+            return [...prev, {
+              id: newMember.id,
+              name: newMember.name,
+              email: newMember.email,
+              phone: newMember.phone,
+              role: newMember.role || 'user',
+              createdAt: newMember.created_at
+            }]
+          })
         }
       })
       .subscribe()
@@ -274,6 +285,18 @@ export function useAppStore() {
     setBookings(prev => prev.filter(b => b.id !== bookingId))
   }
 
+  const clearAllTestData = async () => {
+    const { error: rError } = await supabase.from('reservations').delete().neq('id', '0')
+    const { error: mError } = await supabase.from('members').delete().neq('role', 'admin')
+
+    if (rError || mError) console.error("Error clearing data:", rError || mError)
+
+    setBookings([])
+    setUsers(prev => prev.filter(u => u.role === 'admin'))
+    localStorage.removeItem("agenda_current_user")
+    setCurrentUser(null)
+  }
+
   const getAvailableSlots = (date: string): TimeSlot[] => {
     return TIME_SLOTS.map(slot => {
       const slotBookings = bookings.filter(
@@ -304,7 +327,8 @@ export function useAppStore() {
     createBooking,
     cancelBooking,
     getAvailableSlots,
-    getUserBookings
+    getUserBookings,
+    clearAllTestData
   }
 }
 

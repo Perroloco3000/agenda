@@ -16,17 +16,18 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (isLoaded) {
+            const today = new Date().toISOString().split('T')[0]
             const activeMembers = members.filter(m => m.status === 'Activo').length
-            const todayBookings = bookings.filter(b => b.date === 'Today').reduce((acc, curr) => acc + curr.booked, 0)
+            const todayBookingsCount = reservations.filter(r => r.date === today && r.status === 'confirmed').length
 
             setStats([
                 { name: 'Miembros Activos', value: String(activeMembers), icon: Users, color: 'bg-blue-500' },
                 { name: 'Rutinas Guardadas', value: String(workouts.length), icon: Dumbbell, color: 'bg-purple-500' },
-                { name: 'Reservas Hoy', value: String(todayBookings), icon: Calendar, color: 'bg-green-500' },
+                { name: 'Reservas Hoy', value: String(todayBookingsCount), icon: Calendar, color: 'bg-green-500' },
                 { name: 'Crecimiento', value: '+12%', icon: TrendingUp, color: 'bg-orange-500' },
             ])
         }
-    }, [isLoaded, members, workouts, bookings])
+    }, [isLoaded, members, workouts, reservations])
 
     return (
         <DashboardShell>

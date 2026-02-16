@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, createContext, useContext, useCallback, ReactNode } from "react"
 import { supabase } from "./supabase"
+import { toast } from "sonner"
 
 // Types
 export type Member = {
@@ -60,7 +61,8 @@ export const TIME_SLOTS = [
 
 export const SLOT_CAPACITY = 20
 
-export function useAppStore() {
+// Store Hook Logic
+export function useAppStoreLogic() {
     const [members, setMembers] = useState<Member[]>([])
     const [bookings, setBookings] = useState<Booking[]>([])
     const [workouts, setWorkouts] = useState<WorkoutStat[]>([])
@@ -121,15 +123,22 @@ export function useAppStore() {
             .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
                 if (payload.eventType === 'INSERT') {
                     const nm = payload.new as any
-                    setMembers(prev => [...prev, {
-                        id: nm.id,
-                        name: nm.name,
-                        email: nm.email,
-                        phone: nm.phone,
-                        plan: nm.plan || 'Premium',
-                        status: nm.status || 'Activo',
-                        joinDate: nm.created_at
-                    }])
+                    toast.success(`NUEVO MIEMBRO: ${nm.name}`, {
+                        description: `Se ha registrado un nuevo usuario: ${nm.email}`,
+                        duration: 8000
+                    })
+                    setMembers(prev => {
+                        if (prev.find(m => m.id === nm.id)) return prev
+                        return [...prev, {
+                            id: nm.id,
+                            name: nm.name,
+                            email: nm.email,
+                            phone: nm.phone,
+                            plan: nm.plan || 'Premium',
+                            status: nm.status || 'Activo',
+                            joinDate: nm.created_at
+                        }]
+                    })
                 } else if (payload.eventType === 'UPDATE') {
                     const um = payload.new as any
                     setMembers(prev => prev.map(m => m.id === um.id ? {
@@ -149,6 +158,10 @@ export function useAppStore() {
             .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, payload => {
                 if (payload.eventType === 'INSERT') {
                     const nr = payload.new as any
+                    toast.success("NUEVA RESERVA", {
+                        description: `${nr.member_name} ha reservado para el ${nr.date} a las ${nr.time_slot}`,
+                        duration: 8000
+                    })
                     setReservations(prev => {
                         if (prev.find(r => r.id === nr.id)) return prev
                         return [...prev, {
@@ -164,10 +177,21 @@ export function useAppStore() {
                     })
                 } else if (payload.eventType === 'UPDATE') {
                     const ur = payload.new as any
-                    setReservations(prev => prev.map(r => r.id === ur.id ? {
-                        ...r,
-                        status: ur.status
-                    } : r).filter(r => r.status === 'confirmed'))
+                    if (ur.status === 'cancelled') {
+                        toast.warning("RESERVA CANCELADA", {
+                            description: `${ur.member_name} ha cancelado su reserva.`,
+                            duration: 5000
+                        })
+                    }
+                    setReservations(prev => {
+                        if (ur.status === 'cancelled') {
+                            return prev.filter(r => r.id !== ur.id)
+                        }
+                        return prev.map(r => r.id === ur.id ? {
+                            ...r,
+                            status: ur.status
+                        } : r)
+                    })
                 } else if (payload.eventType === 'DELETE') {
                     setReservations(prev => prev.filter(r => r.id !== payload.old.id))
                 }
@@ -179,8 +203,8 @@ export function useAppStore() {
         }
     }, [])
 
-    // New Member Actions
-    const addMember = async (member: Omit<Member, "id" | "joinDate">) => {
+    // New Store Actions with useCallback for stability
+    const addMember = useCallback(async (member: Omit<Member, "id" | "joinDate">) => {
         const id = Math.random().toString(36).substr(2, 9)
         const { error } = await supabase.from('members').insert([{
             id,
@@ -192,45 +216,46 @@ export function useAppStore() {
         }])
         if (error) throw error
         setMembers(prev => [...prev, { ...member, id, joinDate: new Date().toISOString() }])
-    }
+    }, [])
 
-    const removeMember = async (id: string) => {
+    const removeMember = useCallback(async (id: string) => {
         const { error } = await supabase.from('members').delete().eq('id', id)
         if (error) throw error
         setMembers(prev => prev.filter(m => m.id !== id))
-    }
+    }, [])
 
-    const toggleMemberStatus = async (id: string) => {
-        const member = members.find(m => m.id === id)
-        if (!member) return
-        const newStatus = member.status === 'Activo' ? 'Inactivo' : 'Activo'
-        const { error } = await supabase.from('members').update({ status: newStatus }).eq('id', id)
-        if (error) throw error
-        setMembers(prev => prev.map(m => m.id === id ? { ...m, status: newStatus } : m))
-    }
+    const toggleMemberStatus = useCallback(async (id: string) => {
+        setMembers(prev => {
+            const member = prev.find(m => m.id === id)
+            if (!member) return prev
+            const newStatus = member.status === 'Activo' ? 'Inactivo' : 'Activo'
+            supabase.from('members').update({ status: newStatus }).eq('id', id).then(({ error }) => {
+                if (error) console.error(error)
+            })
+            return prev.map(m => m.id === id ? { ...m, status: newStatus } : m)
+        })
+    }, [])
 
-    // Workout Actions
-    const addWorkout = async (workout: Omit<WorkoutStat, "id">) => {
+    const addWorkout = useCallback(async (workout: Omit<WorkoutStat, "id">) => {
         const id = Math.random().toString(36).substr(2, 9)
         const { error } = await supabase.from('workouts').insert([{ id, ...workout }])
         if (error) throw error
         setWorkouts(prev => [...prev, { id, ...workout }])
-    }
+    }, [])
 
-    const deleteWorkout = async (id: string) => {
+    const deleteWorkout = useCallback(async (id: string) => {
         const { error } = await supabase.from('workouts').delete().eq('id', id)
         if (error) throw error
         setWorkouts(prev => prev.filter(w => w.id !== id))
-    }
+    }, [])
 
-    const updateWorkout = async (id: string, updates: Partial<WorkoutStat>) => {
+    const updateWorkout = useCallback(async (id: string, updates: Partial<WorkoutStat>) => {
         const { error } = await supabase.from('workouts').update(updates).eq('id', id)
         if (error) throw error
         setWorkouts(prev => prev.map(w => w.id === id ? { ...w, ...updates } : w))
-    }
+    }, [])
 
-    // Reservation Actions (Turns)
-    const createReservation = async (memberId: string, date: string, timeSlot: string) => {
+    const createReservation = useCallback(async (memberId: string, date: string, timeSlot: string) => {
         const member = members.find(m => m.id === memberId)
         if (!member) throw new Error("Miembro no encontrado")
 
@@ -246,15 +271,15 @@ export function useAppStore() {
         }])
         if (error) throw error
         return { id: resId, memberId, date, timeSlot }
-    }
+    }, [members])
 
-    const cancelReservation = async (reservationId: string) => {
+    const cancelReservation = useCallback(async (reservationId: string) => {
         const { error } = await supabase.from('reservations').update({ status: 'cancelled' }).eq('id', reservationId)
         if (error) throw error
         setReservations(prev => prev.filter(r => r.id !== reservationId))
-    }
+    }, [])
 
-    const getAvailableSlots = (date: string) => {
+    const getAvailableSlots = useCallback((date: string) => {
         return TIME_SLOTS.map(slot => {
             const slotReservations = reservations.filter(
                 r => r.date === date && r.timeSlot === slot && r.status === "confirmed"
@@ -267,11 +292,11 @@ export function useAppStore() {
                 available: SLOT_CAPACITY - booked
             }
         })
-    }
+    }, [reservations])
 
-    const getMemberReservations = (memberId: string) => {
+    const getMemberReservations = useCallback((memberId: string) => {
         return reservations.filter(r => r.memberId === memberId && r.status === "confirmed")
-    }
+    }, [reservations])
 
     return {
         members,
@@ -290,4 +315,18 @@ export function useAppStore() {
         getMemberReservations,
         isLoaded
     }
+}
+
+// Context Setup
+const StoreContext = createContext<ReturnType<typeof useAppStoreLogic> | null>(null)
+
+export function StoreProvider({ children }: { children: ReactNode }) {
+    const store = useAppStoreLogic()
+    return <StoreContext.Provider value={store}> {children} </StoreContext.Provider>
+}
+
+export function useAppStore() {
+    const context = useContext(StoreContext)
+    if (!context) throw new Error("useAppStore must be used within StoreProvider")
+    return context
 }
