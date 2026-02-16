@@ -24,7 +24,7 @@ export default function ReservationsPage() {
 
     // Set today as default
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD local
         setSelectedDate(today)
     }, [])
 

@@ -9,10 +9,8 @@ import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle } 
 
 export default function BookingPage() {
     const router = useRouter()
-    const { currentUser, logout, getAvailableSlots, createBooking, getUserBookings } = useStore()
+    const { currentUser, logout, getAvailableSlots, createBooking, getUserBookings, cancelBooking, cancelAllUserBookings } = useStore()
     const [selectedDate, setSelectedDate] = useState("")
-    const [availableSlots, setAvailableSlots] = useState<ReturnType<typeof getAvailableSlots>>([])
-    const [myBookings, setMyBookings] = useState<ReturnType<typeof getUserBookings>>([])
     const [successMessage, setSuccessMessage] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
@@ -25,17 +23,13 @@ export default function BookingPage() {
 
     // Set today as default date
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString('en-CA')
         setSelectedDate(today)
     }, [])
 
-    // Load slots when date changes
-    useEffect(() => {
-        if (selectedDate && currentUser) {
-            setAvailableSlots(getAvailableSlots(selectedDate))
-            setMyBookings(getUserBookings(currentUser.id))
-        }
-    }, [selectedDate, currentUser, getAvailableSlots, getUserBookings])
+    // Derived values directly from store
+    const availableSlots = getAvailableSlots(selectedDate)
+    const myBookings = currentUser ? getUserBookings(currentUser.id) : []
 
     const handleLogout = () => {
         logout()
@@ -49,9 +43,6 @@ export default function BookingPage() {
             await createBooking(currentUser.id, selectedDate, timeSlot)
             setSuccessMessage(`¡Reserva confirmada para ${timeSlot}!`)
             setErrorMessage("")
-            // Refresh data
-            setAvailableSlots(getAvailableSlots(selectedDate))
-            setMyBookings(getUserBookings(currentUser.id))
 
             // Clear success message after 3 seconds
             setTimeout(() => setSuccessMessage(""), 3000)
@@ -205,7 +196,6 @@ export default function BookingPage() {
                                     size="sm"
                                     onClick={async () => {
                                         if (confirm("¿Seguro que quieres borrar TODAS tus reservas?")) {
-                                            const { cancelAllUserBookings } = useStore()
                                             await cancelAllUserBookings(currentUser.id)
                                         }
                                     }}
@@ -235,10 +225,9 @@ export default function BookingPage() {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     if (confirm("¿Seguro que quieres cancelar tu reserva?")) {
-                                                        const { cancelBooking } = useStore()
-                                                        cancelBooking(booking.id)
+                                                        await cancelBooking(booking.id)
                                                     }
                                                 }}
                                                 className="text-red-400 hover:text-red-300 hover:bg-red-500/10"

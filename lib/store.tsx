@@ -169,6 +169,26 @@ export function useAppStore() {
     }
   }, [currentUser])
 
+  // Derived state/getters as callbacks
+  const getAvailableSlots = useCallback((date: string): TimeSlot[] => {
+    return TIME_SLOTS.map(slot => {
+      const slotBookings = bookings.filter(
+        b => b.date === date && b.timeSlot === slot && b.status === "confirmed"
+      )
+      const booked = slotBookings.length
+      return {
+        time: slot,
+        capacity: SLOT_CAPACITY,
+        booked,
+        available: SLOT_CAPACITY - booked
+      }
+    })
+  }, [bookings])
+
+  const getUserBookings = useCallback((userId: string) => {
+    return bookings.filter(b => b.memberId === userId && b.status === "confirmed")
+  }, [bookings])
+
   // Auth Actions
   const register = async (userData: Omit<User, "id" | "createdAt" | "role">) => {
     const id = Math.random().toString(36).substr(2, 9)
@@ -274,7 +294,7 @@ export function useAppStore() {
     return { id, memberId: userId, date, timeSlot }
   }
 
-  const cancelBooking = async (bookingId: string) => {
+  const cancelBooking = useCallback(async (bookingId: string) => {
     const { error } = await supabase
       .from('reservations')
       .update({ status: 'cancelled' })
@@ -283,9 +303,9 @@ export function useAppStore() {
     if (error) throw new Error(error.message)
 
     setBookings(prev => prev.filter(b => b.id !== bookingId))
-  }
+  }, [])
 
-  const cancelAllUserBookings = async (userId: string) => {
+  const cancelAllUserBookings = useCallback(async (userId: string) => {
     const { error } = await supabase
       .from('reservations')
       .update({ status: 'cancelled' })
@@ -294,7 +314,7 @@ export function useAppStore() {
     if (error) throw new Error(error.message)
 
     setBookings(prev => prev.filter(b => b.memberId !== userId))
-  }
+  }, [])
 
   const clearAllTestData = async () => {
     const { error: rError } = await supabase.from('reservations').delete().neq('id', '0')
@@ -308,24 +328,6 @@ export function useAppStore() {
     setCurrentUser(null)
   }
 
-  const getAvailableSlots = (date: string): TimeSlot[] => {
-    return TIME_SLOTS.map(slot => {
-      const slotBookings = bookings.filter(
-        b => b.date === date && b.timeSlot === slot && b.status === "confirmed"
-      )
-      const booked = slotBookings.length
-      return {
-        time: slot,
-        capacity: SLOT_CAPACITY,
-        booked,
-        available: SLOT_CAPACITY - booked
-      }
-    })
-  }
-
-  const getUserBookings = (userId: string) => {
-    return bookings.filter(b => b.memberId === userId && b.status === "confirmed")
-  }
 
   return {
     users,
