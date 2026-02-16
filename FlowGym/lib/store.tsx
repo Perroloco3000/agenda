@@ -89,16 +89,22 @@ export function useAppStoreLogic() {
                     console.error("Error fetching members:", error)
                     throw error
                 }
-                console.log(`Fetched ${data?.length || 0} members`)
-                if (data) setMembers(data.map(m => ({
-                    id: m.id,
-                    name: m.name,
-                    email: m.email,
-                    phone: m.phone,
-                    plan: m.plan || 'Premium',
-                    status: m.status || 'Activo',
-                    joinDate: m.created_at || m.joinDate || new Date().toISOString()
-                })))
+                console.log(`Fetched ${data?.length || 0} members from Supabase`)
+                if (data && data.length > 0) {
+                    console.table(data.map(m => ({ id: m.id, name: m.name, email: m.email, role: m.role })))
+                    setMembers(data.map(m => ({
+                        id: m.id || Math.random().toString(),
+                        name: m.name || "Sin Nombre",
+                        email: m.email || "Sin Email",
+                        phone: m.phone || "N/A",
+                        plan: (m.plan as any) || 'Premium',
+                        status: (m.status as any) || 'Activo',
+                        joinDate: m.created_at || m.joinDate || new Date().toISOString()
+                    })))
+                } else {
+                    console.log("No members found in table 'members'")
+                    setMembers([])
+                }
             }
 
             const fetchWorkouts = async () => {
