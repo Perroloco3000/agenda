@@ -46,6 +46,13 @@ export type UserReservation = {
     createdAt: string
 }
 
+export type TimeSlot = {
+    time: string
+    capacity: number
+    booked: number
+    available: number
+}
+
 // Time slots: 7am-8:30pm, 1.5hr each, max 20 people
 export const TIME_SLOTS = [
     "07:00-08:30",
@@ -294,10 +301,10 @@ export function useAppStoreLogic() {
         setReservations(prev => prev.filter(r => r.id !== reservationId))
     }, [])
 
-    const getAvailableSlots = useCallback((date: string) => {
+    const getAvailableSlots = useCallback((date: string): TimeSlot[] => {
         return TIME_SLOTS.map(slot => {
             const slotReservations = reservations.filter(
-                r => r.date === date && r.timeSlot === slot && r.status === "confirmed"
+                (r: UserReservation) => r.date === date && r.timeSlot === slot && r.status === "confirmed"
             )
             const booked = slotReservations.length
             return {

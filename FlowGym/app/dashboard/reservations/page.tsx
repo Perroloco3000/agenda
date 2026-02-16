@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAppStore } from "@/lib/store"
+import { useAppStore, UserReservation, TimeSlot } from "@/lib/store"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +32,7 @@ export default function ReservationsPage() {
     useEffect(() => {
         if (selectedDate) {
             setAvailableSlots(getAvailableSlots(selectedDate))
-            const filtered = reservations.filter(r => r.date === selectedDate && r.status === "confirmed")
+            const filtered = reservations.filter((r: UserReservation) => r.date === selectedDate && r.status === "confirmed")
             setTodayReservations(filtered)
         }
     }, [selectedDate, reservations, getAvailableSlots])
@@ -234,11 +234,11 @@ export default function ReservationsPage() {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {TIME_SLOTS.map(slot => {
-                                    const slotReservations = todayReservations.filter(r => r.timeSlot === slot)
+                                {TIME_SLOTS.map((slot: string) => {
+                                    const slotReservations = todayReservations.filter((r: UserReservation) => r.timeSlot === slot)
                                     if (slotReservations.length === 0) return null
 
-                                    const slotInfo = availableSlots.find(s => s.time === slot)
+                                    const slotInfo = availableSlots.find((s: TimeSlot) => s.time === slot)
                                     const status = slotInfo ? getSlotStatus(slotInfo.available, slotInfo.capacity) : null
 
                                     return (
