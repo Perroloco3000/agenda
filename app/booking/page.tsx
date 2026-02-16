@@ -200,7 +200,11 @@ export default function BookingPage() {
                                     size="sm"
                                     onClick={async () => {
                                         if (confirm("¿Seguro que quieres borrar TODAS tus reservas?")) {
-                                            await cancelAllUserBookings(currentUser.id)
+                                            toast.promise(cancelAllUserBookings(currentUser.id), {
+                                                loading: 'Cancelando todas las reservas...',
+                                                success: 'Todas las reservas canceladas',
+                                                error: 'Error al cancelar reservas'
+                                            })
                                         }
                                     }}
                                     className="border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold"
@@ -231,7 +235,11 @@ export default function BookingPage() {
                                                 size="sm"
                                                 onClick={async () => {
                                                     if (confirm("¿Seguro que quieres cancelar tu reserva?")) {
-                                                        await cancelBooking(booking.id)
+                                                        toast.promise(cancelBooking(booking.id), {
+                                                            loading: 'Cancelando reserva...',
+                                                            success: 'Reserva cancelada correctamente',
+                                                            error: 'Error al cancelar reserva'
+                                                        })
                                                     }
                                                 }}
                                                 className="text-red-400 hover:text-red-300 hover:bg-red-500/10"

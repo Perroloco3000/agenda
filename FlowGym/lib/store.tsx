@@ -124,9 +124,9 @@ export function useAppStoreLogic() {
             setIsLoaded(true)
             setSyncStatus("connected")
         } catch (error) {
-            console.error("Error loading FlowGym data:", error)
+            console.error("Critical error loading data:", error)
             setSyncStatus("error")
-            setIsLoaded(true) // Set loaded anyway to show UI
+            setIsLoaded(true) // Set to true anyway to allow showing what we have
         }
     }, [supabase])
 

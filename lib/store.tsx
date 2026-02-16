@@ -207,7 +207,8 @@ export function useAppStore() {
         email: newUser.email,
         phone: newUser.phone,
         role: newUser.role,
-        status: 'Activo'
+        status: 'Activo',
+        plan: 'Premium'
       }])
 
     if (error) throw new Error(error.message)
