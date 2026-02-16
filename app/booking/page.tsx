@@ -135,9 +135,9 @@ export default function BookingPage() {
                         Turnos Disponibles
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {availableSlots.map(slot => {
+                        {availableSlots.map((slot: TimeSlot) => {
                             const status = getSlotStatus(slot.available, slot.capacity)
-                            const isBooked = myBookings.some(b => b.timeSlot === slot.time && b.date === selectedDate)
+                            const isBooked = myBookings.some((b: Booking) => b.timeSlot === slot.time && b.date === selectedDate)
 
                             return (
                                 <Card key={slot.time} className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl hover:border-emerald-500/40 transition-all">
