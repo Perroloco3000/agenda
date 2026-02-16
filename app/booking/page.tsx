@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle } from "lucide-react"
 
@@ -41,13 +42,16 @@ export default function BookingPage() {
 
         try {
             await createBooking(currentUser.id, selectedDate, timeSlot)
+            toast.success(`¡Reserva confirmada para ${timeSlot}!`)
             setSuccessMessage(`¡Reserva confirmada para ${timeSlot}!`)
             setErrorMessage("")
 
             // Clear success message after 3 seconds
             setTimeout(() => setSuccessMessage(""), 3000)
         } catch (err) {
-            setErrorMessage(err instanceof Error ? err.message : "Error al reservar")
+            const msg = err instanceof Error ? err.message : "Error al reservar"
+            toast.error(msg)
+            setErrorMessage(msg)
             setSuccessMessage("")
         }
     }

@@ -19,11 +19,13 @@ export default function DashboardPage() {
             const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD local
             const activeMembers = members.filter(m => m.status === 'Activo').length
             const todayBookingsCount = reservations.filter(r => r.date === today && r.status === 'confirmed').length
+            const totalReservations = reservations.length
 
             setStats([
                 { name: 'Miembros Activos', value: String(activeMembers), icon: Users, color: 'bg-blue-500' },
                 { name: 'Rutinas Guardadas', value: String(workouts.length), icon: Dumbbell, color: 'bg-purple-500' },
                 { name: 'Reservas Hoy', value: String(todayBookingsCount), icon: Calendar, color: 'bg-green-500' },
+                { name: 'Reservas Totales', value: String(totalReservations), icon: Calendar, color: 'bg-orange-500' },
                 { name: 'Crecimiento', value: '+12%', icon: TrendingUp, color: 'bg-orange-500' },
             ])
         }
