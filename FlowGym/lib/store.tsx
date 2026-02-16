@@ -83,8 +83,13 @@ export function useAppStoreLogic() {
         try {
             // Fetch each table individually to avoid one error blocking everything
             const fetchMembers = async () => {
+                console.log("Fetching members...")
                 const { data, error } = await supabase.from('members').select('*')
-                if (error) throw error
+                if (error) {
+                    console.error("Error fetching members:", error)
+                    throw error
+                }
+                console.log(`Fetched ${data?.length || 0} members`)
                 if (data) setMembers(data.map(m => ({
                     id: m.id,
                     name: m.name,
@@ -92,7 +97,7 @@ export function useAppStoreLogic() {
                     phone: m.phone,
                     plan: m.plan || 'Premium',
                     status: m.status || 'Activo',
-                    joinDate: m.created_at
+                    joinDate: m.created_at || m.joinDate || new Date().toISOString()
                 })))
             }
 
@@ -143,6 +148,7 @@ export function useAppStoreLogic() {
         // Sync Subscriptions
         const membersSub = supabase.channel('members-all')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
+                console.log("REALTIME MEMBER EVENT:", payload.eventType, payload)
                 if (payload.eventType === 'INSERT') {
                     const nm = payload.new as any
                     toast.success(`NUEVO MIEMBRO: ${nm.name}`, {
@@ -158,7 +164,7 @@ export function useAppStoreLogic() {
                             phone: nm.phone,
                             plan: nm.plan || 'Premium',
                             status: nm.status || 'Activo',
-                            joinDate: nm.created_at
+                            joinDate: nm.created_at || new Date().toISOString()
                         }]
                     })
                 } else if (payload.eventType === 'UPDATE') {

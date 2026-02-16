@@ -12,7 +12,8 @@ import {
     Settings,
     Menu,
     X,
-    Accessibility
+    Accessibility,
+    RefreshCw
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -137,12 +138,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             <p className="text-sm text-muted-foreground">Gym Owner</p>
                         </div>
                         <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={refreshData}
-                            className="h-10 w-10 rounded-full hover:bg-muted"
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                                await refreshData()
+                                alert("Datos actualizados desde Supabase")
+                            }}
+                            className="h-10 rounded-xl hover:bg-muted font-bold flex gap-2 border-primary/20"
                         >
-                            <Calendar className="h-5 w-5 text-muted-foreground" />
+                            <RefreshCw className="h-4 w-4 text-primary" />
+                            Actualizar
                         </Button>
                         <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                             <Users className="h-5 w-5 text-primary" />
