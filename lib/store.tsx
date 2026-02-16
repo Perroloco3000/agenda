@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, createContext, useContext, ReactNode } from "react"
+import { useState, useEffect, createContext, useContext, useCallback, useMemo, ReactNode } from "react"
 import { supabase } from "./supabase"
 
 // Types (compatible with FlowGym)
