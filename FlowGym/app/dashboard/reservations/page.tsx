@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Calendar, Clock, Users, Plus, XCircle, CheckCircle2, TrendingUp } from "lucide-react"
-import { TIME_SLOTS } from "@/lib/store"
+import { TIME_SLOTS, GYM_SLOTS, COGNITIVE_SLOTS } from "@/lib/store"
 
 export default function ReservationsPage() {
     const { members, reservations, createReservation, cancelReservation, getAvailableSlots } = useAppStore()

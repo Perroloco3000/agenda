@@ -40,9 +40,8 @@ export default function SettingsPage() {
         // Simulate API call
         setTimeout(() => {
             setIsLoading(false)
-            // Show simple alert or toast (using native alert for simplicity here)
             alert("¡Configuración guardada correctamente!")
-            router.refresh()
+            window.location.reload()
         }, 800)
     }
 

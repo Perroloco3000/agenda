@@ -60,9 +60,24 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isNotifOpen, setIsNotifOpen] = useState(false)
     const [isMounted, setIsMounted] = useState(false)
-
+    const [gymName, setGymName] = useState("KAICENTER SC")
+    const [slogan, setSlogan] = useState("Training Osteomuscular")
+ 
     useEffect(() => {
         setIsMounted(true)
+        const savedGymName = localStorage.getItem("gymName")
+        const savedSlogan = localStorage.getItem("slogan")
+        const savedDarkMode = localStorage.getItem("darkMode")
+        
+        if (savedGymName) setGymName(savedGymName)
+        if (savedSlogan) setSlogan(savedSlogan)
+        
+        // Apply dark mode
+        if (savedDarkMode === "false") {
+            document.documentElement.classList.remove("dark")
+        } else {
+            document.documentElement.classList.add("dark")
+        }
     }, [])
 
     if (!isMounted) {
@@ -90,8 +105,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             <Accessibility className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-2xl font-black tracking-tighter leading-none">KAICENTER SC</span>
-                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest leading-none mt-0.5">Training Osteomuscular</span>
+                            <span className="text-2xl font-black tracking-tighter leading-none">{gymName}</span>
+                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest leading-none mt-0.5">{slogan}</span>
                         </div>
                     </Link>
                 </div>

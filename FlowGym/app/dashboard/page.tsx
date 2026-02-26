@@ -12,7 +12,7 @@ export default function DashboardPage() {
         { name: 'Miembros Activos', value: '0', icon: Users, color: 'bg-blue-500' },
         { name: 'Rutinas Guardadas', value: '0', icon: Dumbbell, color: 'bg-purple-500' },
         { name: 'Reservas Hoy', value: '0', icon: Calendar, color: 'bg-green-500' },
-        { name: 'Crecimiento', value: '+12%', icon: TrendingUp, color: 'bg-orange-500' },
+        { name: 'Reservas Totales', value: '0', icon: Calendar, color: 'bg-orange-500' },
     ])
 
     useEffect(() => {
@@ -27,7 +27,6 @@ export default function DashboardPage() {
                 { name: 'Rutinas Guardadas', value: String(workouts.length), icon: Dumbbell, color: 'bg-purple-500' },
                 { name: 'Reservas Hoy', value: String(todayBookingsCount), icon: Calendar, color: 'bg-green-500' },
                 { name: 'Reservas Totales', value: String(totalReservations), icon: Calendar, color: 'bg-orange-500' },
-                { name: 'Crecimiento', value: '+12%', icon: TrendingUp, color: 'bg-orange-500' },
             ])
         }
     }, [isLoaded, members, workouts, reservations])
@@ -71,7 +70,7 @@ export default function DashboardPage() {
                                             <span className="text-xl leading-none">{res.timeSlot?.split(':')[0] || '12'}</span>
                                         </div>
                                         <div>
-                                            <p className="font-black text-xl tracking-tight uppercase">{res.member_name || 'Miembro'}</p>
+                                            <p className="font-black text-xl tracking-tight uppercase">{res.memberName || 'Miembro'}</p>
                                             <p className="text-muted-foreground font-medium">{res.timeSlot} • {res.date}</p>
                                         </div>
                                     </div>

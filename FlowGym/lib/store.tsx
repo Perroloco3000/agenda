@@ -370,10 +370,16 @@ export function useAppStoreLogic() {
                 }
             }).subscribe()
 
+        const refreshInterval = setInterval(() => {
+            console.log("Automatic Heartbeat Refresh...")
+            loadSupabaseData()
+        }, 30000)
+
         return () => {
             supabase.removeChannel(membersSub)
             supabase.removeChannel(reservationsSub)
             supabase.removeChannel(workoutsSub)
+            clearInterval(refreshInterval)
         }
     }, [loadSupabaseData, supabase, addNotification])
 
