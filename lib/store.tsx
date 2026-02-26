@@ -20,6 +20,7 @@ export type Booking = {
   memberEmail: string
   date: string // YYYY-MM-DD
   timeSlot: string // "07:00-08:30"
+  area: "gym" | "cognitive"
   status: "confirmed" | "cancelled"
   createdAt: string
 }
@@ -31,18 +32,28 @@ export type TimeSlot = {
   available: number
 }
 
-// Time slots: 7am-8:30pm, 1.5hr each
-export const TIME_SLOTS = [
-  "07:00-08:30",
-  "08:30-10:00",
-  "10:00-11:30",
-  "11:30-13:00",
-  "13:00-14:30",
-  "14:30-16:00",
-  "16:00-17:30",
-  "17:30-19:00",
-  "19:00-20:30"
+// Shifts
+export const GYM_SLOTS = [
+  "08:00-09:00",
+  "09:00-10:00",
+  "10:00-11:00",
+  "11:00-12:00",
+  "14:00-15:00",
+  "15:00-16:00",
+  "16:00-17:00"
 ]
+
+export const COGNITIVE_SLOTS = [
+  "09:00-09:30",
+  "10:00-10:30",
+  "11:00-11:30",
+  "12:00-12:30",
+  "15:00-15:30",
+  "16:00-16:30",
+  "17:00-17:30"
+]
+
+export const TIME_SLOTS = GYM_SLOTS
 
 const SLOT_CAPACITY = 20
 
@@ -91,6 +102,7 @@ export function useAppStore() {
             memberEmail: r.member_email,
             date: r.date,
             timeSlot: r.time_slot,
+            area: r.area || "gym",
             status: r.status,
             createdAt: r.created_at
           })))
@@ -139,6 +151,7 @@ export function useAppStore() {
               memberEmail: newRes.member_email,
               date: newRes.date,
               timeSlot: newRes.time_slot,
+              area: newRes.area || "gym",
               status: newRes.status,
               createdAt: newRes.created_at
             }]
@@ -170,10 +183,11 @@ export function useAppStore() {
   }, [currentUser])
 
   // Derived state/getters as callbacks
-  const getAvailableSlots = useCallback((date: string): TimeSlot[] => {
-    return TIME_SLOTS.map(slot => {
+  const getAvailableSlots = useCallback((date: string, area: "gym" | "cognitive" = "gym"): TimeSlot[] => {
+    const slots = area === "gym" ? GYM_SLOTS : COGNITIVE_SLOTS
+    return slots.map(slot => {
       const slotBookings = bookings.filter(
-        b => b.date === date && b.timeSlot === slot && b.status === "confirmed"
+        b => b.date === date && b.timeSlot === slot && b.area === area && b.status === "confirmed"
       )
       const booked = slotBookings.length
       return {
@@ -208,7 +222,7 @@ export function useAppStore() {
         phone: newUser.phone,
         role: newUser.role,
         status: 'Activo',
-        plan: 'Premium'
+        plan: 'Plan Basic'
       }])
 
     if (error) throw new Error(error.message)
@@ -227,7 +241,7 @@ export function useAppStore() {
     if (error || !user) throw new Error("Usuario no encontrado")
 
     if (user.role === "admin") {
-      throw new Error("Los administradores deben usar el panel de FlowGym")
+      throw new Error("Los administradores deben usar el panel de Kai Center")
     }
 
     const loggedUser: User = {
@@ -248,13 +262,24 @@ export function useAppStore() {
   }
 
   // Booking Actions
-  const createBooking = async (userId: string, date: string, timeSlot: string) => {
+  const createBooking = async (userId: string, date: string, timeSlot: string, area: "gym" | "cognitive" = "gym") => {
     const user = users.find(u => u.id === userId)
     if (!user) throw new Error("Usuario no encontrado")
 
+    // Fetch user plan and existing bookings for that day
+    const { data: member } = await supabase.from('members').select('plan').eq('id', userId).single()
+    const userPlan = member?.plan || "Plan Basic"
+
+    if (userPlan === "Plan Basic") {
+      const existingToday = bookings.find(b => b.memberId === userId && b.date === date && b.status === "confirmed")
+      if (existingToday && existingToday.area !== area) {
+        throw new Error("Tu plan básico solo permite reservar en una área por día.")
+      }
+    }
+
     // Check availability
     const slotBookings = bookings.filter(
-      b => b.date === date && b.timeSlot === timeSlot && b.status === "confirmed"
+      b => b.date === date && b.timeSlot === timeSlot && b.area === area && b.status === "confirmed"
     )
     if (slotBookings.length >= SLOT_CAPACITY) {
       throw new Error("Este turno está lleno")
@@ -270,6 +295,7 @@ export function useAppStore() {
       memberEmail: user.email,
       date,
       timeSlot,
+      area,
       status: 'confirmed',
       createdAt: new Date().toISOString()
     }
@@ -284,6 +310,7 @@ export function useAppStore() {
         member_email: user.email,
         date,
         time_slot: timeSlot,
+        area,
         status: 'confirmed'
       }])
 
@@ -292,7 +319,7 @@ export function useAppStore() {
       throw new Error(error.message)
     }
 
-    return { id, memberId: userId, date, timeSlot }
+    return { id, memberId: userId, date, timeSlot, area }
   }
 
   const cancelBooking = useCallback(async (bookingId: string) => {

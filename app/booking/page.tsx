@@ -12,6 +12,7 @@ export default function BookingPage() {
     const router = useRouter()
     const { currentUser, logout, getAvailableSlots, createBooking, getUserBookings, cancelBooking, cancelAllUserBookings } = useStore()
     const [selectedDate, setSelectedDate] = useState("")
+    const [selectedArea, setSelectedArea] = useState<"gym" | "cognitive">("gym")
     const [successMessage, setSuccessMessage] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
@@ -29,7 +30,7 @@ export default function BookingPage() {
     }, [])
 
     // Derived values directly from store
-    const availableSlots = getAvailableSlots(selectedDate)
+    const availableSlots = getAvailableSlots(selectedDate, selectedArea)
     const myBookings = currentUser ? getUserBookings(currentUser.id) : []
 
     const handleLogout = () => {
@@ -41,8 +42,8 @@ export default function BookingPage() {
         if (!currentUser) return
 
         try {
-            await createBooking(currentUser.id, selectedDate, timeSlot)
-            toast.success(`¡Reserva confirmada para ${timeSlot}!`)
+            await createBooking(currentUser.id, selectedDate, timeSlot, selectedArea)
+            toast.success(`¡Reserva confirmada para ${selectedArea === 'gym' ? 'Gimnasio' : 'Área Cognitiva'} a las ${timeSlot}!`)
             setSuccessMessage(`¡Reserva confirmada para ${timeSlot}!`)
             setErrorMessage("")
 
@@ -103,14 +104,35 @@ export default function BookingPage() {
                         </CardTitle>
                         <CardDescription className="text-slate-400">Elige el día para tu entrenamiento</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={e => setSelectedDate(e.target.value)}
-                            min={new Date().toISOString().split('T')[0]}
-                            className="w-full md:w-auto px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white font-bold text-lg"
-                        />
+                    <CardContent className="flex flex-col md:flex-row gap-6">
+                        <div className="space-y-2">
+                             <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
+                             <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={e => setSelectedDate(e.target.value)}
+                                min={new Date().toISOString().split('T')[0]}
+                                className="w-full md:w-64 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white font-bold text-lg focus:ring-2 focus:ring-emerald-500/50"
+                            />
+                        </div>
+
+                        <div className="space-y-2 flex-1">
+                             <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
+                             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700">
+                                <button 
+                                    onClick={() => setSelectedArea("gym")}
+                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "gym" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                >
+                                    Gimnasio
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedArea("cognitive")}
+                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "cognitive" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                >
+                                    Área Cognitiva
+                                </button>
+                             </div>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -222,7 +244,12 @@ export default function BookingPage() {
                                                 <Calendar className="h-6 w-6 text-emerald-400" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-white">{booking.timeSlot}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-black text-white">{booking.timeSlot}</p>
+                                                    <span className="text-[10px] font-black uppercase bg-white/5 px-2 py-0.5 rounded-md text-emerald-400 border border-white/10">
+                                                        {booking.area === 'gym' ? 'Gimnasio' : 'Área Cognitiva'}
+                                                    </span>
+                                                </div>
                                                 <p className="text-sm text-slate-400">{new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                             </div>
                                         </div>

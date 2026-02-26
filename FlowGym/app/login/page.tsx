@@ -84,7 +84,7 @@ export default function LoginPage() {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="text-white/30 text-xs">Protected by FlowGym™ Secure Auth</p>
+                        <p className="text-white/30 text-xs">Protected by Kai Center™ Secure Auth</p>
                     </div>
                 </div>
 

@@ -51,7 +51,7 @@ export default function SettingsPage() {
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="space-y-4">
                     <h2 className="text-5xl font-black tracking-tighter uppercase leading-none">Configuración</h2>
-                    <p className="text-xl text-muted-foreground font-medium">Personaliza tu experiencia FlowGym.</p>
+                    <p className="text-xl text-muted-foreground font-medium">Personaliza tu experiencia Kai Center.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

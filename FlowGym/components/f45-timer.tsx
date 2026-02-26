@@ -11,11 +11,21 @@ interface F45TimerProps {
   workout: WorkoutDay
 }
 
+const DURATIONS: Record<TimerPhase, number> = {
+  warmup: 600,
+  strength: 1200,
+  hydration: 60,
+  movement: 1200,
+  stretching: 540,
+  finished: 0,
+  countdown: 10
+}
+
 export function F45Timer({ workout }: F45TimerProps) {
   const [isMounted, setIsMounted] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [phase, setPhase] = useState<TimerPhase>("warmup")
-  const [timeLeft, setTimeLeft] = useState(600) // 10 minutes warmup
+  const [timeLeft, setTimeLeft] = useState(DURATIONS.warmup)
   const [isMuted, setIsMuted] = useState(false)
   const [audioInitialized, setAudioInitialized] = useState(false)
 
@@ -24,17 +34,6 @@ export function F45Timer({ workout }: F45TimerProps) {
   const rootRef = useRef<HTMLDivElement>(null)
 
   const exercises = Array.isArray(workout.exercises) ? workout.exercises : []
-
-  // Phase Durations (in seconds)
-  const DURATIONS: Record<TimerPhase, number> = {
-    warmup: 600,
-    strength: 1200,
-    hydration: 60,
-    movement: 1200,
-    stretching: 540,
-    finished: 0,
-    countdown: 10
-  }
 
   const initAudio = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -106,7 +105,7 @@ export function F45Timer({ workout }: F45TimerProps) {
       interval = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            moveToNextPhase()
+            // Don't call moveToNextPhase here to avoid race conditions
             return 0
           }
           if (prev <= 4) playTone(880, 'sine', 0.1, 0.2)
@@ -115,7 +114,14 @@ export function F45Timer({ workout }: F45TimerProps) {
       }, 1000)
     }
     return () => { if (interval) clearInterval(interval) }
-  }, [isRunning, phase, moveToNextPhase, playTone])
+  }, [isRunning, phase, playTone])
+
+  // Separate effect to handle phase transitions when timeLeft reaches 0
+  useEffect(() => {
+    if (timeLeft === 0 && phase !== "finished" && isRunning) {
+      moveToNextPhase()
+    }
+  }, [timeLeft, phase, isRunning, moveToNextPhase])
 
   if (!isMounted) return null;
 
@@ -185,7 +191,7 @@ export function F45Timer({ workout }: F45TimerProps) {
             </div>
             <div>
               <h2 className="text-5xl font-black uppercase italic tracking-tighter leading-none">{config.label}</h2>
-              <p className="text-white/60 text-sm font-black uppercase tracking-[0.5em] mt-3">CIRCUITO FLOWGYM • KAI CENTER</p>
+              <p className="text-white/60 text-sm font-black uppercase tracking-[0.5em] mt-3">CIRCUITO KAI CENTER</p>
             </div>
           </div>
 
@@ -232,6 +238,15 @@ export function F45Timer({ workout }: F45TimerProps) {
                 phase === "hydration" ? "RECUPERA Y BEBE AGUA" :
                   "¡EXCELENTE TRABAJO! RELÁJATE"}
             </h3>
+            {phase === "warmup" && (
+              <Button
+                variant="ghost"
+                onClick={moveToNextPhase}
+                className="mt-8 text-white/20 hover:text-white/60 uppercase tracking-widest font-black text-xs border border-white/5 rounded-full px-6 py-2 hover:bg-white/5 transition-all"
+              >
+                Saltar Calentamiento
+              </Button>
+            )}
           </div>
         ) : phase === "strength" ? (
           renderExerciseBlocks(0)

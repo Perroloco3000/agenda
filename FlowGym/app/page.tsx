@@ -57,7 +57,7 @@ export default function GymApp() {
   if (!isMounted) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
-        <div className="text-primary font-black text-2xl animate-pulse italic uppercase tracking-tighter">Cargando FlowGym...</div>
+        <div className="text-primary font-black text-2xl animate-pulse italic uppercase tracking-tighter">Cargando Kai Center...</div>
       </div>
     )
   }
