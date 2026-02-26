@@ -213,8 +213,9 @@ export function F45Timer({ workout }: F45TimerProps) {
             <span className="text-sm font-black uppercase tracking-[0.4em] text-white/50 mt-2">TIEMPO RESTANTE</span>
           </div>
         </div>
+      </div>
 
-        {/* Global Progress Bar */}
+      {/* Global Progress Bar */}
         <div className="w-full max-w-4xl flex gap-1.5 h-1.5 px-4">
           {["warmup", "strength", "hydration", "movement", "stretching"].map((p, i) => {
             const sequence = ["warmup", "strength", "hydration", "movement", "stretching"];
