@@ -91,7 +91,7 @@ export const COGNITIVE_SLOTS = [
 
 export const TIME_SLOTS = GYM_SLOTS // Default for backward compatibility
 
-export const SLOT_CAPACITY = 20
+export const SLOT_CAPACITY = 18
 
 // Store Hook Logic
 export function useAppStoreLogic() {
@@ -100,17 +100,20 @@ export function useAppStoreLogic() {
     const [workouts, setWorkouts] = useState<WorkoutStat[]>([])
     const [reservations, setReservations] = useState<UserReservation[]>([])
     const [notifications, setNotifications] = useState<Notification[]>([])
+    const [gymName, setGymName] = useState("KAICENTER SC")
+    const [slogan, setSlogan] = useState("Osteomuscular & Ecological")
+    const [logoUrl, setLogoUrl] = useState("")
     const [isLoaded, setIsLoaded] = useState(false)
     const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "error">("connecting")
 
-    const addNotification = useCallback((n: Omit<Notification, "id" | "time" | "read">) => {
-        const newNotif: Notification = {
-            ...n,
-            id: Math.random().toString(36).substr(2, 9),
-            time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+    const addNotification = useCallback(async (n: Omit<Notification, "id" | "time" | "read">) => {
+        const { error } = await supabase.from('notifications').insert([{
+            title: n.title,
+            description: n.description,
+            type: n.type,
             read: false
-        }
-        setNotifications(prev => [newNotif, ...prev].slice(0, 20)) // Increased limit
+        }])
+        if (error) console.error("Error adding notification:", error)
     }, [])
 
     const clearNotifications = useCallback(() => setNotifications([]), [])
@@ -206,11 +209,37 @@ export function useAppStoreLogic() {
                 })))
             }
 
+            const fetchNotifications = async () => {
+                const { data, error } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20)
+                if (error) throw error
+                if (data) setNotifications(data.map(n => ({
+                    id: n.id,
+                    title: n.title,
+                    description: n.description,
+                    time: new Date(n.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                    type: n.type as any,
+                    read: n.read
+                })))
+            }
+
+            const fetchSettings = async () => {
+                const { data } = await supabase.from('system_settings').select('*')
+                if (data) {
+                    data.forEach(s => {
+                        if (s.key === 'gymName') setGymName(s.value)
+                        if (s.key === 'slogan') setSlogan(s.value)
+                        if (s.key === 'logoUrl') setLogoUrl(s.value)
+                    })
+                }
+            }
+
             await Promise.allSettled([
                 fetchMembers(),
                 fetchWorkouts(),
                 fetchBookings(),
-                fetchReservations()
+                fetchReservations(),
+                fetchNotifications(),
+                fetchSettings()
             ])
 
             setIsLoaded(true)
@@ -233,13 +262,8 @@ export function useAppStoreLogic() {
                     const nm = payload.new as any
                     if (nm) {
                         toast.success(`NUEVO MIEMBRO: ${nm.name || 'Usuario'}`, {
-                            description: `Se ha registrado un nuevo usuario: ${nm.email || ''}`,
+                            description: `Se ha registrado un nuevo usuario.`,
                             duration: 8000
-                        })
-                        addNotification({
-                            title: "Nuevo Miembro",
-                            description: `${nm.name || 'Alguien'} se ha unido al gimnasio.`,
-                            type: "success"
                         })
                     }
                     if (nm?.id) {
@@ -282,11 +306,6 @@ export function useAppStoreLogic() {
                     toast.success("NUEVA RESERVA", {
                         description: `${nr.member_name} ha reservado para el ${nr.date} a las ${nr.time_slot}`,
                         duration: 8000
-                    })
-                    addNotification({
-                        title: "Nueva Reserva",
-                        description: `${nr.member_name} - ${nr.time_slot}`,
-                        type: "info"
                     })
                     setReservations(prev => {
                         if (prev.find(r => r.id === nr.id)) return prev
@@ -370,6 +389,36 @@ export function useAppStoreLogic() {
                 }
             }).subscribe()
 
+        const notificationsSub = supabase.channel('notifications-all')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, payload => {
+                if (payload.eventType === 'INSERT') {
+                    const nn = payload.new as any
+                    setNotifications(prev => [{
+                        id: nn.id,
+                        title: nn.title,
+                        description: nn.description,
+                        time: new Date(nn.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                        type: nn.type as any,
+                        read: nn.read
+                    }, ...prev].slice(0, 20))
+                } else if (payload.eventType === 'UPDATE') {
+                    const un = payload.new as any
+                    setNotifications(prev => prev.map(n => n.id === un.id ? { ...n, read: un.read } : n))
+                } else if (payload.eventType === 'DELETE') {
+                    setNotifications(prev => prev.filter(n => n.id !== payload.old.id))
+                }
+            }).subscribe()
+
+            }).subscribe()
+
+        const settingsSub = supabase.channel('settings-all')
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'system_settings' }, payload => {
+                const ns = payload.new as any
+                if (ns.key === 'gymName') setGymName(ns.value)
+                if (ns.key === 'slogan') setSlogan(ns.value)
+                if (ns.key === 'logoUrl') setLogoUrl(ns.value)
+            }).subscribe()
+
         const refreshInterval = setInterval(() => {
             console.log("Automatic Heartbeat Refresh...")
             loadSupabaseData()
@@ -379,6 +428,8 @@ export function useAppStoreLogic() {
             supabase.removeChannel(membersSub)
             supabase.removeChannel(reservationsSub)
             supabase.removeChannel(workoutsSub)
+            supabase.removeChannel(notificationsSub)
+            supabase.removeChannel(settingsSub)
             clearInterval(refreshInterval)
         }
     }, [loadSupabaseData, supabase, addNotification])
@@ -468,6 +519,16 @@ export function useAppStoreLogic() {
         return { id: resId, memberId, date, timeSlot }
     }, [members])
 
+    const updateSettings = useCallback(async (updates: { gymName?: string, slogan?: string, logoUrl?: string }) => {
+        const promises = Object.entries(updates).map(([key, value]) => 
+            supabase.from('system_settings').update({ value }).eq('key', key)
+        )
+        await Promise.all(promises)
+        if (updates.gymName) setGymName(updates.gymName)
+        if (updates.slogan) setSlogan(updates.slogan)
+        if (updates.logoUrl) setLogoUrl(updates.logoUrl)
+    }, [])
+
     const cancelReservation = useCallback(async (reservationId: string) => {
         const { error } = await supabase.from('reservations').update({ status: 'cancelled' }).eq('id', reservationId)
         if (error) throw error
@@ -514,7 +575,11 @@ export function useAppStoreLogic() {
         syncStatus,
         refreshData: loadSupabaseData,
         notifications,
-        clearNotifications
+        clearNotifications,
+        gymName,
+        slogan,
+        logoUrl,
+        updateSettings
     }
 }
 

@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export default function LoginPage() {
     const router = useRouter()
-    const { login, register, currentUser } = useStore()
+    const { login, register, currentUser, gymName, slogan, logoUrl } = useStore()
     const [isLogin, setIsLogin] = useState(true)
     const [formData, setFormData] = useState({
         name: "",
@@ -76,26 +76,30 @@ export default function LoginPage() {
                     <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_50px_-10px_rgba(16,185,129,0.4)] mb-6 cursor-pointer"
+                        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_50px_-10px_rgba(16,185,129,0.4)] mb-6 cursor-pointer overflow-hidden"
                     >
-                        <Accessibility className="h-12 w-12 text-white" />
+                        {logoUrl ? (
+                            <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                        ) : (
+                            <Accessibility className="h-12 w-12 text-white" />
+                        )}
                     </motion.div>
                     <div className="text-center space-y-2">
                         <motion.h1
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
-                            className="text-5xl font-black tracking-tighter uppercase leading-none"
+                            className="text-5xl font-black tracking-tighter uppercase leading-none text-white text-center"
                         >
-                            KaiCenter <span className="text-emerald-500">SC</span>
+                            {gymName.split(' ')[0]} <span className="text-emerald-500">{gymName.split(' ').slice(1).join(' ')}</span>
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="text-emerald-400/60 font-medium tracking-[0.4em] uppercase text-[10px]"
+                            className="text-emerald-400/60 font-medium tracking-[0.4em] uppercase text-[10px] text-center"
                         >
-                            Training Osteomuscular & Wellness
+                            {slogan}
                         </motion.p>
                     </div>
                 </div>

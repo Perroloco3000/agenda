@@ -55,13 +55,16 @@ export const COGNITIVE_SLOTS = [
 
 export const TIME_SLOTS = GYM_SLOTS
 
-const SLOT_CAPACITY = 20
+const SLOT_CAPACITY = 18
 
 // Store Hook
 export function useAppStore() {
   const [users, setUsers] = useState<User[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [gymName, setGymName] = useState("KAICENTER SC")
+  const [slogan, setSlogan] = useState("Osteomuscular & Ecological")
+  const [logoUrl, setLogoUrl] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
 
   // Load Initial Data from Supabase
@@ -106,6 +109,16 @@ export function useAppStore() {
             status: r.status,
             createdAt: r.created_at
           })))
+        }
+
+        // Fetch Settings
+        const { data: settings } = await supabase.from('system_settings').select('*')
+        if (settings) {
+          settings.forEach(s => {
+            if (s.key === 'gymName') setGymName(s.value)
+            if (s.key === 'slogan') setSlogan(s.value)
+            if (s.key === 'logoUrl') setLogoUrl(s.value)
+          })
         }
 
         setIsLoaded(true)
@@ -167,9 +180,20 @@ export function useAppStore() {
       })
       .subscribe()
 
+    const settingsSubscription = supabase
+      .channel('settings-changes')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'system_settings' }, payload => {
+        const ns = payload.new as any
+        if (ns.key === 'gymName') setGymName(ns.value)
+        if (ns.key === 'slogan') setSlogan(ns.value)
+        if (ns.key === 'logoUrl') setLogoUrl(ns.value)
+      })
+      .subscribe()
+
     return () => {
       supabase.removeChannel(membersSubscription)
       supabase.removeChannel(reservationsSubscription)
+      supabase.removeChannel(settingsSubscription)
     }
   }, [])
 
@@ -370,7 +394,10 @@ export function useAppStore() {
     cancelAllUserBookings,
     getAvailableSlots,
     getUserBookings,
-    clearAllTestData
+    clearAllTestData,
+    gymName,
+    slogan,
+    logoUrl
   }
 }
 

@@ -11,11 +11,24 @@ import { useRouter } from "next/navigation"
 export default function SettingsPage() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
-    const [gymName, setGymName] = useState("KaiCenter SC")
-    const [slogan, setSlogan] = useState("Osteomuscular & Ecological")
+    const { 
+        gymName: storeGymName, 
+        slogan: storeSlogan, 
+        logoUrl: storeLogoUrl,
+        updateSettings 
+    } = useAppStore()
+    const [gymName, setGymName] = useState(storeGymName)
+    const [slogan, setSlogan] = useState(storeSlogan)
+    const [logoUrl, setLogoUrl] = useState(storeLogoUrl)
     const [darkMode, setDarkMode] = useState(true)
     const [soundEnabled, setSoundEnabled] = useState(true)
     const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+
+    useEffect(() => {
+        setGymName(storeGymName)
+        setSlogan(storeSlogan)
+        setLogoUrl(storeLogoUrl)
+    }, [storeGymName, storeSlogan, storeLogoUrl])
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -34,25 +47,24 @@ export default function SettingsPage() {
 
     const handleSave = async () => {
         setIsLoading(true)
-        localStorage.setItem("gymName", gymName)
-        localStorage.setItem("slogan", slogan)
-        localStorage.setItem("darkMode", String(darkMode))
-        localStorage.setItem("soundEnabled", String(soundEnabled))
-        localStorage.setItem("notificationsEnabled", String(notificationsEnabled))
- 
-        // Trigger storage event for the DashboardShell
-        window.dispatchEvent(new Event('storage'))
- 
-        const { toast } = await import("sonner")
- 
-        setTimeout(() => {
-            setIsLoading(false)
+        try {
+            await updateSettings({ gymName, slogan, logoUrl })
+            
+            localStorage.setItem("darkMode", String(darkMode))
+            localStorage.setItem("soundEnabled", String(soundEnabled))
+            localStorage.setItem("notificationsEnabled", String(notificationsEnabled))
+            window.dispatchEvent(new Event('storage'))
+
+            const { toast } = await import("sonner")
             toast.success("¡Éxito!", {
                 description: "Configuración guardada correctamente.",
                 duration: 3000
             })
-            // No reload needed if shell listens to storage events
-        }, 800)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -136,6 +148,17 @@ export default function SettingsPage() {
                                     value={slogan}
                                     onChange={(e) => setSlogan(e.target.value)}
                                     className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-white/10 font-bold text-lg tracking-tight focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all text-white"
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-1">URL del Logo (Imagen)</Label>
+                                <input
+                                    type="text"
+                                    value={logoUrl}
+                                    placeholder="https://ejemplo.com/logo.png"
+                                    onChange={(e) => setLogoUrl(e.target.value)}
+                                    className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-white/10 font-bold text-sm tracking-tight focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all text-white"
                                 />
                             </div>
                         </div>
