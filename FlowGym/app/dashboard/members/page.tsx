@@ -104,9 +104,8 @@ export default function MembersPage() {
                                         <Select value={newMember.plan} onValueChange={v => setNewMember({ ...newMember, plan: v as any })}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Premium">Premium</SelectItem>
-                                                <SelectItem value="VIP">VIP</SelectItem>
-                                                <SelectItem value="Básico">Básico</SelectItem>
+                                                <SelectItem value="Plan Plus">Plan Plus</SelectItem>
+                                                <SelectItem value="Plan Basic">Plan Basic</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>

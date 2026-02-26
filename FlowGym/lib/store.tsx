@@ -11,7 +11,7 @@ export type Member = {
     name: string
     email: string
     phone: string
-    plan: "Premium" | "VIP" | "Básico"
+    plan: "Plan Plus" | "Plan Basic"
     status: "Activo" | "Inactivo"
     joinDate: string
 }
@@ -56,6 +56,7 @@ export type UserReservation = {
     memberEmail: string
     date: string
     timeSlot: string
+    area: "gym" | "cognitive"
     status: "confirmed" | "cancelled"
     createdAt: string
 }
@@ -68,17 +69,27 @@ export type TimeSlot = {
 }
 
 // Time slots: 7am-8:30pm, 1.5hr each, max 20 people
-export const TIME_SLOTS = [
-    "07:00-08:30",
-    "08:30-10:00",
-    "10:00-11:30",
-    "11:30-13:00",
-    "13:00-14:30",
-    "14:30-16:00",
-    "16:00-17:30",
-    "17:30-19:00",
-    "19:00-20:30"
+export const GYM_SLOTS = [
+    "08:00-09:00",
+    "09:00-10:00",
+    "10:00-11:00",
+    "11:00-12:00",
+    "14:00-15:00",
+    "15:00-16:00",
+    "17:00-18:00"
 ]
+
+export const COGNITIVE_SLOTS = [
+    "09:00-09:30",
+    "10:00-10:30",
+    "11:00-11:30",
+    "12:00-12:30",
+    "15:00-15:30",
+    "16:00-16:30",
+    "17:00-17:30"
+]
+
+export const TIME_SLOTS = GYM_SLOTS // Default for backward compatibility
 
 export const SLOT_CAPACITY = 20
 
@@ -124,7 +135,7 @@ export function useAppStoreLogic() {
                         name: m.name || "Sin Nombre",
                         email: m.email || "Sin Email",
                         phone: m.phone || "N/A",
-                        plan: (m.plan as any) || 'Premium',
+                        plan: (m.plan as any) || 'Plan Basic',
                         status: (m.status as any) || 'Activo',
                         joinDate: m.created_at || m.joinDate || new Date().toISOString()
                     })))
@@ -189,6 +200,7 @@ export function useAppStoreLogic() {
                     memberEmail: r.member_email,
                     date: r.date,
                     timeSlot: r.time_slot,
+                    area: r.area || 'gym',
                     status: r.status,
                     createdAt: r.created_at
                 })))
@@ -219,39 +231,47 @@ export function useAppStoreLogic() {
                 console.log("REALTIME MEMBER EVENT:", payload.eventType, payload)
                 if (payload.eventType === 'INSERT') {
                     const nm = payload.new as any
-                    toast.success(`NUEVO MIEMBRO: ${nm.name}`, {
-                        description: `Se ha registrado un nuevo usuario: ${nm.email}`,
-                        duration: 8000
-                    })
-                    addNotification({
-                        title: "Nuevo Miembro",
-                        description: `${nm.name} se ha unido al gimnasio.`,
-                        type: "success"
-                    })
-                    setMembers(prev => {
-                        if (prev.find(m => m.id === nm.id)) return prev
-                        return [...prev, {
-                            id: nm.id,
-                            name: nm.name,
-                            email: nm.email,
-                            phone: nm.phone,
-                            plan: nm.plan || 'Premium',
-                            status: nm.status || 'Activo',
-                            joinDate: nm.created_at || new Date().toISOString()
-                        }]
-                    })
+                    if (nm) {
+                        toast.success(`NUEVO MIEMBRO: ${nm.name || 'Usuario'}`, {
+                            description: `Se ha registrado un nuevo usuario: ${nm.email || ''}`,
+                            duration: 8000
+                        })
+                        addNotification({
+                            title: "Nuevo Miembro",
+                            description: `${nm.name || 'Alguien'} se ha unido al gimnasio.`,
+                            type: "success"
+                        })
+                    }
+                    if (nm?.id) {
+                        setMembers(prev => {
+                            if (prev.find(m => m.id === nm.id)) return prev
+                            return [...prev, {
+                                id: nm.id,
+                                name: nm.name || 'Sin Nombre',
+                                email: nm.email || '',
+                                phone: nm.phone || '',
+                                plan: nm.plan || 'Plan Basic',
+                                status: nm.status || 'Activo',
+                                joinDate: nm.created_at || new Date().toISOString()
+                            }]
+                        })
+                    }
                 } else if (payload.eventType === 'UPDATE') {
                     const um = payload.new as any
-                    setMembers(prev => prev.map(m => m.id === um.id ? {
-                        ...m,
-                        name: um.name,
-                        email: um.email,
-                        phone: um.phone,
-                        plan: um.plan || m.plan,
-                        status: um.status || m.status
-                    } : m))
+                    if (um?.id) {
+                        setMembers(prev => prev.map(m => m.id === um.id ? {
+                            ...m,
+                            name: um.name || m.name,
+                            email: um.email || m.email,
+                            phone: um.phone || m.phone,
+                            plan: um.plan || m.plan,
+                            status: um.status || m.status
+                        } : m))
+                    }
                 } else if (payload.eventType === 'DELETE') {
-                    setMembers(prev => prev.filter(m => m.id !== payload.old.id))
+                    if (payload.old?.id) {
+                        setMembers(prev => prev.filter(m => m.id !== payload.old.id))
+                    }
                 }
             }).subscribe()
 
@@ -277,6 +297,7 @@ export function useAppStoreLogic() {
                             memberEmail: nr.member_email,
                             date: nr.date,
                             timeSlot: nr.time_slot,
+                            area: nr.area || 'gym',
                             status: nr.status,
                             createdAt: nr.created_at
                         }]
@@ -307,39 +328,45 @@ export function useAppStoreLogic() {
             .on('postgres_changes', { event: '*', schema: 'public', table: 'workouts' }, payload => {
                 if (payload.eventType === 'INSERT') {
                     const nw = payload.new as any
-                    setWorkouts(prev => {
-                        if (prev.find(w => w.id === nw.id)) return prev
-                        return [...prev, {
-                            id: nw.id,
-                            name: nw.name,
-                            type: nw.type,
-                            stations: nw.stations,
-                            work: nw.work,
-                            rest: nw.rest,
-                            color: nw.color,
-                            day: nw.day || 'Lunes',
-                            difficulty: nw.difficulty || 'Power',
-                            videoUrl: nw.video_url || nw.videoUrl || '',
-                            exercises: nw.exercises || []
-                        }]
-                    })
+                    if (nw?.id) {
+                        setWorkouts(prev => {
+                            if (prev.find(w => w.id === nw.id)) return prev
+                            return [...prev, {
+                                id: nw.id,
+                                name: nw.name || 'Nueva Rutina',
+                                type: nw.type || 'cardio',
+                                stations: nw.stations || 3,
+                                work: nw.work || '45',
+                                rest: nw.rest || '15',
+                                color: nw.color || 'bg-primary',
+                                day: nw.day || 'Lunes',
+                                difficulty: nw.difficulty || 'Power',
+                                videoUrl: nw.video_url || nw.videoUrl || '',
+                                exercises: Array.isArray(nw.exercises) ? nw.exercises : []
+                            }]
+                        })
+                    }
                 } else if (payload.eventType === 'UPDATE') {
                     const uw = payload.new as any
-                    setWorkouts(prev => prev.map(w => w.id === uw.id ? {
-                        ...w,
-                        name: uw.name,
-                        type: uw.type,
-                        stations: uw.stations,
-                        work: uw.work,
-                        rest: uw.rest,
-                        color: uw.color,
-                        day: uw.day || w.day,
-                        difficulty: uw.difficulty || w.difficulty,
-                        videoUrl: uw.video_url || uw.videoUrl || w.videoUrl,
-                        exercises: uw.exercises || w.exercises || []
-                    } : w))
+                    if (uw?.id) {
+                        setWorkouts(prev => prev.map(w => w.id === uw.id ? {
+                            ...w,
+                            name: uw.name || w.name,
+                            type: uw.type || w.type,
+                            stations: uw.stations || w.stations,
+                            work: uw.work || w.work,
+                            rest: uw.rest || w.rest,
+                            color: uw.color || w.color,
+                            day: uw.day || w.day,
+                            difficulty: uw.difficulty || w.difficulty,
+                            videoUrl: uw.video_url || uw.videoUrl || w.videoUrl,
+                            exercises: Array.isArray(uw.exercises) ? uw.exercises : (w.exercises || [])
+                        } : w))
+                    }
                 } else if (payload.eventType === 'DELETE') {
-                    setWorkouts(prev => prev.filter(w => w.id !== payload.old.id))
+                    if (payload.old?.id) {
+                        setWorkouts(prev => prev.filter(w => w.id !== payload.old.id))
+                    }
                 }
             }).subscribe()
 
@@ -358,7 +385,7 @@ export function useAppStoreLogic() {
             name: member.name,
             email: member.email,
             phone: member.phone,
-            plan: member.plan,
+            plan: member.plan || 'Plan Basic',
             status: member.status
         }])
         if (error) throw error
@@ -408,9 +435,17 @@ export function useAppStoreLogic() {
         setWorkouts(prev => prev.map(w => w.id === id ? { ...w, ...updates } : w))
     }, [])
 
-    const createReservation = useCallback(async (memberId: string, date: string, timeSlot: string) => {
+    const createReservation = useCallback(async (memberId: string, date: string, timeSlot: string, area: "gym" | "cognitive" = "gym") => {
         const member = members.find(m => m.id === memberId)
         if (!member) throw new Error("Miembro no encontrado")
+
+        // Subscription check
+        if (member.plan === "Plan Basic") {
+            const existing = reservations.filter(r => r.memberId === memberId && r.date === date && r.status === "confirmed")
+            if (existing.length > 0 && existing[0].area !== area) {
+                throw new Error("El Plan Básico solo permite reservar en un área por día.")
+            }
+        }
 
         const resId = Math.random().toString(36).substr(2, 9)
         const { error } = await supabase.from('reservations').insert([{
@@ -420,6 +455,7 @@ export function useAppStoreLogic() {
             member_email: member.email,
             date,
             time_slot: timeSlot,
+            area: area,
             status: 'confirmed'
         }])
         if (error) throw error
@@ -432,10 +468,11 @@ export function useAppStoreLogic() {
         setReservations(prev => prev.filter(r => r.id !== reservationId))
     }, [])
 
-    const getAvailableSlots = useCallback((date: string): TimeSlot[] => {
-        return TIME_SLOTS.map(slot => {
+    const getAvailableSlots = useCallback((date: string, area: "gym" | "cognitive" = "gym"): TimeSlot[] => {
+        const slots = area === "gym" ? GYM_SLOTS : COGNITIVE_SLOTS
+        return slots.map(slot => {
             const slotReservations = reservations.filter(
-                (r: UserReservation) => r.date === date && r.timeSlot === slot && r.status === "confirmed"
+                (r: UserReservation) => r.date === date && r.timeSlot === slot && r.area === area && r.status === "confirmed"
             )
             const booked = slotReservations.length
             return {

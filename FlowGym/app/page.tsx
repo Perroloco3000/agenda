@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button"
 import { Accessibility } from "lucide-react"
 
 export default function GymApp() {
-  const { workouts } = useAppStore()
+  const { workouts, isLoaded } = useAppStore()
   const [selectedDayKey, setSelectedDayKey] = useState<string>("")
   const [phraseIndex, setPhraseIndex] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
 
   const phrases = [
     "¡SIN EXCUSAS!",
@@ -26,6 +27,7 @@ export default function GymApp() {
   ]
 
   useEffect(() => {
+    setIsMounted(true)
     setSelectedDayKey(getCurrentDayKey())
     const interval = setInterval(() => {
       setPhraseIndex((prev) => (prev + 1) % phrases.length)
@@ -35,21 +37,30 @@ export default function GymApp() {
 
   // Find the workout for the selected day in our Supabase data
   const selectedDayName = dayNames[selectedDayKey]
-  const workoutFromStore = workouts.find(w => w.day === selectedDayName)
+  const workoutFromStore = Array.isArray(workouts) ? workouts.find(w => w?.day === selectedDayName) : null
 
   // Map WorkoutStat to WorkoutDay format for components
   const currentWorkout = workoutFromStore ? {
-    id: workoutFromStore.id,
-    name: workoutFromStore.name,
-    type: workoutFromStore.type?.toLowerCase() as any || "cardio",
-    color: workoutFromStore.color,
-    workTime: parseInt(workoutFromStore.work) || 45,
-    restTime: parseInt(workoutFromStore.rest) || 15,
-    sets: workoutFromStore.stations || 3,
-    exercises: workoutFromStore.exercises || [],
+    id: workoutFromStore.id || "temp",
+    name: workoutFromStore.name || "Entrenamiento",
+    type: (workoutFromStore.type?.toLowerCase() as any) || "cardio",
+    color: workoutFromStore.color || "bg-primary",
+    workTime: parseInt(String(workoutFromStore.work || "45")) || 45,
+    restTime: parseInt(String(workoutFromStore.rest || "15")) || 15,
+    sets: parseInt(String(workoutFromStore.stations || "3")) || 3,
+    exercises: Array.isArray(workoutFromStore.exercises) ? workoutFromStore.exercises : [],
     hydrationInterval: 4,
     hydrationDuration: 30
   } : null
+
+  // Prevent hydration error by returning a placeholder or null during server-side render
+  if (!isMounted) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="text-primary font-black text-2xl animate-pulse italic uppercase tracking-tighter">Cargando FlowGym...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden font-sans">

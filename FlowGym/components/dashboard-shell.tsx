@@ -17,7 +17,7 @@ import {
     Bell
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { useAppStore } from "@/lib/store"
 
@@ -59,6 +59,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     const { refreshData, notifications, clearNotifications } = useAppStore()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isNotifOpen, setIsNotifOpen] = useState(false)
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) {
+        return <div className="min-h-screen bg-muted/30" />
+    }
 
     return (
         <div className="flex h-screen bg-muted/30 overflow-hidden">

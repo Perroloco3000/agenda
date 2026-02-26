@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS members (
   phone TEXT,
   role TEXT DEFAULT 'user',
   status TEXT DEFAULT 'Activo',
-  plan TEXT DEFAULT 'Premium',
+  plan TEXT DEFAULT 'Plan Basic',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS reservations (
   member_id TEXT REFERENCES members(id) ON DELETE CASCADE,
   member_name TEXT NOT NULL,
   member_email TEXT NOT NULL,
+  area TEXT NOT NULL DEFAULT 'gym',
   date DATE NOT NULL,
   time_slot TEXT NOT NULL,
   status TEXT DEFAULT 'confirmed',

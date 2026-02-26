@@ -16,9 +16,7 @@ export default function ReservationsPage() {
     const [selectedDate, setSelectedDate] = useState("")
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [selectedMember, setSelectedMember] = useState("")
-    const [selectedSlot, setSelectedSlot] = useState("")
-    const [availableSlots, setAvailableSlots] = useState<ReturnType<typeof getAvailableSlots>>([])
-    const [todayReservations, setTodayReservations] = useState<typeof reservations>([])
+    const [selectedArea, setSelectedArea] = useState<"gym" | "cognitive">("gym")
     const [successMessage, setSuccessMessage] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
@@ -28,14 +26,14 @@ export default function ReservationsPage() {
         setSelectedDate(today)
     }, [])
 
-    // Update slots and reservations when date changes
+    // Update slots and reservations when date or area changes
     useEffect(() => {
         if (selectedDate) {
-            setAvailableSlots(getAvailableSlots(selectedDate))
-            const filtered = reservations.filter((r: UserReservation) => r.date === selectedDate && r.status === "confirmed")
+            setAvailableSlots(getAvailableSlots(selectedDate, selectedArea))
+            const filtered = reservations.filter((r: UserReservation) => r.date === selectedDate && r.status === "confirmed" && r.area === selectedArea)
             setTodayReservations(filtered)
         }
-    }, [selectedDate, reservations, getAvailableSlots])
+    }, [selectedDate, selectedArea, reservations, getAvailableSlots])
 
     const handleCreateReservation = async () => {
         if (!selectedMember || !selectedSlot) {
@@ -44,7 +42,7 @@ export default function ReservationsPage() {
         }
 
         try {
-            await createReservation(selectedMember, selectedDate, selectedSlot)
+            await createReservation(selectedMember, selectedDate, selectedSlot, selectedArea)
             setSuccessMessage("¡Reserva creada exitosamente!")
             setErrorMessage("")
             setIsCreateOpen(false)
@@ -134,6 +132,16 @@ export default function ReservationsPage() {
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label>Área</Label>
+                                    <Select value={selectedArea} onValueChange={(v: "gym" | "cognitive") => setSelectedArea(v)}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="gym">Gimnasio</SelectItem>
+                                            <SelectItem value="cognitive">Área Cognitiva</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                                 {errorMessage && (
                                     <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                                         {errorMessage}
@@ -208,13 +216,26 @@ export default function ReservationsPage() {
                             Seleccionar Fecha
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={e => setSelectedDate(e.target.value)}
-                            className="w-full md:w-auto px-4 py-3 rounded-xl bg-background border border-border font-bold text-lg"
-                        />
+                    <CardContent className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1 space-y-2">
+                            <Label className="font-bold">Fecha</Label>
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={e => setSelectedDate(e.target.value)}
+                                className="w-full px-4 py-3 rounded-xl bg-background border border-border font-bold text-lg"
+                            />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                            <Label className="font-bold">Área</Label>
+                            <Select value={selectedArea} onValueChange={(v: "gym" | "cognitive") => setSelectedArea(v)}>
+                                <SelectTrigger className="h-14 rounded-xl font-bold text-lg"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="gym">Gimnasio</SelectItem>
+                                    <SelectItem value="cognitive">Área Cognitiva</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -230,11 +251,11 @@ export default function ReservationsPage() {
                         {todayReservations.length === 0 ? (
                             <div className="text-center py-12">
                                 <Calendar className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
-                                <p className="text-muted-foreground font-medium">No hay reservas para esta fecha</p>
+                                <p className="text-muted-foreground font-medium">No hay reservas para esta fecha en el {selectedArea === 'gym' ? 'Gimnasio' : 'Área Cognitiva'}</p>
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {TIME_SLOTS.map((slot: string) => {
+                                {(selectedArea === 'gym' ? GYM_SLOTS : COGNITIVE_SLOTS).map((slot: string) => {
                                     const slotReservations = todayReservations.filter((r: UserReservation) => r.timeSlot === slot)
                                     if (slotReservations.length === 0) return null
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react"
 import { useAppStore } from "@/lib/store"
 import { F45Timer } from "@/components/f45-timer"
 import { DashboardShell } from "@/components/dashboard-shell"
@@ -13,8 +14,21 @@ function WorkoutPlayerContent() {
     const searchParams = useSearchParams()
     const workoutId = searchParams.get("id")
     const { workouts } = useAppStore()
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const workout = workouts.find(w => w.id === workoutId)
+
+    if (!isMounted) {
+        return (
+            <div className="h-screen bg-black flex items-center justify-center">
+                <div className="text-white font-black text-2xl animate-pulse italic uppercase tracking-tighter">Cargando KaiPlayer...</div>
+            </div>
+        )
+    }
 
     if (!workout) {
         return (
@@ -32,14 +46,14 @@ function WorkoutPlayerContent() {
 
     // Map WorkoutStat to the format F45Timer expects
     const mappedWorkout = {
-        id: workout.id,
-        name: workout.name,
-        type: workout.type?.toLowerCase() as any || "cardio",
-        color: workout.color,
-        workTime: parseInt(workout.work) || 45,
-        restTime: parseInt(workout.rest) || 15,
-        sets: workout.stations || 3,
-        exercises: workout.exercises || [],
+        id: workout.id || "temp",
+        name: workout.name || "Entrenamiento",
+        type: (workout.type?.toLowerCase() as any) || "cardio",
+        color: workout.color || "bg-primary",
+        workTime: parseInt(String(workout.work || "45")) || 45,
+        restTime: parseInt(String(workout.rest || "15")) || 15,
+        sets: parseInt(String(workout.stations || "3")) || 3,
+        exercises: Array.isArray(workout.exercises) ? workout.exercises : [],
         hydrationInterval: 4,
         hydrationDuration: 30
     }

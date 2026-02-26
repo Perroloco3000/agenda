@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useAppStore } from "@/lib/store"
 import { dayNames, weeklyWorkouts } from "@/lib/workout-data"
 import { cn } from "@/lib/utils"
@@ -20,6 +21,13 @@ const typeIcons: Record<string, any> = {
 
 export function DaySelector({ selectedDay, onSelectDay }: DaySelectorProps) {
   const { workouts } = useAppStore()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) return null
 
   return (
     <div className="space-y-2">
@@ -34,7 +42,7 @@ export function DaySelector({ selectedDay, onSelectDay }: DaySelectorProps) {
             name: workoutFromStore.name,
             type: (workoutFromStore.type?.toLowerCase() as any) || "cardio",
             color: workoutFromStore.color,
-            exercises: workoutFromStore.exercises || [],
+            exercises: Array.isArray(workoutFromStore.exercises) ? workoutFromStore.exercises : [],
             sets: workoutFromStore.stations || 3
           } : weeklyWorkouts[dayKey]
 
