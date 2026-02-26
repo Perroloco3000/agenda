@@ -8,13 +8,15 @@ import {
     Calendar,
     LayoutDashboard,
     LogOut,
-    ChevronRight,
+    ChevronLeft,
     Settings,
     Menu,
     X,
     Accessibility,
     RefreshCw,
-    Bell
+    Bell,
+    ChevronRight,
+    Search
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
@@ -56,12 +58,11 @@ const navigation = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const { refreshData, notifications, clearNotifications } = useAppStore()
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-    const [isNotifOpen, setIsNotifOpen] = useState(false)
-    const [isMounted, setIsMounted] = useState(false)
     const [gymName, setGymName] = useState("KAICENTER SC")
     const [slogan, setSlogan] = useState("Training Osteomuscular")
+    const [isMounted, setIsMounted] = useState(false)
+    const [isCollapsed, setIsCollapsed] = useState(false)
+    const { refreshData, notifications, clearNotifications } = useAppStore()
  
     useEffect(() => {
         setIsMounted(true)
@@ -105,19 +106,36 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
             {/* Sidebar (Desktop & Mobile) */}
             <aside className={cn(
-                "fixed inset-y-0 left-0 w-72 bg-card/70 backdrop-blur-2xl border-r border-white/5 flex flex-col z-[60] transition-transform duration-300 md:relative md:translate-x-0 shadow-[20px_0_40px_rgba(0,0,0,0.3)] md:shadow-none",
-                isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+                "fixed inset-y-0 left-0 bg-card/70 backdrop-blur-2xl border-r border-white/5 flex flex-col z-[60] transition-all duration-500 ease-in-out md:relative md:translate-x-0 shadow-[20px_0_40px_rgba(0,0,0,0.3)] md:shadow-none",
+                isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
+                isCollapsed ? "w-24" : "w-80"
             )}>
-                <div className="p-8 border-b border-white/5">
-                    <Link href="/" className="flex items-center gap-4 group">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-all duration-500">
+                <div className={cn("p-8 border-b border-white/5 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
+                    {!isCollapsed && (
+                        <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-all duration-500">
+                                <Accessibility className="h-7 w-7 text-white" />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-xl font-black tracking-tight leading-none text-white">{gymName}</span>
+                                <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
+                            </div>
+                        </Link>
+                    )}
+                    {isCollapsed && (
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 hover:scale-110 transition-all duration-500">
                             <Accessibility className="h-7 w-7 text-white" />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-2xl font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">{gymName}</span>
-                            <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
-                        </div>
-                    </Link>
+                    )}
+                    
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={cn("hidden md:flex h-8 w-8 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/40 hover:text-white transition-all", isCollapsed ? "mt-4" : "")}
+                    >
+                        <ChevronLeft className={cn("h-4 w-4 transition-transform duration-500", isCollapsed ? "rotate-180" : "")} />
+                    </Button>
                 </div>
 
                 <nav className="flex-1 p-6 space-y-3">
@@ -128,29 +146,30 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 key={item.name}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center justify-between px-5 py-4 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden",
+                                    "flex items-center transition-all duration-300 group relative overflow-hidden",
+                                    isCollapsed ? "justify-center h-14 w-14 p-0 mx-auto rounded-xl" : "justify-between px-5 py-4 rounded-[1.5rem]",
                                     isActive
                                         ? "bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10"
                                         : "text-white/40 hover:bg-white/5 hover:text-white"
                                 )}
                             >
-                                <div className="flex items-center gap-4 relative z-10">
-                                    <item.icon className={cn("h-5 w-5 transition-colors duration-300", isActive ? "text-emerald-400" : "group-hover:text-emerald-400")} />
-                                    <span className="font-bold tracking-tight">{item.name}</span>
+                                <div className={cn("flex items-center relative z-10", isCollapsed ? "justify-center" : "gap-4")}>
+                                    <item.icon className={cn("transition-colors duration-300", 
+                                        isActive ? "text-emerald-400" : "group-hover:text-emerald-400",
+                                        isCollapsed ? "h-6 w-6" : "h-5 w-5"
+                                    )} />
+                                    {!isCollapsed && <span className="font-bold tracking-tight uppercase text-xs">{item.name}</span>}
                                 </div>
-                                {isActive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] relative z-10" />}
-                                {isActive && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent opacity-50" />
-                                )}
+                                {isActive && !isCollapsed && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] relative z-10" />}
                             </Link>
                         )
                     })}
                 </nav>
 
                 <div className="p-6 border-t border-border">
-                    <button className="flex items-center gap-3 px-4 py-3 w-full rounded-2xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-200">
+                    <button className={cn("flex items-center rounded-2xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-200", isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3 w-full")}>
                         <LogOut className="h-5 w-5" />
-                        <span className="font-bold">Cerrar Sesión</span>
+                        {!isCollapsed && <span className="font-bold">Cerrar Sesión</span>}
                     </button>
                 </div>
             </aside>

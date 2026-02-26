@@ -34,9 +34,9 @@ export default function DashboardPage() {
     return (
         <DashboardShell>
             <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col gap-4">
-                    <h2 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-br from-white to-white/40">Dashboard</h2>
-                    <p className="text-lg sm:text-xl text-white/40 font-bold uppercase tracking-widest italic">Gestión de Alto Rendimiento</p>
+                <div className="flex flex-col gap-2">
+                    <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white">Dashboard</h2>
+                    <p className="text-lg sm:text-xl text-emerald-400 font-bold uppercase tracking-widest pl-1">Gestión Centralizada</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -49,7 +49,7 @@ export default function DashboardPage() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">{stat.name}</p>
-                                    <p className="text-5xl font-black tracking-tighter italic">{stat.value}</p>
+                                    <p className="text-5xl font-black tracking-tight text-white">{stat.value}</p>
                                 </div>
                             </div>
                         </div>
@@ -58,9 +58,9 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-12">
                     <div className="bg-white/5 backdrop-blur-3xl p-10 rounded-[3.5rem] border border-white/10 shadow-2xl transition-all hover:border-emerald-500/20">
-                        <h3 className="text-3xl font-black mb-10 uppercase italic tracking-tighter flex items-center gap-4">
-                            <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                                <Calendar className="h-6 w-6 text-emerald-400" />
+                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-white">
+                            <div className="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                                <Calendar className="h-5 w-5 text-emerald-400" />
                             </div>
                             Próximas Reservas
                         </h3>
@@ -68,17 +68,17 @@ export default function DashboardPage() {
                             {reservations.filter(r => r.status === 'confirmed').slice(0, 4).map((res) => (
                                 <div key={res.id} className="group flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.07] hover:border-emerald-500/20 transition-all duration-300">
                                     <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col items-center justify-center font-black group-hover:scale-105 transition-transform">
+                                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col items-center justify-center font-black transition-transform">
                                             <span className="text-emerald-400 text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">HOY</span>
-                                            <span className="text-2xl leading-none italic">{res.timeSlot?.split(':')[0] || '12'}</span>
+                                            <span className="text-2xl leading-none text-white">{res.timeSlot?.split(':')[0] || '12'}</span>
                                         </div>
                                         <div>
-                                            <p className="font-black text-2xl tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">{res.memberName || 'Miembro'}</p>
-                                            <p className="text-white/30 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">{res.timeSlot} • {res.date}</p>
+                                            <p className="font-black text-xl tracking-tight text-white uppercase">{res.memberName || 'Miembro'}</p>
+                                            <p className="text-slate-500 font-bold text-[10px] tracking-widest mt-1">{res.timeSlot} • {res.date}</p>
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/reservations`}>
-                                        <button className="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-105 transition-all active:scale-95 uppercase italic tracking-widest text-[10px]">
+                                        <button className="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-6 py-3 rounded-xl shadow-lg shadow-emerald-500/20 hover:scale-105 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
                                             Gestionar
                                         </button>
                                     </Link>
@@ -91,9 +91,9 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="bg-white/5 backdrop-blur-3xl p-10 rounded-[3.5rem] border border-white/10 shadow-2xl transition-all hover:border-emerald-500/20">
-                        <h3 className="text-3xl font-black mb-10 uppercase italic tracking-tighter flex items-center gap-4">
-                            <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                                <Users className="h-6 w-6 text-blue-400" />
+                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-white">
+                            <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                                <Users className="h-5 w-5 text-blue-400" />
                             </div>
                             Nuevos Miembros
                         </h3>
@@ -101,16 +101,16 @@ export default function DashboardPage() {
                             {members.slice(0, 4).map((member) => (
                                 <div key={member.id} className="group flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.07] hover:border-blue-500/20 transition-all duration-300">
                                     <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/5 border border-blue-500/20 flex items-center justify-center font-black text-blue-400 text-2xl italic group-hover:scale-110 transition-transform">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/5 border border-blue-500/20 flex items-center justify-center font-black text-blue-400 text-2xl group-hover:scale-110 transition-transform">
                                             {member.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="font-black text-2xl tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">{member.name}</p>
-                                            <p className="text-white/30 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Plan {member.plan} • {member.status}</p>
+                                            <p className="font-black text-xl tracking-tight text-white uppercase">{member.name}</p>
+                                            <p className="text-slate-500 font-bold text-[10px] tracking-widest mt-1">PLAN {member.plan?.toUpperCase()} • {member.status?.toUpperCase()}</p>
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/members/profile?id=${member.id}`}>
-                                        <button className="text-blue-400 font-black px-6 py-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-all uppercase italic tracking-widest text-[10px]">
+                                        <button className="text-blue-400 font-black px-5 py-3 rounded-xl bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-all uppercase tracking-widest text-[10px]">
                                             Ver Perfil
                                         </button>
                                     </Link>

@@ -8,8 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { Calendar, Clock, Users, Plus, XCircle, CheckCircle2, TrendingUp } from "lucide-react"
-import { TIME_SLOTS, GYM_SLOTS, COGNITIVE_SLOTS } from "@/lib/store"
+import { Calendar, Clock, Users, Plus, XCircle, CheckCircle2 } from "lucide-react"
 
 export default function ReservationsPage() {
     const { members, reservations, createReservation, cancelReservation, getAvailableSlots } = useAppStore()
@@ -17,24 +16,21 @@ export default function ReservationsPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [selectedMember, setSelectedMember] = useState("")
     const [selectedSlot, setSelectedSlot] = useState("")
-    const [availableSlots, setAvailableSlots] = useState<ReturnType<typeof getAvailableSlots>>([])
-    const [todayReservations, setTodayReservations] = useState<typeof reservations>([])
+    const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([])
     const [selectedArea, setSelectedArea] = useState<"gym" | "cognitive">("gym")
     const [successMessage, setSuccessMessage] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
     // Set today as default
     useEffect(() => {
-        const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD local
+        const today = new Date().toLocaleDateString('en-CA')
         setSelectedDate(today)
     }, [])
 
-    // Update slots and reservations when date or area changes
+    // Update slots when date or area changes
     useEffect(() => {
         if (selectedDate) {
             setAvailableSlots(getAvailableSlots(selectedDate, selectedArea))
-            const filtered = reservations.filter((r: UserReservation) => r.date === selectedDate && r.status === "confirmed" && r.area === selectedArea)
-            setTodayReservations(filtered)
         }
     }, [selectedDate, selectedArea, reservations, getAvailableSlots])
 
@@ -78,28 +74,22 @@ export default function ReservationsPage() {
         return { color: "bg-red-500", text: "Completo" }
     }
 
-    const stats = {
-        totalReservations: todayReservations.length,
-        totalCapacity: availableSlots.reduce((acc, slot) => acc + slot.capacity, 0),
-        occupancy: availableSlots.length > 0
-            ? Math.round((todayReservations.length / availableSlots.reduce((acc, slot) => acc + slot.capacity, 0)) * 100)
-            : 0
-    }
+    const todayFilteredReservations = reservations.filter(r => r.date === selectedDate && r.status === "confirmed" && r.area === selectedArea)
 
     return (
         <DashboardShell>
-            <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10">
-                    <div className="space-y-4">
-                        <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-br from-white to-white/40">Reservas</h2>
-                        <p className="text-xl text-white/40 font-bold uppercase tracking-widest italic">Panel de Control de Turnos</p>
+            <section className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {/* Header & Controls */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[2.5rem] border border-white/10">
+                    <div className="space-y-2">
+                        <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white uppercase">Reservas</h2>
+                        <p className="text-xl text-emerald-400 font-bold uppercase tracking-widest pl-1">Agenda de Entrenamiento</p>
                     </div>
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="h-20 px-10 rounded-[2rem] bg-emerald-500 text-black font-black text-xl italic shadow-2xl shadow-emerald-500/30 hover:scale-105 hover:bg-emerald-400 transition-all active:scale-95 uppercase tracking-tighter">
-                                <Plus className="mr-3 h-8 w-8" />
+                            <Button size="lg" className="h-16 px-10 rounded-2xl bg-emerald-500 text-black font-black text-lg shadow-xl shadow-emerald-500/30 hover:scale-105 hover:bg-emerald-400 transition-all active:scale-95 uppercase tracking-wider">
+                                <Plus className="mr-3 h-6 w-6" />
                                 Nueva Reserva
                             </Button>
                         </DialogTrigger>
@@ -116,7 +106,7 @@ export default function ReservationsPage() {
                                         <SelectContent>
                                             {members.filter(m => m.status === "Activo").map(member => (
                                                 <SelectItem key={member.id} value={member.id}>
-                                                    {member.name} - {member.email}
+                                                    {member.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -135,178 +125,133 @@ export default function ReservationsPage() {
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label>Área</Label>
-                                    <Select value={selectedArea} onValueChange={(v: "gym" | "cognitive") => setSelectedArea(v)}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="gym">Gimnasio</SelectItem>
-                                            <SelectItem value="cognitive">Área Cognitiva</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
                                 {errorMessage && (
-                                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold">
                                         {errorMessage}
                                     </div>
                                 )}
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleCreateReservation}>Crear Reserva</Button>
+                                <Button onClick={handleCreateReservation} className="bg-emerald-500 text-black font-bold uppercase tracking-widest">Confirmar Reserva</Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">Reservas Hoy</p>
-                                <p className="text-5xl font-black tracking-tighter italic">{stats.totalReservations}</p>
-                            </div>
-                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                                <Calendar className="h-8 w-8 text-emerald-400" />
-                            </div>
+                {/* Date & Area Selectors (Agenda Style) */}
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-2xl font-black text-white flex items-center gap-3">
+                            <Calendar className="h-6 w-6 text-emerald-400" />
+                            Selecciona tu Fecha
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col md:flex-row gap-8">
+                        <div className="space-y-3">
+                             <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest pl-1">Día del Entrenamiento</Label>
+                             <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={e => setSelectedDate(e.target.value)}
+                                className="w-full md:w-72 h-14 px-6 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-lg focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all uppercase"
+                            />
                         </div>
-                    </div>
 
-                    <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">Capacidad Total</p>
-                                <p className="text-5xl font-black tracking-tighter italic">{stats.totalCapacity}</p>
-                            </div>
-                            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                                <Users className="h-8 w-8 text-blue-400" />
-                            </div>
+                        <div className="space-y-3 flex-1">
+                             <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
+                             <div className="grid grid-cols-2 gap-3 p-1.5 bg-white/5 rounded-2xl border border-white/10 h-14">
+                                <button 
+                                    onClick={() => setSelectedArea("gym")}
+                                    className={`rounded-xl font-black uppercase text-xs tracking-wider transition-all ${selectedArea === "gym" ? "bg-emerald-500 text-black shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                >
+                                    Gimnasio
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedArea("cognitive")}
+                                    className={`rounded-xl font-black uppercase text-xs tracking-wider transition-all ${selectedArea === "cognitive" ? "bg-emerald-500 text-black shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                >
+                                    Área Cognitiva
+                                </button>
+                             </div>
                         </div>
-                    </div>
+                    </CardContent>
+                </Card>
 
-                    <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">Ocupación</p>
-                                <p className="text-5xl font-black tracking-tighter italic">{stats.occupancy}%</p>
-                            </div>
-                            <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                                <TrendingUp className="h-8 w-8 text-purple-400" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Messages */}
+                {/* Success Message UI */}
                 {successMessage && (
-                    <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                    <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 font-bold uppercase tracking-widest text-xs">
                         <CheckCircle2 className="h-5 w-5" />
                         {successMessage}
                     </div>
                 )}
 
-                {/* Date Selector */}
-                <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 p-10 shadow-2xl">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 text-emerald-400">
-                             <Calendar className="h-6 w-6" />
-                        </div>
-                        <h3 className="text-3xl font-black uppercase italic tracking-tigh">Seleccionar Fecha</h3>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-8">
-                        <div className="flex-1 space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Fecha de Turno</Label>
-                            <input
-                                type="date"
-                                value={selectedDate}
-                                onChange={e => setSelectedDate(e.target.value)}
-                                className="w-full h-16 px-6 rounded-2xl bg-white/5 border border-white/10 font-bold text-xl uppercase italic focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
-                            />
-                        </div>
-                        <div className="flex-1 space-y-3">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Área de Entrenamiento</Label>
-                            <Select value={selectedArea} onValueChange={(v: "gym" | "cognitive") => setSelectedArea(v)}>
-                                <SelectTrigger className="h-16 rounded-2xl bg-white/5 border border-white/10 font-bold text-xl uppercase italic"><SelectValue /></SelectTrigger>
-                                <SelectContent className="bg-zinc-950 border-white/10">
-                                    <SelectItem value="gym" className="font-bold py-3">GIMNASIO</SelectItem>
-                                    <SelectItem value="cognitive" className="font-bold py-3">ÁREA COGNITIVA</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Reservations by Time Slot */}
-                <div className="bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 p-10 shadow-2xl overflow-hidden">
-                    <div className="flex flex-col gap-2 mb-10">
-                        <h3 className="text-4xl font-black uppercase italic tracking-tighter">Reservas por Turno</h3>
-                        <p className="text-emerald-400 font-bold uppercase tracking-widest text-[10px]">
-                            {new Date(selectedDate).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                        </p>
-                    </div>
+                {/* Time Slots Grid (Agenda Style) */}
+                <div className="space-y-8">
+                    <h3 className="text-2xl font-black text-white px-2 flex items-center gap-3 uppercase tracking-tight">
+                        <Clock className="h-6 w-6 text-emerald-400" />
+                        Turnos de Hoy
+                    </h3>
                     
-                    <div>
-                        {todayReservations.length === 0 ? (
-                            <div className="text-center py-20 bg-white/[0.02] rounded-[2.5rem] border border-white/5 border-dashed">
-                                <Calendar className="h-20 w-20 text-white/5 mx-auto mb-6" />
-                                <p className="text-white/20 font-black uppercase tracking-widest italic text-sm">No hay reservas para esta fecha</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-10">
-                                {(selectedArea === 'gym' ? GYM_SLOTS : COGNITIVE_SLOTS).map((slot: string) => {
-                                    const slotReservations = todayReservations.filter((r: UserReservation) => r.timeSlot === slot)
-                                    if (slotReservations.length === 0) return null
- 
-                                    const slotInfo = availableSlots.find((s: TimeSlot) => s.time === slot)
-                                    const status = slotInfo ? getSlotStatus(slotInfo.available, slotInfo.capacity) : null
- 
-                                    return (
-                                        <div key={slot} className="relative group/slot">
-                                            <div className="flex items-center justify-between mb-6 px-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover/slot:bg-emerald-500/20 group-hover/slot:border-emerald-500/40 transition-all duration-500">
-                                                        <Clock className="h-6 w-6 text-emerald-400" />
-                                                    </div>
-                                                    <h3 className="text-3xl font-black italic tracking-tighter uppercase">{slot}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {availableSlots.map((slot) => {
+                            const status = getSlotStatus(slot.available, slot.capacity)
+                            const slotReservations = todayFilteredReservations.filter(r => r.timeSlot === slot.time)
+
+                            return (
+                                <Card key={slot.time} className="border-white/10 bg-white/5 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-500 group overflow-hidden rounded-[2.5rem]">
+                                    <CardContent className="p-8 space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                                                    <Clock className="h-5 w-5 text-emerald-400" />
                                                 </div>
-                                                {slotInfo && (
-                                                    <div className="flex items-center gap-4 bg-white/5 px-6 py-3 rounded-full border border-white/10">
-                                                        <div className={`w-2.5 h-2.5 rounded-full ${status?.color} shadow-[0_0_10px_currentcolor] animate-pulse`} />
-                                                        <span className="font-black text-[10px] uppercase tracking-widest italic">{slotInfo.booked}/{slotInfo.capacity} ENTRENANDO</span>
-                                                    </div>
-                                                )}
+                                                <span className="text-2xl font-black text-white">{slot.time}</span>
                                             </div>
- 
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                {slotReservations.map(reservation => (
-                                                    <div key={reservation.id} className="relative group bg-white/[0.03] p-6 rounded-[2rem] border border-white/[0.05] hover:bg-white/[0.07] hover:border-emerald-500/20 transition-all duration-300">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/20 flex items-center justify-center font-black text-emerald-400 text-xl italic group-hover:scale-110 transition-transform">
-                                                                    {reservation.memberName.charAt(0)}
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-black text-xl tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">{reservation.memberName}</p>
-                                                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.1em] mt-0.5">{reservation.memberEmail}</p>
-                                                                </div>
-                                                            </div>
-                                                            <Button
-                                                                onClick={() => handleCancelReservation(reservation.id)}
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-10 w-10 rounded-xl hover:bg-red-500/20 text-white/20 hover:text-red-400 border border-transparent hover:border-red-500/30 transition-all"
-                                                            >
-                                                                <XCircle className="h-5 w-5" />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <div className={`w-3 h-3 rounded-full ${status.color} shadow-[0_0_10px_currentcolor] animate-pulse`} />
                                         </div>
-                                    )
-                                })}
-                            </div>
-                        )}
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-widest">
+                                                <span className="text-slate-400">Cupos Ocupados</span>
+                                                <span className="text-white">{slot.booked} / {slot.capacity}</span>
+                                            </div>
+                                            <div className="w-full bg-white/5 rounded-full h-2.5 overflow-hidden">
+                                                <div
+                                                    className={`h-full ${status.color} transition-all duration-700`}
+                                                    style={{ width: `${(slot.booked / slot.capacity) * 100}%` }}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">{status.text}</p>
+                                        </div>
+
+                                        {/* Member List for this slot */}
+                                        <div className="space-y-3 pt-4 border-t border-white/5">
+                                            {slotReservations.map(reservation => (
+                                                <div key={reservation.id} className="flex items-center justify-between group/user p-3 rounded-xl bg-white/[0.02] hover:bg-white/5 transition-all">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[10px] font-black text-emerald-400 uppercase">
+                                                            {reservation.memberName.charAt(0)}
+                                                        </div>
+                                                        <span className="text-xs font-bold text-white/70 group-hover/user:text-white uppercase tracking-tight transition-colors">{reservation.memberName}</span>
+                                                    </div>
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="icon" 
+                                                        onClick={() => handleCancelReservation(reservation.id)}
+                                                        className="h-7 w-7 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover/user:opacity-100"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                            {slotReservations.length === 0 && (
+                                                <p className="text-[10px] text-center text-slate-600 font-bold uppercase tracking-widest py-2">Sin Reservas</p>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
                     </div>
                 </div>
             </section>
