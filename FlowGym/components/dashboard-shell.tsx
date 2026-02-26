@@ -62,6 +62,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     const [slogan, setSlogan] = useState("Training Osteomuscular")
     const [isMounted, setIsMounted] = useState(false)
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isNotifOpen, setIsNotifOpen] = useState(false)
     const { refreshData, notifications, clearNotifications } = useAppStore()
  
     useEffect(() => {
