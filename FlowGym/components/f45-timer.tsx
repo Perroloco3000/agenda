@@ -138,6 +138,7 @@ export function F45Timer({ workout }: F45TimerProps) {
       case "hydration": return { label: "Hidratación", icon: <Coffee />, color: "from-cyan-400 to-blue-500" }
       case "movement": return { label: "Bloque 2: Movimiento", icon: <Move />, color: "from-purple-600 to-pink-600" }
       case "stretching": return { label: "Estiramiento Final", icon: <Heart />, color: "from-emerald-500 to-teal-600" }
+      case "countdown": return { label: "Prepárate", icon: <Timer />, color: "from-gray-700 to-gray-900" }
       default: return { label: "Completado", icon: <Zap />, color: "from-slate-700 to-slate-900" }
     }
   }
@@ -195,7 +196,17 @@ export function F45Timer({ workout }: F45TimerProps) {
             </div>
           </div>
 
-          <div className="flex flex-col items-end">
+          <div className="flex items-center gap-8">
+            {phase === "warmup" && isRunning && (
+                <Button 
+                    variant="ghost" 
+                    onClick={moveToNextPhase}
+                    className="text-white/20 hover:text-white/60 uppercase tracking-widest font-black text-[10px] border border-white/5 rounded-full px-4 py-1.5 hover:bg-white/5 transition-all"
+                >
+                    Saltar Calentamiento
+                </Button>
+            )}
+            <div className="flex flex-col items-end">
             <span className="text-9xl font-black tabular-nums tracking-tighter leading-none drop-shadow-2xl">
               {formatTime(timeLeft)}
             </span>
@@ -238,15 +249,6 @@ export function F45Timer({ workout }: F45TimerProps) {
                 phase === "hydration" ? "RECUPERA Y BEBE AGUA" :
                   "¡EXCELENTE TRABAJO! RELÁJATE"}
             </h3>
-            {phase === "warmup" && (
-              <Button
-                variant="ghost"
-                onClick={moveToNextPhase}
-                className="mt-8 text-white/20 hover:text-white/60 uppercase tracking-widest font-black text-xs border border-white/5 rounded-full px-6 py-2 hover:bg-white/5 transition-all"
-              >
-                Saltar Calentamiento
-              </Button>
-            )}
           </div>
         ) : phase === "strength" ? (
           renderExerciseBlocks(0)
