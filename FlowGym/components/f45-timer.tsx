@@ -201,9 +201,9 @@ export function F45Timer({ workout }: F45TimerProps) {
                 <Button 
                     variant="ghost" 
                     onClick={moveToNextPhase}
-                    className="text-white/20 hover:text-white/60 uppercase tracking-widest font-black text-[10px] border border-white/5 rounded-full px-4 py-1.5 hover:bg-white/5 transition-all"
+                    className="text-white/20 hover:text-white/80 uppercase tracking-[0.3em] font-black text-[10px] border border-white/5 rounded-full px-4 py-1.5 hover:bg-white/5 transition-all"
                 >
-                    Saltar Calentamiento
+                    NEXT
                 </Button>
             )}
             <div className="flex flex-col items-end">
@@ -264,7 +264,7 @@ export function F45Timer({ workout }: F45TimerProps) {
       </div>
 
       {/* Controls Overlay */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 bg-black/40 backdrop-blur-2xl p-3 rounded-full border border-white/10 shadow-2xl transition-opacity hover:opacity-100 opacity-40">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 bg-black/40 backdrop-blur-2xl p-3 rounded-full border border-white/10 shadow-2xl transition-all duration-500 opacity-0 hover:opacity-100 translate-y-4 hover:translate-y-0">
         <Button variant="ghost" size="icon" onClick={() => setIsMuted(!isMuted)} className="h-12 w-12 rounded-full hover:bg-white/20">
           {isMuted ? <VolumeX className="text-red-400" /> : <Volume2 />}
         </Button>
