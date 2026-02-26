@@ -142,31 +142,31 @@ export function F45Timer({ workout }: F45TimerProps) {
   const renderExerciseBlocks = (startIndex: number) => {
     const blocks = exercises.slice(startIndex, startIndex + 4)
     return (
-      <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full h-full p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full h-full p-4 overflow-hidden">
         {blocks.map((ex, idx) => (
-          <div key={ex.id || idx} className="relative bg-black/20 rounded-3xl overflow-hidden border-2 border-white/10 flex flex-col">
-            <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-4 py-1 rounded-full border border-white/20">
-              <span className="text-white font-black italic uppercase text-sm">Estación {idx + 1}</span>
+          <div key={ex.id || idx} className="relative bg-black/20 rounded-[2.5rem] overflow-hidden border-2 border-white/10 flex flex-col shadow-2xl">
+            <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-xl px-6 py-2 rounded-full border border-white/20">
+              <span className="text-white font-black italic uppercase text-lg">Estación {idx + 1}</span>
             </div>
-            <div className="flex-1 relative">
+            <div className="flex-1 relative bg-black">
               {ex.videoUrl ? (
                 <iframe
                   src={ex.videoUrl.replace("watch?v=", "embed/").split("&")[0] + "?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&disablekb=1&playlist=" + (ex.videoUrl.includes("v=") ? ex.videoUrl.split("v=")[1].split("&")[0] : "")}
-                  className="w-full h-full pointer-events-none object-cover"
+                  className="absolute inset-0 w-full h-full pointer-events-none object-cover scale-110"
                   allow="autoplay; encrypted-media"
                 ></iframe>
               ) : (
                 <img src={ex.gifUrl} className="w-full h-full object-cover" alt={ex.name} />
               )}
             </div>
-            <div className="bg-black/40 backdrop-blur-md p-3 text-center">
-              <h4 className="text-white font-black uppercase italic tracking-tight truncate">{ex.name}</h4>
+            <div className="bg-black/60 backdrop-blur-2xl p-6 text-center border-t border-white/10">
+              <h4 className="text-white text-3xl font-black uppercase italic tracking-tighter truncate">{ex.name}</h4>
             </div>
           </div>
         ))}
         {blocks.length < 4 && Array.from({ length: 4 - blocks.length }).map((_, i) => (
-          <div key={`empty-${i}`} className="bg-black/10 rounded-3xl border-2 border-dashed border-white/5 flex items-center justify-center">
-            <Dumbbell className="text-white/5 w-16 h-16" />
+          <div key={`empty-${i}`} className="bg-black/10 rounded-[2.5rem] border-2 border-dashed border-white/5 flex items-center justify-center">
+            <Dumbbell className="text-white/5 w-24 h-24" />
           </div>
         ))}
       </div>
@@ -180,20 +180,20 @@ export function F45Timer({ workout }: F45TimerProps) {
       <div className="relative z-10 w-full p-6 flex flex-col items-center gap-4 bg-black/20 backdrop-blur-xl border-b border-white/10">
         <div className="w-full max-w-6xl flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/10 rounded-2xl border border-white/20">
+            <div className="p-4 bg-white/10 rounded-[2rem] border border-white/20 shadow-xl">
               {config.icon}
             </div>
             <div>
-              <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">{config.label}</h2>
-              <p className="text-white/60 text-xs font-bold uppercase tracking-widest mt-1">CIRCUITO FLOWGYM</p>
+              <h2 className="text-5xl font-black uppercase italic tracking-tighter leading-none">{config.label}</h2>
+              <p className="text-white/60 text-sm font-black uppercase tracking-[0.5em] mt-3">CIRCUITO FLOWGYM • KAI CENTER</p>
             </div>
           </div>
 
           <div className="flex flex-col items-end">
-            <span className="text-7xl font-black tabular-nums tracking-tighter leading-none drop-shadow-2xl">
+            <span className="text-9xl font-black tabular-nums tracking-tighter leading-none drop-shadow-2xl">
               {formatTime(timeLeft)}
             </span>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mt-1">TIEMPO RESTANTE</span>
+            <span className="text-sm font-black uppercase tracking-[0.4em] text-white/50 mt-2">TIEMPO RESTANTE</span>
           </div>
         </div>
 
