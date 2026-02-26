@@ -30,105 +30,112 @@ export default function SettingsPage() {
         if (savedSound) setSoundEnabled(savedSound === "true")
     }, [])
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsLoading(true)
         localStorage.setItem("gymName", gymName)
         localStorage.setItem("slogan", slogan)
         localStorage.setItem("darkMode", String(darkMode))
         localStorage.setItem("soundEnabled", String(soundEnabled))
-
-        // Simulate API call
+ 
+        // Trigger storage event for the DashboardShell
+        window.dispatchEvent(new Event('storage'))
+ 
+        const { toast } = await import("sonner")
+ 
         setTimeout(() => {
             setIsLoading(false)
-            alert("¡Configuración guardada correctamente!")
-            window.location.reload()
+            toast.success("¡Éxito!", {
+                description: "Configuración guardada correctamente.",
+                duration: 3000
+            })
+            // No reload needed if shell listens to storage events
         }, 800)
     }
 
     return (
         <DashboardShell>
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="space-y-4">
-                    <h2 className="text-5xl font-black tracking-tighter uppercase leading-none">Configuración</h2>
-                    <p className="text-xl text-muted-foreground font-medium">Personaliza tu experiencia Kai Center.</p>
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-br from-white to-white/40">Configuración</h2>
+                    <p className="text-xl text-white/40 font-bold uppercase tracking-widest italic">Personaliza tu centro de alto rendimiento</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* General Settings */}
-                    <div className="bg-card rounded-[3rem] p-10 border border-border/50 shadow-sm space-y-8">
+                    <div className="bg-white/5 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/10 shadow-2xl space-y-8">
                         <div className="flex items-center gap-4 mb-2">
-                            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                <Settings className="h-6 w-6" />
+                            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                                <Settings className="h-7 w-7" />
                             </div>
-                            <h3 className="text-2xl font-black uppercase tracking-tight">General</h3>
+                            <h3 className="text-3xl font-black uppercase italic tracking-tighter">General</h3>
                         </div>
-
+ 
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between p-6 bg-muted/30 rounded-3xl border border-border/20">
-                                <div className="space-y-0.5">
-                                    <div className="flex items-center gap-2">
-                                        <Moon className="h-4 w-4 text-muted-foreground" />
-                                        <Label className="text-lg font-bold">Modo Oscuro</Label>
+                            <div className="flex items-center justify-between p-8 bg-white/[0.03] rounded-[2rem] border border-white/[0.05] hover:bg-white/[0.07] transition-all">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <Moon className="h-5 w-5 text-white/40" />
+                                        <Label className="text-xl font-black italic uppercase tracking-tight">Modo Oscuro</Label>
                                     </div>
-                                    <p className="text-muted-foreground text-sm">Interfaz en colores oscuros.</p>
+                                    <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">Interfaz en colores profundos</p>
                                 </div>
-                                <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+                                <Switch checked={darkMode} onCheckedChange={setDarkMode} className="scale-125 data-[state=checked]:bg-emerald-500" />
                             </div>
-
-                            <div className="flex items-center justify-between p-6 bg-muted/30 rounded-3xl border border-border/20">
-                                <div className="space-y-0.5">
-                                    <div className="flex items-center gap-2">
-                                        <Volume2 className="h-4 w-4 text-muted-foreground" />
-                                        <Label className="text-lg font-bold">Sonidos</Label>
+ 
+                            <div className="flex items-center justify-between p-8 bg-white/[0.03] rounded-[2rem] border border-white/[0.05] hover:bg-white/[0.07] transition-all">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <Volume2 className="h-5 w-5 text-white/40" />
+                                        <Label className="text-xl font-black italic uppercase tracking-tight">Efectos Audio</Label>
                                     </div>
-                                    <p className="text-muted-foreground text-sm">Beeps y efectos de audio.</p>
+                                    <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">Sonidos de entrenamiento</p>
                                 </div>
-                                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
+                                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} className="scale-125 data-[state=checked]:bg-emerald-500" />
                             </div>
-
-                            <div className="flex items-center justify-between p-6 bg-muted/30 rounded-3xl border border-border/20">
-                                <div className="space-y-0.5">
-                                    <div className="flex items-center gap-2">
-                                        <Bell className="h-4 w-4 text-muted-foreground" />
-                                        <Label className="text-lg font-bold">Notificaciones</Label>
+ 
+                            <div className="flex items-center justify-between p-8 bg-white/[0.03] rounded-[2rem] border border-white/[0.05] hover:bg-white/[0.07] transition-all">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <Bell className="h-5 w-5 text-white/40" />
+                                        <Label className="text-xl font-black italic uppercase tracking-tight">Notificaciones</Label>
                                     </div>
-                                    <p className="text-muted-foreground text-sm">Avisos de nuevas funciones.</p>
+                                    <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">Alertas de sistema</p>
                                 </div>
-                                <Switch checked={notifications} onCheckedChange={setNotifications} />
+                                <Switch checked={notifications} onCheckedChange={setNotifications} className="scale-125 data-[state=checked]:bg-emerald-500" />
                             </div>
                         </div>
                     </div>
 
                     {/* Branding Settings */}
-                    <div className="bg-card rounded-[3rem] p-10 border border-border/50 shadow-sm space-y-8">
+                    <div className="bg-white/5 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/10 shadow-2xl space-y-8">
                         <div className="flex items-center gap-4 mb-2">
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                                <Palette className="h-6 w-6" />
+                            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                                <Palette className="h-7 w-7" />
                             </div>
-                            <h3 className="text-2xl font-black uppercase tracking-tight">Branding</h3>
+                            <h3 className="text-3xl font-black uppercase italic tracking-tighter">Branding</h3>
                         </div>
-
-                        <div className="space-y-6">
+ 
+                        <div className="space-y-8">
                             <div className="space-y-4">
-                                <Label className="text-sm font-black uppercase tracking-widest text-muted-foreground">Nombre del Centro</Label>
-                                <div className="relative">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-1">Nombre del Centro</Label>
+                                <div className="relative group/input">
                                     <input
                                         type="text"
                                         value={gymName}
                                         onChange={(e) => setGymName(e.target.value)}
-                                        className="w-full h-16 px-6 rounded-2xl bg-muted/30 border border-border/50 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all text-lg"
+                                        className="w-full h-20 px-8 rounded-2xl bg-white/[0.03] border border-white/10 font-black text-2xl italic tracking-tighter focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/40 transition-all"
                                     />
                                 </div>
                             </div>
-
+ 
                             <div className="space-y-4">
-                                <Label className="text-sm font-black uppercase tracking-widest text-muted-foreground">Eslogan</Label>
-                                <div className="relative">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-1">Eslogan Principal</Label>
+                                <div className="relative group/input">
                                     <input
                                         type="text"
                                         value={slogan}
                                         onChange={(e) => setSlogan(e.target.value)}
-                                        className="w-full h-16 px-6 rounded-2xl bg-muted/30 border border-border/50 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all text-lg"
+                                        className="w-full h-20 px-8 rounded-2xl bg-white/[0.03] border border-white/10 font-black text-2xl italic tracking-tighter focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/40 transition-all"
                                     />
                                 </div>
                             </div>
@@ -136,17 +143,17 @@ export default function SettingsPage() {
                     </div>
                 </div>
 
-                <div className="flex justify-end pt-8">
+                <div className="flex justify-end pt-12">
                     <Button
                         onClick={handleSave}
                         disabled={isLoading}
                         size="lg"
-                        className="h-20 px-12 rounded-3xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xl shadow-2xl shadow-emerald-500/20 hover:scale-105 transition-all active:scale-95"
+                        className="h-24 px-16 rounded-[2.5rem] bg-emerald-500 hover:bg-emerald-400 text-black font-black text-2xl shadow-3xl shadow-emerald-500/40 hover:scale-105 transition-all active:scale-95 uppercase italic tracking-tighter"
                     >
-                        {isLoading ? "Guardando..." : (
+                        {isLoading ? "PROCESANDO..." : (
                             <>
-                                <Save className="mr-3 h-6 w-6" />
-                                Guardar Cambios
+                                <Save className="mr-4 h-8 w-8" />
+                                GUARDAR CAMBIOS
                             </>
                         )}
                     </Button>

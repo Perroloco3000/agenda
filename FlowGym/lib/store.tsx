@@ -104,13 +104,13 @@ export function useAppStoreLogic() {
     const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "error">("connecting")
 
     const addNotification = useCallback((n: Omit<Notification, "id" | "time" | "read">) => {
-        const newNotif = {
+        const newNotif: Notification = {
             ...n,
             id: Math.random().toString(36).substr(2, 9),
-            time: "Recién ahora",
+            time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
             read: false
         }
-        setNotifications(prev => [newNotif, ...prev].slice(0, 10))
+        setNotifications(prev => [newNotif, ...prev].slice(0, 20)) // Increased limit
     }, [])
 
     const clearNotifications = useCallback(() => setNotifications([]), [])
@@ -285,7 +285,7 @@ export function useAppStoreLogic() {
                     })
                     addNotification({
                         title: "Nueva Reserva",
-                        description: `${nr.member_name} para el ${nr.date}`,
+                        description: `${nr.member_name} - ${nr.time_slot}`,
                         type: "info"
                     })
                     setReservations(prev => {

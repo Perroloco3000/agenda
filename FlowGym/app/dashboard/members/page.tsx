@@ -67,16 +67,16 @@ export default function MembersPage() {
     return (
         <DashboardShell>
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10">
                     <div className="space-y-4">
-                        <h2 className="text-5xl font-black tracking-tighter uppercase leading-none">Miembros</h2>
-                        <p className="text-xl text-muted-foreground font-medium">Gestiona la comunidad de tu gimnasio.</p>
+                        <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-none bg-clip-text text-transparent bg-gradient-to-br from-white to-white/40">Miembros</h2>
+                        <p className="text-xl text-white/40 font-bold uppercase tracking-widest italic">Comunidad Kai Center</p>
                     </div>
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="h-16 px-8 rounded-3xl bg-primary text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all">
-                                <UserPlus className="mr-2 h-6 w-6" />
+                            <Button size="lg" className="h-20 px-10 rounded-[2rem] bg-emerald-500 text-black font-black text-xl italic shadow-2xl shadow-emerald-500/30 hover:scale-105 hover:bg-emerald-400 transition-all active:scale-95 uppercase tracking-tighter">
+                                <UserPlus className="mr-3 h-8 w-8" />
                                 Añadir Miembro
                             </Button>
                         </DialogTrigger>
@@ -129,89 +129,95 @@ export default function MembersPage() {
                 </div>
 
                 {/* Filters & Search */}
-                <div className="flex flex-col md:flex-row gap-4 bg-card p-6 rounded-3xl border border-border/50 shadow-sm">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <div className="flex flex-col md:flex-row gap-6 bg-white/5 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                    <div className="relative flex-1 group">
+                        <Search className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-white/20 group-hover:text-emerald-400 transition-colors" />
                         <Input
                             placeholder="Buscar por nombre, email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-14 pl-14 rounded-2xl bg-muted/30 border-none text-lg font-medium focus-visible:ring-primary/20"
+                            className="h-20 pl-20 pr-10 rounded-[2rem] bg-white/[0.03] border-white/10 text-xl font-bold italic focus-visible:ring-emerald-500/20 transition-all"
                         />
                     </div>
-                    <Button variant="outline" className="h-16 px-8 rounded-2xl border-border bg-muted/10 font-bold flex gap-2">
-                        <Filter className="h-5 w-5" />
+                    <Button variant="outline" className="h-20 px-10 rounded-[2rem] border-white/10 bg-white/5 font-black uppercase italic tracking-widest text-xs flex gap-4 hover:bg-white/10">
+                        <Filter className="h-6 w-6 text-emerald-400" />
                         Filtros
                     </Button>
                 </div>
 
                 {/* Members List */}
-                <div className="bg-card rounded-[3rem] border border-border/50 overflow-hidden shadow-sm">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="border-b border-border bg-muted/20">
-                                <th className="px-10 py-6 font-black uppercase tracking-tight text-muted-foreground">Miembro</th>
-                                <th className="px-10 py-6 font-black uppercase tracking-tight text-muted-foreground">Contacto</th>
-                                <th className="px-10 py-6 font-black uppercase tracking-tight text-muted-foreground">Plan/Suscripción</th>
-                                <th className="px-10 py-6 font-black uppercase tracking-tight text-muted-foreground">Estado</th>
-                                <th className="px-10 py-6 text-right"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border/30">
-                            {filteredMembers.map((member) => (
-                                <tr key={member.id} className="group hover:bg-muted/10 transition-colors">
-                                    <td className="px-10 py-8">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center font-black text-primary text-xl border border-primary/10 group-hover:scale-110 transition-transform">
-                                                {member.name.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <p className="font-black text-xl tracking-tight">{member.name}</p>
-                                                <p className="text-sm text-muted-foreground font-medium">Desde: {member.joinDate}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-10 py-8">
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-3 text-muted-foreground group/mail">
-                                                <Mail className="h-4 w-4 group-hover/mail:text-primary transition-colors" />
-                                                <span className="font-medium">{member.email}</span>
-                                            </div>
-                                            <div className="flex items-center gap-3 text-muted-foreground group/phone">
-                                                <Phone className="h-4 w-4 group-hover/phone:text-primary transition-colors" />
-                                                <span className="font-medium">{member.phone}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-10 py-8">
-                                        <div className="inline-flex items-center px-5 py-2 rounded-2xl bg-primary/5 border border-primary/10">
-                                            <span className="font-black text-primary uppercase text-sm tracking-widest">{member.plan}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-10 py-8">
-                                        <button onClick={async () => await toggleMemberStatus(member.id)} className="flex items-center gap-3 hover:opacity-80">
-                                            <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-green-500 animate-pulse' : 'bg-destructive/50'}`} />
-                                            <span className="font-bold">{member.status}</span>
-                                        </button>
-                                    </td>
-                                    <td className="px-10 py-8 text-right">
-                                        <div className="flex items-center gap-2 justify-end">
-                                            <Link href={`/dashboard/members/profile?id=${member.id}`}>
-                                                <Button variant="outline" className="h-12 px-6 rounded-xl font-bold hover:bg-primary hover:text-primary-foreground">
-                                                    Ver Perfil
-                                                </Button>
-                                            </Link>
-                                            <Button onClick={async () => await removeMember(member.id)} variant="ghost" size="icon" className="h-12 w-12 rounded-xl border border-transparent hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500">
-                                                <Trash2 className="h-6 w-6" />
-                                            </Button>
-                                        </div>
-                                    </td>
+                <div className="bg-white/5 backdrop-blur-3xl rounded-[3.5rem] border border-white/10 shadow-2xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="border-b border-white/5 bg-white/[0.02]">
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Miembro</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Contacto</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Plan</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Estado</th>
+                                    <th className="px-12 py-8 text-right"></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="p-10 border-t border-border bg-muted/10 text-center">
-                        <p className="text-muted-foreground font-medium">Mostrando {filteredMembers.length} miembros</p>
+                            </thead>
+                            <tbody className="divide-y divide-white/[0.03]">
+                                {filteredMembers.map((member) => (
+                                    <tr key={member.id} className="group hover:bg-white/[0.03] transition-all duration-300">
+                                        <td className="px-12 py-10">
+                                            <div className="flex items-center gap-8">
+                                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 flex items-center justify-center font-black text-emerald-400 text-3xl italic border border-emerald-500/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                                    {member.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-3xl tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">{member.name}</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">Desde: {member.joinDate}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-12 py-10">
+                                            <div className="space-y-3">
+                                                <div className="flex items-center gap-4 text-white/40 group/mail">
+                                                    <div className="p-2 rounded-lg bg-white/5 group-hover/mail:bg-emerald-500/20 transition-all">
+                                                        <Mail className="h-4 w-4 group-hover/mail:text-emerald-400" />
+                                                    </div>
+                                                    <span className="font-bold italic text-lg">{member.email}</span>
+                                                </div>
+                                                <div className="flex items-center gap-4 text-white/40 group/phone">
+                                                    <div className="p-2 rounded-lg bg-white/5 group-hover/phone:bg-blue-500/20 transition-all">
+                                                        <Phone className="h-4 w-4 group-hover/phone:text-blue-400" />
+                                                    </div>
+                                                    <span className="font-bold italic text-lg">{member.phone}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-12 py-10">
+                                            <div className="inline-flex items-center px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+                                                <span className="font-black text-emerald-400 uppercase text-xs tracking-[0.2em] italic">{member.plan}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-12 py-10">
+                                            <button onClick={async () => await toggleMemberStatus(member.id)} className="flex items-center gap-4 hover:scale-105 transition-transform">
+                                                <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-emerald-500 shadow-[0_0_15px_#10b981]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'} animate-pulse`} />
+                                                <span className="font-black italic uppercase tracking-widest text-sm">{member.status}</span>
+                                            </button>
+                                        </td>
+                                        <td className="px-12 py-10 text-right">
+                                            <div className="flex items-center gap-4 justify-end">
+                                                <Link href={`/dashboard/members/profile?id=${member.id}`}>
+                                                    <Button variant="outline" className="h-14 px-8 rounded-2xl font-black uppercase italic tracking-widest text-[10px] border-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-black transition-all">
+                                                        Ver Perfil
+                                                    </Button>
+                                                </Link>
+                                                <Button onClick={async () => await removeMember(member.id)} variant="ghost" size="icon" className="h-14 w-14 rounded-2xl border border-transparent hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400 transition-all">
+                                                    <Trash2 className="h-7 w-7" />
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="p-12 border-t border-white/5 bg-white/[0.01] text-center">
+                        <p className="text-white/20 font-black uppercase tracking-[0.3em] text-xs">Total de {filteredMembers.length} Miembros de Élite</p>
                     </div>
                 </div>
             </section>
