@@ -1,3 +1,5 @@
+import { getVenezuelaTime } from "./utils"
+
 export type Exercise = {
   id: string
   name: string
@@ -179,5 +181,5 @@ export const dayNames: Record<string, string> = {
 
 export function getCurrentDayKey(): string {
   const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-  return days[new Date().getDay()]
+  return days[getVenezuelaTime().getDay()]
 }

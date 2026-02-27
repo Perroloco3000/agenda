@@ -25,7 +25,7 @@ export default function MembersPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [newMember, setNewMember] = useState<Partial<Member>>({
-        name: "", email: "", phone: "", plan: "Premium", status: "Activo"
+        name: "", email: "", phone: "", plan: "GYM", status: "Activo"
     })
 
     const handleCreate = async () => {
@@ -39,7 +39,7 @@ export default function MembersPage() {
                     status: newMember.status as any || "Activo"
                 })
                 setIsCreateOpen(false)
-                setNewMember({ name: "", email: "", phone: "", plan: "Premium", status: "Activo" })
+                setNewMember({ name: "", email: "", phone: "", plan: "GYM", status: "Activo" })
             } catch (err) {
                 console.error("Error adding member:", err)
             }
@@ -113,8 +113,9 @@ export default function MembersPage() {
                                         <Select value={newMember.plan} onValueChange={v => setNewMember({ ...newMember, plan: v as any })}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="Plan Plus">Plan Plus</SelectItem>
-                                                <SelectItem value="Plan Basic">Plan Basic</SelectItem>
+                                                <SelectItem value="GYM">GYM</SelectItem>
+                                                <SelectItem value="Cognitivo">Cognitivo</SelectItem>
+                                                <SelectItem value="Premium">Premium</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>

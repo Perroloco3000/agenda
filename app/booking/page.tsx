@@ -6,6 +6,7 @@ import { useStore, TimeSlot, Booking } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
+import { getVenezuelaTime } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle } from "lucide-react"
 
@@ -136,7 +137,7 @@ export default function BookingPage() {
                                 type="date"
                                 value={selectedDate}
                                 onChange={e => setSelectedDate(e.target.value)}
-                                min={new Date().toISOString().split('T')[0]}
+                                min={getVenezuelaTime().toISOString().split('T')[0]}
                                 className="w-full md:w-64 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white font-bold text-lg focus:ring-2 focus:ring-emerald-500/50"
                             />
                         </div>
@@ -219,19 +220,32 @@ export default function BookingPage() {
                                         ) : (() => {
                                             const [startStr] = slot.time.split('-');
                                             const [hour, min] = startStr.split(':').map(Number);
-                                            const slotTime = new Date();
+                                            const venezuelaNow = getVenezuelaTime();
+                                            const slotTime = new Date(venezuelaNow);
                                             slotTime.setHours(hour, min, 0, 0);
-                                            const isPast = new Date(selectedDate).toDateString() === new Date().toDateString() && new Date() > slotTime;
+
+                                            // Inactivate 15 mins before
+                                            const cutoffTime = new Date(slotTime.getTime() - 15 * 60000);
+                                            const isDateToday = selectedDate === venezuelaNow.toISOString().split('T')[0];
+                                            const isPastOrClosing = isDateToday && venezuelaNow > cutoffTime;
 
                                             return (
-                                                <Button
-                                                    onClick={() => handleBooking(slot.time)}
-                                                    disabled={slot.available === 0 || isPast}
-                                                    className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-                                                >
-                                                    <Users className="mr-2 h-4 w-4" />
-                                                    {isPast ? 'Turno Finalizado' : 'Reservar'}
-                                                </Button>
+                                                <div className="space-y-2">
+                                                    {isPastOrClosing && !isBooked && (
+                                                        <div className="flex items-center gap-2 text-[10px] font-bold text-red-400 uppercase tracking-widest justify-center bg-red-400/5 py-1 rounded-lg border border-red-400/10">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                                            Turno Inactivo (15m antes)
+                                                        </div>
+                                                    )}
+                                                    <Button
+                                                        onClick={() => handleBooking(slot.time)}
+                                                        disabled={slot.available === 0 || isPastOrClosing}
+                                                        className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        <Users className="mr-2 h-4 w-4" />
+                                                        {isPastOrClosing ? 'No Disponible' : 'Reservar'}
+                                                    </Button>
+                                                </div>
                                             );
                                         })()}
                                     </CardContent>

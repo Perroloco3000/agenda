@@ -103,6 +103,16 @@ function MemberProfileContent() {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
+                                            <div className="flex-1">
+                                                <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nueva Contraseña</Label>
+                                                <Input
+                                                    type="password"
+                                                    placeholder="••••••••"
+                                                    value={editData.password || ""}
+                                                    onChange={e => setEditData({ ...editData, password: e.target.value })}
+                                                    className="h-10 rounded-xl font-bold"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
@@ -171,9 +181,9 @@ function MemberProfileContent() {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
+                                            <SelectItem value="GYM">GYM</SelectItem>
+                                            <SelectItem value="Cognitivo">Cognitivo</SelectItem>
                                             <SelectItem value="Premium">Premium</SelectItem>
-                                            <SelectItem value="VIP">VIP</SelectItem>
-                                            <SelectItem value="Básico">Básico</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 ) : (

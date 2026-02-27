@@ -11,7 +11,7 @@ export type Member = {
     name: string
     email: string
     phone: string
-    plan: "Plan Plus" | "Plan Basic"
+    plan: "GYM" | "Cognitivo" | "Premium"
     status: "Activo" | "Inactivo"
     joinDate: string
     password?: string
@@ -139,7 +139,7 @@ export function useAppStoreLogic() {
                         name: m.name || "Sin Nombre",
                         email: m.email || "Sin Email",
                         phone: m.phone || "N/A",
-                        plan: (m.plan as any) || 'Plan Basic',
+                        plan: (m.plan as any) || 'GYM',
                         status: (m.status as any) || 'Activo',
                         joinDate: m.created_at || m.joinDate || new Date().toISOString()
                     })))
@@ -413,7 +413,7 @@ export function useAppStoreLogic() {
             name: member.name,
             email: member.email,
             phone: member.phone,
-            plan: member.plan || 'Plan Basic',
+            plan: member.plan || 'GYM',
             status: member.status,
             password: member.password
         }])
@@ -423,7 +423,7 @@ export function useAppStoreLogic() {
             name: member.name,
             email: member.email,
             phone: member.phone,
-            plan: member.plan || 'Plan Basic',
+            plan: member.plan || 'GYM',
             status: member.status,
             password: member.password,
             joinDate: new Date().toISOString().split('T')[0]
@@ -446,6 +446,7 @@ export function useAppStoreLogic() {
     }, [])
 
     const updateMember = useCallback(async (id: string, updates: Partial<Omit<Member, "id" | "joinDate">>) => {
+        // Explicitly handle password update if provided
         const { error } = await supabase.from('members').update(updates).eq('id', id)
         if (error) throw error
         setMembers(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m))

@@ -10,6 +10,7 @@ export type User = {
   email: string
   phone: string
   role: "user" | "admin"
+  plan?: "GYM" | "Cognitivo" | "Premium"
   createdAt: string
 }
 
