@@ -206,7 +206,11 @@ export default function MembersPage() {
                                                         Ver Perfil
                                                     </Button>
                                                 </Link>
-                                                <Button onClick={async () => await removeMember(member.id)} variant="ghost" size="icon" className="h-12 w-12 rounded-xl border border-transparent hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400 transition-all">
+                                                <Button onClick={async () => {
+                                                    if (confirm('¿Eliminar a este miembro?')) {
+                                                        await removeMember(member.id)
+                                                    }
+                                                }} variant="ghost" size="icon" className="h-12 w-12 rounded-xl border border-transparent hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400 transition-all">
                                                     <Trash2 className="h-6 w-6" />
                                                 </Button>
                                             </div>

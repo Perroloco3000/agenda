@@ -91,7 +91,7 @@ export const COGNITIVE_SLOTS = [
 
 export const TIME_SLOTS = GYM_SLOTS // Default for backward compatibility
 
-export const SLOT_CAPACITY = 18
+export const SLOT_CAPACITY = 12
 
 // Store Hook Logic
 export function useAppStoreLogic() {
@@ -409,8 +409,6 @@ export function useAppStoreLogic() {
                 }
             }).subscribe()
 
-            }).subscribe()
-
         const settingsSub = supabase.channel('settings-all')
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'system_settings' }, payload => {
                 const ns = payload.new as any
@@ -446,7 +444,16 @@ export function useAppStoreLogic() {
             status: member.status
         }])
         if (error) throw error
-        setMembers(prev => [...prev, { ...member, id, joinDate: new Date().toISOString() }])
+        const addedMember: Member = {
+            id,
+            name: member.name,
+            email: member.email,
+            phone: member.phone,
+            plan: member.plan || 'Plan Basic',
+            status: member.status,
+            joinDate: new Date().toISOString().split('T')[0]
+        }
+        setMembers(prev => [...prev, addedMember])
     }, [])
 
     const removeMember = useCallback(async (id: string) => {
@@ -520,7 +527,7 @@ export function useAppStoreLogic() {
     }, [members])
 
     const updateSettings = useCallback(async (updates: { gymName?: string, slogan?: string, logoUrl?: string }) => {
-        const promises = Object.entries(updates).map(([key, value]) => 
+        const promises = Object.entries(updates).map(([key, value]) =>
             supabase.from('system_settings').update({ value }).eq('key', key)
         )
         await Promise.all(promises)

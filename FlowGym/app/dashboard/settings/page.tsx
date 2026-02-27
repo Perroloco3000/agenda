@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useAppStore } from "@/lib/store"
 
 export default function SettingsPage() {
     const router = useRouter()

@@ -63,13 +63,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isNotifOpen, setIsNotifOpen] = useState(false)
- 
+
     useEffect(() => {
         setIsMounted(true)
-        
+
         const loadSettings = () => {
             const savedDarkMode = localStorage.getItem("darkMode")
-            
+
             // Apply dark mode
             if (savedDarkMode === "false") {
                 document.documentElement.classList.remove("dark")
@@ -130,10 +130,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             )}
                         </div>
                     )}
-                    
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         className={cn("hidden md:flex h-8 w-8 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/40 hover:text-white transition-all", isCollapsed ? "mt-4" : "")}
                     >
@@ -157,7 +157,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 )}
                             >
                                 <div className={cn("flex items-center relative z-10", isCollapsed ? "justify-center" : "gap-4")}>
-                                    <item.icon className={cn("transition-colors duration-300", 
+                                    <item.icon className={cn("transition-colors duration-300",
                                         isActive ? "text-emerald-400" : "group-hover:text-emerald-400",
                                         isCollapsed ? "h-6 w-6" : "h-5 w-5"
                                     )} />
@@ -214,7 +214,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
                             {/* Notifications Dropdown */}
                             {isNotifOpen && (
-                                <div className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                <div
+                                    className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2"
+                                    onMouseLeave={() => setIsNotifOpen(false)}
+                                >
                                     <div className="p-4 border-b border-border flex justify-between items-center bg-muted/30">
                                         <h3 className="font-bold text-sm">Notificaciones</h3>
                                         {notifications.length > 0 && (
@@ -228,12 +231,26 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                             </div>
                                         ) : (
                                             notifications.map(n => (
-                                                <div key={n.id} className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
-                                                    <p className="font-bold text-xs flex items-center gap-2">
+                                                <div
+                                                    key={n.id}
+                                                    className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group/item"
+                                                    onClick={() => {
+                                                        const getRoute = () => {
+                                                            const title = n.title.toLowerCase();
+                                                            if (title.includes('reserva')) return '/dashboard/reservations';
+                                                            if (title.includes('miembro') || title.includes('usuario')) return '/dashboard/members';
+                                                            if (title.includes('rutina') || title.includes('entrenamiento')) return '/dashboard/workouts';
+                                                            return '/dashboard';
+                                                        }
+                                                        window.location.href = getRoute();
+                                                        setIsNotifOpen(false);
+                                                    }}
+                                                >
+                                                    <p className="font-bold text-xs flex items-center gap-2 group-hover/item:text-primary transition-colors">
                                                         <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`} />
                                                         {n.title}
                                                     </p>
-                                                    <p className="text-[11px] text-muted-foreground mt-1">{n.description}</p>
+                                                    <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{n.description}</p>
                                                     <p className="text-[9px] text-muted-foreground/60 mt-1 uppercase font-bold">{n.time}</p>
                                                 </div>
                                             ))

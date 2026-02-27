@@ -55,7 +55,7 @@ export const COGNITIVE_SLOTS = [
 
 export const TIME_SLOTS = GYM_SLOTS
 
-const SLOT_CAPACITY = 18
+const SLOT_CAPACITY = 12
 
 // Store Hook
 export function useAppStore() {

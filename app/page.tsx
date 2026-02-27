@@ -13,13 +13,6 @@ import { motion, AnimatePresence } from "framer-motion"
 export default function LoginPage() {
     const router = useRouter()
     const { login, register, currentUser, gymName, slogan, logoUrl } = useStore()
-    const [isLogin, setIsLogin] = useState(true)
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        password: "123456"
-    })
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
@@ -38,17 +31,8 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
-            if (isLogin) {
-                await login(formData.email, formData.password)
-                router.push("/booking")
-            } else {
-                await register({
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone
-                })
-                router.push("/booking")
-            }
+            await login(formData.email, formData.password)
+            router.push("/booking")
         } catch (err) {
             setError(err instanceof Error ? err.message : "Error al procesar")
         } finally {
@@ -111,50 +95,17 @@ export default function LoginPage() {
                         <CardHeader className="pt-10 px-10 pb-4">
                             <div className="flex justify-between items-center mb-2">
                                 <CardTitle className="text-3xl font-black tracking-tight text-white uppercase">
-                                    {isLogin ? "Bienvenido" : "Únete"}
+                                    Bienvenido
                                 </CardTitle>
                                 <Sparkles className="h-5 w-5 text-emerald-500 animate-pulse" />
                             </div>
                             <CardDescription className="text-white/40 font-medium text-sm">
-                                {isLogin ? "Accede a tu cuenta para continuar" : "Completa tus datos para empezar"}
+                                Accede a tu cuenta para continuar
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="p-10 pt-4">
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                <AnimatePresence mode="wait">
-                                    {!isLogin && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: "auto" }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            className="space-y-6 overflow-hidden"
-                                        >
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Nombre Completo</Label>
-                                                <div className="relative group/field">
-                                                    <Input
-                                                        required
-                                                        value={formData.name}
-                                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
-                                                    />
-                                                </div>
-                                            </div>
 
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Teléfono</Label>
-                                                <Input
-                                                    type="tel"
-                                                    required
-                                                    value={formData.phone}
-                                                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                                    className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
-                                                    placeholder="Ej: +54 9..."
-                                                />
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
 
                                 <div className="space-y-2">
                                     <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Correo Electrónico</Label>
@@ -191,23 +142,16 @@ export default function LoginPage() {
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2">
-                                            {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
+                                            Iniciar Sesión
                                             <ChevronRight className="h-5 w-5" />
                                         </div>
                                     )}
                                 </Button>
 
                                 <div className="text-center pt-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsLogin(!isLogin)
-                                            setError("")
-                                        }}
-                                        className="text-xs font-black uppercase tracking-[0.2em] text-white/30 hover:text-emerald-400 transition-colors"
-                                    >
-                                        {isLogin ? "¿No tienes cuenta? Registrate" : "¿Ya eres miembro? Acceder"}
-                                    </button>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">
+                                        Acceso exclusivo para miembros registrados por el administrador
+                                    </p>
                                 </div>
                             </form>
                         </CardContent>

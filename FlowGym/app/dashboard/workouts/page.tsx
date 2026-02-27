@@ -396,6 +396,13 @@ export default function WorkoutsPage() {
                                         <Settings2 className="mr-2 h-5 w-5" />
                                         Editar
                                     </Button>
+                                    <Button onClick={async () => {
+                                        if (confirm('¿Estás seguro de que deseas eliminar esta rutina?')) {
+                                            await deleteWorkout(workout.id)
+                                        }
+                                    }} variant="ghost" size="icon" className="h-14 w-14 rounded-2xl border border-transparent hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400 transition-all">
+                                        <Trash2 className="h-6 w-6" />
+                                    </Button>
                                     <Link href={`/dashboard/workouts/play?id=${workout.id}`} className="flex-1">
                                         <Button className="w-full h-14 rounded-2xl bg-primary shadow-lg shadow-primary/20 font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
                                             <Play className="mr-2 h-5 w-5 fill-current" />
@@ -427,7 +434,7 @@ export default function WorkoutsPage() {
                     </button>
                 </div>
             </section>
-        </DashboardShell >
+        </DashboardShell>
     )
 }
 
