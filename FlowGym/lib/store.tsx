@@ -432,6 +432,14 @@ export function useAppStoreLogic() {
     }, [])
 
     const removeMember = useCallback(async (id: string) => {
+        // Cascade delete: Remove reservations first to avoid Foreign Key violations
+        const { error: resError } = await supabase.from('reservations').delete().eq('member_id', id)
+        if (resError) {
+            console.error("Error deleting member reservations:", resError)
+            throw resError
+        }
+
+        // Now remove the member
         const { error } = await supabase.from('members').delete().eq('id', id)
         if (error) throw error
         setMembers(prev => prev.filter(m => m.id !== id))
