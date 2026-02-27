@@ -205,9 +205,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                             >
                                 <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                                {notifications.length > 0 && (
+                                {notifications.filter(n => !n.read).length > 0 && (
                                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center border-2 border-card">
-                                        {notifications.length}
+                                        {notifications.filter(n => !n.read).length}
                                     </span>
                                 )}
                             </Button>
@@ -242,12 +242,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                                             if (title.includes('rutina') || title.includes('entrenamiento')) return '/dashboard/workouts';
                                                             return '/dashboard';
                                                         }
+                                                        markNotificationAsRead(n.id);
                                                         window.location.href = getRoute();
                                                         setIsNotifOpen(false);
                                                     }}
                                                 >
-                                                    <p className="font-bold text-xs flex items-center gap-2 group-hover/item:text-primary transition-colors">
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                                                    <p className={`font-bold text-xs flex items-center gap-2 group-hover/item:text-primary transition-colors ${!n.read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-green-500' : 'bg-blue-500'} ${!n.read ? 'opacity-100' : 'opacity-30'}`} />
                                                         {n.title}
                                                     </p>
                                                     <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{n.description}</p>

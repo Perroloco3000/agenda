@@ -98,6 +98,15 @@ export default function MembersPage() {
                                     <Label>Teléfono</Label>
                                     <Input type="tel" value={newMember.phone} onChange={e => setNewMember({ ...newMember, phone: e.target.value })} />
                                 </div>
+                                <div className="grid gap-2">
+                                    <Label>Contraseña</Label>
+                                    <Input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        value={(newMember as any).password || ''}
+                                        onChange={e => setNewMember({ ...newMember, password: e.target.value } as any)}
+                                    />
+                                </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
                                         <Label>Plan</Label>

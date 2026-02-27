@@ -30,6 +30,23 @@ export default function BookingPage() {
         setSelectedDate(today)
     }, [])
 
+    const motivationalQuotes = [
+        "La excelencia no es un acto, es un hábito.",
+        "Tu única competencia eres tú mismo.",
+        "El éxito comienza con la autodisciplina.",
+        "Hoy es un buen día para superar tus límites.",
+        "No te detengas hasta que estés orgulloso.",
+        "La persistencia vence a la resistencia.",
+        "Entrena como un profesional, vive como un campeón.",
+        "Fuerte en mente, fuerte en cuerpo."
+    ]
+
+    const [quote, setQuote] = useState("")
+
+    useEffect(() => {
+        setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
+    }, [])
+
     // Derived values directly from store
     const availableSlots = getAvailableSlots(selectedDate, selectedArea)
     const myBookings = currentUser ? getUserBookings(currentUser.id) : []
@@ -82,6 +99,13 @@ export default function BookingPage() {
                             <p className="text-[10px] font-bold text-emerald-400 tracking-[0.3em] uppercase">Training Osteomuscular</p>
                         </div>
                     </div>
+
+                    <div className="hidden md:block flex-1 max-w-xl mx-auto px-8">
+                        <p className="text-center italic text-emerald-400/60 font-medium text-sm">
+                            "{quote}"
+                        </p>
+                    </div>
+
                     <div className="flex items-center gap-4">
                         <div className="text-right">
                             <p className="text-sm font-bold text-white">{currentUser.name}</p>
@@ -107,8 +131,8 @@ export default function BookingPage() {
                     </CardHeader>
                     <CardContent className="flex flex-col md:flex-row gap-6">
                         <div className="space-y-2">
-                             <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
-                             <input
+                            <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
+                            <input
                                 type="date"
                                 value={selectedDate}
                                 onChange={e => setSelectedDate(e.target.value)}
@@ -118,21 +142,21 @@ export default function BookingPage() {
                         </div>
 
                         <div className="space-y-2 flex-1">
-                             <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
-                             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700">
-                                <button 
+                            <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
+                            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700">
+                                <button
                                     onClick={() => setSelectedArea("gym")}
                                     className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "gym" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
                                 >
                                     Gimnasio
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setSelectedArea("cognitive")}
                                     className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "cognitive" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
                                 >
                                     Área Cognitiva
                                 </button>
-                             </div>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -192,16 +216,24 @@ export default function BookingPage() {
                                                 <CheckCircle2 className="mr-2 h-4 w-4" />
                                                 Ya Reservado
                                             </Button>
-                                        ) : (
-                                            <Button
-                                                onClick={() => handleBooking(slot.time)}
-                                                disabled={slot.available === 0}
-                                                className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <Users className="mr-2 h-4 w-4" />
-                                                Reservar
-                                            </Button>
-                                        )}
+                                        ) : (() => {
+                                            const [startStr] = slot.time.split('-');
+                                            const [hour, min] = startStr.split(':').map(Number);
+                                            const slotTime = new Date();
+                                            slotTime.setHours(hour, min, 0, 0);
+                                            const isPast = new Date(selectedDate).toDateString() === new Date().toDateString() && new Date() > slotTime;
+
+                                            return (
+                                                <Button
+                                                    onClick={() => handleBooking(slot.time)}
+                                                    disabled={slot.available === 0 || isPast}
+                                                    className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    <Users className="mr-2 h-4 w-4" />
+                                                    {isPast ? 'Turno Finalizado' : 'Reservar'}
+                                                </Button>
+                                            );
+                                        })()}
                                     </CardContent>
                                 </Card>
                             )
