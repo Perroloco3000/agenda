@@ -15,6 +15,10 @@ export default function LoginPage() {
     const { login, register, currentUser, gymName, slogan, logoUrl } = useStore()
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    })
 
     // Redirect if already logged in
     useEffect(() => {
@@ -116,6 +120,18 @@ export default function LoginPage() {
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
                                         className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
                                         placeholder="usuario@kaicenter.com"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Contraseña</Label>
+                                    <Input
+                                        type="password"
+                                        required
+                                        value={formData.password}
+                                        onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                        placeholder="••••••••"
                                     />
                                 </div>
 
