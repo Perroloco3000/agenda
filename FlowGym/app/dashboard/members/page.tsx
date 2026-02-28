@@ -17,33 +17,47 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
 import Link from "next/link"
 
 export default function MembersPage() {
     const { members, addMember, removeMember, toggleMemberStatus, isLoaded } = useAppStore()
     console.log("RENDER MembersPage:", members.length, "members, loaded:", isLoaded)
     const [isCreateOpen, setIsCreateOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
-    const [newMember, setNewMember] = useState<Partial<Member>>({
-        name: "", email: "", phone: "", plan: "GYM", status: "Activo"
+    const [newMember, setNewMember] = useState<Partial<Member & { password?: string }>>({
+        name: "", email: "", phone: "", plan: "GYM", status: "Activo", password: ""
     })
 
     const handleCreate = async () => {
-        if (newMember.name && newMember.email) {
-            try {
-                await addMember({
-                    name: newMember.name,
-                    email: newMember.email,
-                    phone: newMember.phone || "",
-                    password: (newMember as any).password || "",
-                    plan: newMember.plan as any || "GYM",
-                    status: newMember.status as any || "Activo"
-                })
-                setIsCreateOpen(false)
-                setNewMember({ name: "", email: "", phone: "", plan: "GYM", status: "Activo" })
-            } catch (err) {
-                console.error("Error adding member:", err)
+        if (!newMember.name || !newMember.email) {
+            toast.error("Nombre y Email son requeridos")
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            await addMember({
+                name: newMember.name,
+                email: newMember.email,
+                phone: newMember.phone || "",
+                password: newMember.password || "",
+                plan: newMember.plan as any || "GYM",
+                status: newMember.status as any || "Activo"
+            })
+            setIsCreateOpen(false)
+            setNewMember({ name: "", email: "", phone: "", plan: "GYM", status: "Activo", password: "" })
+            toast.success("Miembro registrado exitosamente")
+        } catch (err: any) {
+            console.error("Error adding member:", err)
+            if (err.message?.includes("column \"password\" of relation \"members\" does not exist")) {
+                toast.error("Error: Falta la columna 'password' en Supabase. Revisa las instrucciones enviadas.")
+            } else {
+                toast.error("Error al registrar: " + (err.message || "Error desconocido"))
             }
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -133,7 +147,14 @@ export default function MembersPage() {
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleCreate}>Registrar Miembro</Button>
+                                <Button onClick={handleCreate} disabled={isLoading} className="w-full h-12 rounded-xl font-bold bg-emerald-500 text-black hover:bg-emerald-400">
+                                    {isLoading ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
+                                            Procesando...
+                                        </>
+                                    ) : "Registrar Miembro"}
+                                </Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>

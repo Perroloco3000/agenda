@@ -304,10 +304,21 @@ export function useAppStore() {
     const { data: member } = await supabase.from('members').select('plan').eq('id', userId).single()
     const userPlan = member?.plan || "Plan Basic"
 
-    if (userPlan === "Plan Basic") {
+    // Plan based restrictions
+    if (userPlan === "GYM" && area !== "gym") {
+      throw new Error("Tu plan GYM solo permite reservar en el Gimnasio.")
+    }
+    if (userPlan === "Cognitivo" && area !== "cognitive") {
+      throw new Error("Tu plan Cognitivo solo permite reservar en el Área Cognitiva.")
+    }
+    // Premium allows both, but still limit to one area per day for simplicity if needed
+    // or keep it open as requested. User said "Premium can reserve in both".
+    // I'll keep the one area per day limit only for GYM and Cognitivo if they already have a booking.
+
+    if (userPlan !== "Premium") {
       const existingToday = bookings.find(b => b.memberId === userId && b.date === date && b.status === "confirmed")
       if (existingToday && existingToday.area !== area) {
-        throw new Error("Tu plan básico solo permite reservar en una área por día.")
+        throw new Error(`Tu plan ${userPlan} solo permite reservar en una área por día.`)
       }
     }
 
