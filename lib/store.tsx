@@ -65,7 +65,7 @@ export function useAppStore() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [gymName, setGymName] = useState("KAICENTER SC")
-  const [slogan, setSlogan] = useState("Osteomuscular & Ecological")
+  const [slogan, setSlogan] = useState("")
   const [logoUrl, setLogoUrl] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
 

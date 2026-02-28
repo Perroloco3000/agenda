@@ -57,8 +57,13 @@ export default function SettingsPage() {
                 description: "Configuración guardada correctamente.",
                 duration: 3000
             })
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
+            const { toast } = await import("sonner")
+            toast.error("Error al guardar", {
+                description: error.message || "No se pudo conectar con la base de datos.",
+                duration: 5000
+            })
         } finally {
             setIsLoading(false)
         }

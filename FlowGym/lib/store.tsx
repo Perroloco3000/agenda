@@ -103,7 +103,7 @@ export function useAppStoreLogic() {
     const [reservations, setReservations] = useState<UserReservation[]>([])
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [gymName, setGymName] = useState("KAICENTER SC")
-    const [slogan, setSlogan] = useState("Osteomuscular & Ecological")
+    const [slogan, setSlogan] = useState("")
     const [logoUrl, setLogoUrl] = useState("")
     const [isLoaded, setIsLoaded] = useState(false)
     const [syncStatus, setSyncStatus] = useState<"connecting" | "connected" | "error">("connecting")
