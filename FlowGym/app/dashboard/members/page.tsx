@@ -35,7 +35,8 @@ export default function MembersPage() {
                     name: newMember.name,
                     email: newMember.email,
                     phone: newMember.phone || "",
-                    plan: newMember.plan as any || "Premium",
+                    password: (newMember as any).password || "",
+                    plan: newMember.plan as any || "GYM",
                     status: newMember.status as any || "Activo"
                 })
                 setIsCreateOpen(false)

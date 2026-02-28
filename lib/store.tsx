@@ -11,6 +11,7 @@ export type User = {
   phone: string
   role: "user" | "admin"
   plan?: "GYM" | "Cognitivo" | "Premium"
+  password?: string
   createdAt: string
 }
 
@@ -245,9 +246,10 @@ export function useAppStore() {
         name: newUser.name,
         email: newUser.email,
         phone: newUser.phone,
+        password: newUser.password,
         role: newUser.role,
         status: 'Activo',
-        plan: 'Plan Basic'
+        plan: 'GYM'
       }])
 
     if (error) throw new Error(error.message)
@@ -269,12 +271,19 @@ export function useAppStore() {
       throw new Error("Los administradores deben usar el panel de Kai Center")
     }
 
+    // Password verification
+    if (user.password !== password) {
+      throw new Error("Contraseña incorrecta")
+    }
+
     const loggedUser: User = {
       id: user.id,
       name: user.name,
       email: user.email,
       phone: user.phone,
       role: user.role,
+      plan: user.plan,
+      password: user.password,
       createdAt: user.created_at
     }
 

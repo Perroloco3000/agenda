@@ -33,7 +33,8 @@ function MemberProfileContent() {
                 email: editData.email,
                 phone: editData.phone,
                 plan: editData.plan,
-                status: editData.status
+                status: editData.status,
+                password: editData.password
             })
             setIsEditing(false)
             toast.success("Perfil actualizado correctamente")
