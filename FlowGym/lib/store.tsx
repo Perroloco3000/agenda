@@ -2,6 +2,7 @@
 
 import { useState, useEffect, createContext, useContext, useCallback, ReactNode } from "react"
 import { supabase } from "./supabase"
+import { getVenezuelaTime, getVenezuelaDateString } from "./utils"
 import { toast } from "sonner"
 import { weeklyWorkouts, dayNames } from "./workout-data"
 
@@ -426,7 +427,7 @@ export function useAppStoreLogic() {
             plan: member.plan || 'GYM',
             status: member.status,
             password: member.password,
-            joinDate: new Date().toISOString().split('T')[0]
+            joinDate: getVenezuelaDateString(),
         }
         setMembers(prev => [...prev, addedMember])
     }, [])

@@ -6,7 +6,7 @@ import { useStore, TimeSlot, Booking } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
-import { getVenezuelaTime } from "@/lib/utils"
+import { getVenezuelaTime, getVenezuelaDateString, cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle } from "lucide-react"
 
@@ -137,7 +137,7 @@ export default function BookingPage() {
                                 type="date"
                                 value={selectedDate}
                                 onChange={e => setSelectedDate(e.target.value)}
-                                min={getVenezuelaTime().toISOString().split('T')[0]}
+                                min={getVenezuelaDateString()}
                                 className="w-full md:w-64 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white font-bold text-lg focus:ring-2 focus:ring-emerald-500/50"
                             />
                         </div>
@@ -226,7 +226,7 @@ export default function BookingPage() {
 
                                             // Inactivate 15 mins before
                                             const cutoffTime = new Date(slotTime.getTime() - 15 * 60000);
-                                            const isDateToday = selectedDate === venezuelaNow.toISOString().split('T')[0];
+                                            const isDateToday = selectedDate === getVenezuelaDateString();
                                             const isPastOrClosing = isDateToday && venezuelaNow > cutoffTime;
 
                                             return (
