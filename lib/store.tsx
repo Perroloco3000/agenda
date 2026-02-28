@@ -152,6 +152,15 @@ export function useAppStore() {
       })
       .subscribe()
 
+    const settingsSubscription = supabase
+      .channel('settings-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'system_settings' }, payload => {
+        const { key, value } = payload.new as any
+        if (key === 'gymName') setGymName(value)
+        if (key === 'slogan') setSlogan(value)
+        if (key === 'logoUrl') setLogoUrl(value)
+      }).subscribe()
+
     const reservationsSubscription = supabase
       .channel('reservations-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'reservations' }, payload => {
@@ -182,15 +191,6 @@ export function useAppStore() {
       })
       .subscribe()
 
-    const settingsSubscription = supabase
-      .channel('settings-changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'system_settings' }, payload => {
-        const ns = payload.new as any
-        if (ns.key === 'gymName') setGymName(ns.value)
-        if (ns.key === 'slogan') setSlogan(ns.value)
-        if (ns.key === 'logoUrl') setLogoUrl(ns.value)
-      })
-      .subscribe()
 
     return () => {
       supabase.removeChannel(membersSubscription)

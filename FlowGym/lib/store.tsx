@@ -489,11 +489,20 @@ export function useAppStoreLogic() {
         if (!member) throw new Error("Miembro no encontrado")
 
         // Subscription check
-        if (member.plan === "Plan Basic") {
+        // Subscription check (Non-Premium plans can only reserve in one area per day)
+        if (member.plan !== "Premium") {
             const existing = reservations.filter(r => r.memberId === memberId && r.date === date && r.status === "confirmed")
             if (existing.length > 0 && existing[0].area !== area) {
-                throw new Error("El Plan Básico solo permite reservar en un área por día.")
+                throw new Error(`Tu plan ${member.plan} solo permite reservar en una área por día.`)
             }
+        }
+
+        // Area specific checks
+        if (member.plan === "GYM" && area !== "gym") {
+            throw new Error("Tu plan GYM solo permite reservar en el Gimnasio.")
+        }
+        if (member.plan === "Cognitivo" && area !== "cognitive") {
+            throw new Error("Tu plan Cognitivo solo permite reservar en el Área Cognitiva.")
         }
 
         const resId = Math.random().toString(36).substr(2, 9)
@@ -513,9 +522,15 @@ export function useAppStoreLogic() {
 
     const updateSettings = useCallback(async (updates: { gymName?: string, slogan?: string, logoUrl?: string }) => {
         const promises = Object.entries(updates).map(([key, value]) =>
-            supabase.from('system_settings').update({ value }).eq('key', key)
+            supabase.from('system_settings').upsert({ key, value }, { onConflict: 'key' })
         )
-        await Promise.all(promises)
+        const results = await Promise.all(promises)
+        const errors = results.filter(r => r.error)
+        if (errors.length > 0) {
+            console.error("Error updating settings:", errors)
+            throw new Error("Error al guardar algunas configuraciones")
+        }
+
         if (updates.gymName) setGymName(updates.gymName)
         if (updates.slogan) setSlogan(updates.slogan)
         if (updates.logoUrl) setLogoUrl(updates.logoUrl)

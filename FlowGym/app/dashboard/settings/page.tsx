@@ -12,11 +12,11 @@ import { useAppStore } from "@/lib/store"
 export default function SettingsPage() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
-    const { 
-        gymName: storeGymName, 
-        slogan: storeSlogan, 
+    const {
+        gymName: storeGymName,
+        slogan: storeSlogan,
         logoUrl: storeLogoUrl,
-        updateSettings 
+        updateSettings
     } = useAppStore()
     const [gymName, setGymName] = useState(storeGymName)
     const [slogan, setSlogan] = useState(storeSlogan)
@@ -31,16 +31,12 @@ export default function SettingsPage() {
         setLogoUrl(storeLogoUrl)
     }, [storeGymName, storeSlogan, storeLogoUrl])
 
-    // Load from localStorage on mount
+    // Load from localStorage on mount (ONLY for UI preferences, not DB settings)
     useEffect(() => {
-        const savedGymName = localStorage.getItem("gymName")
-        const savedSlogan = localStorage.getItem("slogan")
         const savedDarkMode = localStorage.getItem("darkMode")
         const savedSound = localStorage.getItem("soundEnabled")
         const savedNotifs = localStorage.getItem("notificationsEnabled")
 
-        if (savedGymName) setGymName(savedGymName)
-        if (savedSlogan) setSlogan(savedSlogan)
         if (savedDarkMode) setDarkMode(savedDarkMode === "true")
         if (savedSound) setSoundEnabled(savedSound === "true")
         if (savedNotifs) setNotificationsEnabled(savedNotifs === "true")
@@ -50,7 +46,7 @@ export default function SettingsPage() {
         setIsLoading(true)
         try {
             await updateSettings({ gymName, slogan, logoUrl })
-            
+
             localStorage.setItem("darkMode", String(darkMode))
             localStorage.setItem("soundEnabled", String(soundEnabled))
             localStorage.setItem("notificationsEnabled", String(notificationsEnabled))
@@ -85,7 +81,7 @@ export default function SettingsPage() {
                             </div>
                             <h3 className="text-2xl font-black uppercase tracking-tight">General</h3>
                         </div>
- 
+
                         <div className="space-y-6">
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
@@ -97,7 +93,7 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch checked={darkMode} onCheckedChange={setDarkMode} className="data-[state=checked]:bg-emerald-500" />
                             </div>
- 
+
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
@@ -108,7 +104,7 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} className="data-[state=checked]:bg-emerald-500" />
                             </div>
- 
+
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
@@ -130,7 +126,7 @@ export default function SettingsPage() {
                             </div>
                             <h3 className="text-2xl font-black uppercase tracking-tight">Branding</h3>
                         </div>
- 
+
                         <div className="space-y-8">
                             <div className="space-y-4">
                                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-1">Nombre del Centro</Label>
@@ -141,7 +137,7 @@ export default function SettingsPage() {
                                     className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-white/10 font-black text-xl tracking-tight focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all text-white"
                                 />
                             </div>
- 
+
                             <div className="space-y-4">
                                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-1">Eslogan Principal</Label>
                                 <input
