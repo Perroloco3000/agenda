@@ -8,7 +8,9 @@ import { DaySelector } from "@/components/day-selector"
 import { F45Timer } from "@/components/f45-timer"
 import { ExerciseList } from "@/components/exercise-list"
 import { Button } from "@/components/ui/button"
-import { Accessibility, Maximize2, ChevronLeft } from "lucide-react"
+import { Accessibility, Maximize2, ChevronLeft, Sparkles, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function GymApp() {
   const { workouts, isLoaded, gymName, slogan, logoUrl } = useAppStore()
@@ -56,7 +58,7 @@ export default function GymApp() {
     return (
       <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 gap-8 animate-in fade-in duration-700">
         <div className="relative">
-          <div className="w-24 h-24 rounded-3xl border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
+          <div className="w-24 h-24 rounded-xl border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
           <Accessibility className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 text-[#3B7552]" />
         </div>
         <div className="text-center space-y-2">
@@ -71,49 +73,95 @@ export default function GymApp() {
 
   if (mode === 'choice') {
     return (
-      <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-1000">
-        <div className="relative z-10 flex flex-col items-center gap-16 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
-          <div className="flex flex-col items-center gap-0 text-center">
-            <div className="w-full max-w-[550px] h-56 flex items-center justify-center mb-0 overflow-hidden rounded-3xl border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50">
+      <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full max-w-2xl relative z-10"
+        >
+          {/* Brand Header */}
+          <div className="flex flex-col items-center mb-12">
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full max-w-[550px] h-52 flex items-center justify-center mb-0 cursor-pointer overflow-hidden rounded-xl border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50"
+            >
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
                 <Accessibility className="h-20 w-20 text-[#3B7552]" />
               )}
-            </div>
+            </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full px-4">
-            <button
-              onClick={() => setMode('tv')}
-              className="group relative bg-[#FCFBF6] border-2 border-[#9B8C7A]/10 rounded-[2.5rem] p-12 flex flex-col items-center text-center gap-6 hover:border-[#3B7552]/40 transition-all duration-500 hover:scale-[1.02] shadow-[0_10px_30px_rgba(62,58,51,0.03)]"
-            >
-              <div className="w-20 h-20 rounded-3xl bg-[#3B7552]/10 flex items-center justify-center text-[#3B7552] group-hover:scale-110 transition-transform">
-                <Maximize2 className="h-10 w-10" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Modo Pantalla</h3>
-                <p className="text-[#3E3A33]/60 font-medium mt-2">Circuito de ejercicios en alta resolución</p>
-              </div>
-            </button>
-
-            <Link href="/dashboard" className="w-full">
-              <div className="group relative bg-[#FCFBF6] border-2 border-[#9B8C7A]/10 rounded-[2.5rem] p-12 flex flex-col items-center text-center gap-6 hover:border-[#3B7552]/40 transition-all duration-500 hover:scale-[1.02] shadow-[0_10px_30px_rgba(62,58,51,0.03)] h-full">
-                <div className="w-20 h-20 rounded-3xl bg-[#3B7552] flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-[#3B7552]/30">
-                  <Accessibility className="h-10 w-10" />
+          {/* Form/Choice Container */}
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-[#3B7552]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+            <Card className="relative border-[#9B8C7A]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
+              <CardHeader className="pt-10 px-10 pb-4 text-center">
+                <div className="flex justify-center items-center gap-4 mb-2">
+                  <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
+                  <CardTitle className="text-3xl font-black tracking-tight text-[#3E3A33] uppercase italic">
+                    Selecciona Operación
+                  </CardTitle>
+                  <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
                 </div>
-                <div>
-                  <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Administrador</h3>
-                  <p className="text-[#3E3A33]/60 font-medium mt-2">Gestión de miembros y entrenamientos</p>
+                <CardDescription className="text-[#3E3A33]/50 font-medium text-sm">
+                  Configura tu entorno de KaiCenter
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-10 pt-4 space-y-4">
+                <button
+                  onClick={() => setMode('tv')}
+                  className="w-full group relative bg-white border border-[#9B8C7A]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#3B7552]/40 transition-all duration-300 hover:shadow-lg shadow-[#3B7552]/5"
+                >
+                  <div className="flex items-center gap-6 text-left">
+                    <div className="w-16 h-16 rounded-2xl bg-[#3B7552]/10 flex items-center justify-center text-[#3B7552] group-hover:scale-110 transition-transform">
+                      <Maximize2 className="h-8 w-8" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-black text-[#3E3A33] uppercase">Modo Pantalla</h4>
+                      <p className="text-[#3E3A33]/60 text-sm font-medium">Ejercicios en resolución TV</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-6 w-6 text-[#9B8C7A] group-hover:text-[#3B7552] group-hover:translate-x-1 transition-all" />
+                </button>
+
+                <Link href="/dashboard" className="block w-full">
+                  <div className="w-full group relative bg-white border border-[#9B8C7A]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#3B7552]/40 transition-all duration-300 hover:shadow-lg shadow-[#3B7552]/5">
+                    <div className="flex items-center gap-6 text-left">
+                      <div className="w-16 h-16 rounded-2xl bg-[#3B7552] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                        <Accessibility className="h-8 w-8" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-black text-[#3E3A33] uppercase">Administrador</h4>
+                        <p className="text-[#3E3A33]/60 text-sm font-medium">Gestión y configuración</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-6 w-6 text-[#9B8C7A] group-hover:text-[#3B7552] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </Link>
+
+                <div className="text-center pt-4">
+                  <p className="text-[#9B8C7A] text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">
+                    {phrases[phraseIndex]}
+                  </p>
                 </div>
-              </div>
-            </Link>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="text-[#9B8C7A] text-xs font-black uppercase tracking-[0.5em] animate-pulse">
-            {phrases[phraseIndex]}
-          </div>
-        </div>
+          {/* Footer Quote */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="text-center mt-10 text-[#9B8C7A] text-[10px] font-medium uppercase tracking-[0.4em]"
+          >
+            Excellence is not an act, but a habit.
+          </motion.p>
+        </motion.div>
       </div>
     )
   }
