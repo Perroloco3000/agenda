@@ -91,30 +91,35 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="flex h-screen bg-muted/30 overflow-hidden">
+        <div className="flex h-screen bg-background overflow-hidden selection:bg-primary/20">
             {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
-                <div
-                    className="fixed inset-0 bg-black/60 z-50 md:hidden backdrop-blur-sm animate-in fade-in duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                />
+                < AnimatePresence >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-foreground/20 z-50 md:hidden backdrop-blur-sm"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                </AnimatePresence>
             )}
 
             {/* Sidebar (Desktop & Mobile) */}
             <aside className={cn(
-                "fixed inset-y-0 left-0 bg-card/70 backdrop-blur-2xl border-r border-white/5 flex flex-col z-[60] transition-all duration-500 ease-in-out md:relative md:translate-x-0 shadow-[20px_0_40px_rgba(0,0,0,0.3)] md:shadow-none",
+                "fixed inset-y-0 left-0 bg-card border-r border-border/10 flex flex-col z-[60] transition-all duration-500 ease-in-out md:relative md:translate-x-0 shadow-[0_0_30px_rgba(62,58,51,0.03)] md:shadow-none",
                 isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
                 isCollapsed ? "w-24" : "w-80"
             )}>
-                <div className={cn("p-8 border-b border-white/5 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
+                <div className={cn("p-8 border-b border-border/10 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
                             <div className="w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
                                 <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xl font-black tracking-tight leading-none text-white">{gymName}</span>
-                                <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
+                                <span className="text-xl font-black tracking-tight leading-none text-foreground">{gymName}</span>
+                                <span className="text-[9px] font-bold text-primary uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
                             </div>
                         </Link>
                     )}
@@ -128,13 +133,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={cn("hidden md:flex h-8 w-8 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/40 hover:text-white transition-all", isCollapsed ? "mt-4" : "")}
+                        className={cn("hidden md:flex h-8 w-8 rounded-lg bg-background/50 border border-border/10 hover:bg-background text-muted-foreground hover:text-primary transition-all", isCollapsed ? "mt-4" : "")}
                     >
                         <ChevronLeft className={cn("h-4 w-4 transition-transform duration-500", isCollapsed ? "rotate-180" : "")} />
                     </Button>
                 </div>
 
-                <nav className="flex-1 p-6 space-y-3">
+                <nav className="flex-1 p-6 space-y-3 overflow-y-auto custom-scrollbar">
                     {navigation.map((item) => {
                         const isActive = pathname === item.href
                         return (
@@ -145,24 +150,24 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                     "flex items-center transition-all duration-300 group relative overflow-hidden",
                                     isCollapsed ? "justify-center h-14 w-14 p-0 mx-auto rounded-xl" : "justify-between px-5 py-4 rounded-[1.5rem]",
                                     isActive
-                                        ? "bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10"
-                                        : "text-white/40 hover:bg-white/5 hover:text-white"
+                                        ? "bg-primary/10 text-primary shadow-[0_10px_20px_rgba(59,117,82,0.05)] border border-primary/10"
+                                        : "text-foreground/40 hover:bg-background/50 hover:text-primary"
                                 )}
                             >
                                 <div className={cn("flex items-center relative z-10", isCollapsed ? "justify-center" : "gap-4")}>
                                     <item.icon className={cn("transition-colors duration-300",
-                                        isActive ? "text-emerald-400" : "group-hover:text-emerald-400",
+                                        isActive ? "text-primary" : "group-hover:text-primary",
                                         isCollapsed ? "h-6 w-6" : "h-5 w-5"
                                     )} />
                                     {!isCollapsed && <span className="font-bold tracking-tight uppercase text-xs">{item.name}</span>}
                                 </div>
-                                {isActive && !isCollapsed && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] relative z-10" />}
+                                {isActive && !isCollapsed && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(59,117,82,0.5)] relative z-10" />}
                             </Link>
                         )
                     })}
                 </nav>
 
-                <div className="p-6 border-t border-border">
+                <div className="p-6 border-t border-border/10">
                     <button className={cn("flex items-center rounded-2xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-200", isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3 w-full")}>
                         <LogOut className="h-5 w-5" />
                         {!isCollapsed && <span className="font-bold">Cerrar Sesión</span>}
@@ -172,10 +177,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col overflow-hidden w-full">
-                <header className="h-20 bg-card/50 backdrop-blur-md border-b border-border flex items-center justify-between px-6 md:px-12 shrink-0">
+                <header className="h-20 bg-card/50 backdrop-blur-md border-b border-border/10 flex items-center justify-between px-6 md:px-12 shrink-0">
                     <div className="flex items-center gap-4">
                         <button
-                            className="p-2 md:hidden hover:bg-muted rounded-xl transition-colors"
+                            className="p-2 md:hidden hover:bg-background rounded-xl transition-colors"
                             onClick={() => setIsMobileMenuOpen(true)}
                         >
                             <Menu className="h-6 w-6" />
@@ -187,19 +192,19 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
-                            <p className="font-bold leading-none">Admin Eduardo</p>
-                            <p className="text-sm text-muted-foreground">Gym Owner</p>
+                            <p className="font-bold leading-none text-foreground">Admin Eduardo</p>
+                            <p className="text-sm text-muted-foreground font-medium uppercase tracking-tighter">Gym Owner</p>
                         </div>
                         <div className="relative group">
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-10 w-10 rounded-xl bg-card border-border hover:bg-muted relative"
+                                className="h-10 w-10 rounded-xl bg-background border-border/10 hover:bg-card hover:border-primary/20 relative transition-all"
                                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                             >
                                 <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                 {notifications.filter(n => !n.read).length > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center border-2 border-card">
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full text-[10px] font-bold text-primary-foreground flex items-center justify-center border-2 border-background">
                                         {notifications.filter(n => !n.read).length}
                                     </span>
                                 )}
@@ -208,16 +213,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             {/* Notifications Dropdown */}
                             {isNotifOpen && (
                                 <div
-                                    className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2"
+                                    className="absolute right-0 mt-2 w-80 bg-card border border-border/10 rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2"
                                     onMouseLeave={() => setIsNotifOpen(false)}
                                 >
-                                    <div className="p-4 border-b border-border flex justify-between items-center bg-muted/30">
-                                        <h3 className="font-bold text-sm">Notificaciones</h3>
+                                    <div className="p-4 border-b border-border/10 flex justify-between items-center bg-background/50">
+                                        <h3 className="font-bold text-sm text-foreground">Notificaciones</h3>
                                         {notifications.length > 0 && (
                                             <button onClick={clearNotifications} className="text-[10px] text-primary hover:underline font-bold uppercase">Limpiar</button>
                                         )}
                                     </div>
-                                    <div className="max-h-96 overflow-y-auto">
+                                    <div className="max-h-96 overflow-y-auto custom-scrollbar">
                                         {notifications.length === 0 ? (
                                             <div className="p-8 text-center text-muted-foreground text-xs italic">
                                                 No hay notificaciones nuevas
@@ -226,22 +231,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                             notifications.map(n => (
                                                 <div
                                                     key={n.id}
-                                                    className="p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer group/item"
-                                                    onClick={() => {
-                                                        const getRoute = () => {
-                                                            const title = n.title.toLowerCase();
-                                                            if (title.includes('reserva')) return '/dashboard/reservations';
-                                                            if (title.includes('miembro') || title.includes('usuario')) return '/dashboard/members';
-                                                            if (title.includes('rutina') || title.includes('entrenamiento')) return '/dashboard/workouts';
-                                                            return '/dashboard';
-                                                        }
-                                                        markNotificationAsRead(n.id);
-                                                        window.location.href = getRoute();
-                                                        setIsNotifOpen(false);
-                                                    }}
+                                                    className="p-4 border-b border-border/10 last:border-0 hover:bg-background/50 transition-colors cursor-pointer group/item"
                                                 >
                                                     <p className={`font-bold text-xs flex items-center gap-2 group-hover/item:text-primary transition-colors ${!n.read ? 'text-foreground' : 'text-muted-foreground'}`}>
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-green-500' : 'bg-blue-500'} ${!n.read ? 'opacity-100' : 'opacity-30'}`} />
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${n.type === 'success' ? 'bg-primary' : 'bg-secondary'} ${!n.read ? 'opacity-100' : 'opacity-30'}`} />
                                                         {n.title}
                                                     </p>
                                                     <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{n.description}</p>
@@ -263,19 +256,19 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                     duration: 3000
                                 }))
                             }}
-                            className="h-12 px-6 rounded-2xl bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all font-black uppercase tracking-widest text-[10px] flex gap-3"
+                            className="h-12 px-6 rounded-2xl bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-black uppercase tracking-widest text-[10px] flex gap-3 shadow-sm"
                         >
                             <RefreshCw className="h-4 w-4" />
                             Actualizar
                         </Button>
-                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg shadow-primary/5">
                             <Users className="h-5 w-5 text-primary" />
                         </div>
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto p-4 md:p-12 custom-scrollbar">
-                    <div className="max-w-full mx-auto space-y-12">
+                <div className="flex-1 overflow-y-auto p-4 md:p-12 custom-scrollbar bg-background/30">
+                    <div className="max-w-full mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
                         {children}
                     </div>
                 </div>

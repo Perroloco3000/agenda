@@ -90,61 +90,61 @@ export default function GymApp() {
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
-                <Accessibility className="h-20 w-20 text-[#3B7552]" />
+                <Accessibility className="h-20 w-20 text-[#336647]" />
               )}
             </motion.div>
           </div>
 
           {/* Form/Choice Container */}
           <div className="relative group">
-            <div className="absolute -inset-1 bg-[#3B7552]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            <Card className="relative border-[#9B8C7A]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
+            <div className="absolute -inset-1 bg-[#336647]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+            <Card className="relative border-[#2D5A3F]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
               <CardHeader className="pt-10 px-10 pb-4 text-center">
                 <div className="flex justify-center items-center gap-4 mb-2">
-                  <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
-                  <CardTitle className="text-3xl font-black tracking-tight text-[#3E3A33] uppercase italic">
+                  <Sparkles className="h-5 w-5 text-[#336647] animate-pulse" />
+                  <CardTitle className="text-3xl font-black tracking-tight text-[#1D3B2A] uppercase italic">
                     Selecciona Operación
                   </CardTitle>
-                  <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
+                  <Sparkles className="h-5 w-5 text-[#336647] animate-pulse" />
                 </div>
-                <CardDescription className="text-[#3E3A33]/50 font-medium text-sm">
+                <CardDescription className="text-[#1D3B2A]/50 font-medium text-sm">
                   Configura tu entorno de KaiCenter
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-10 pt-4 space-y-4">
                 <button
                   onClick={() => setMode('tv')}
-                  className="w-full group relative bg-white border border-[#9B8C7A]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#3B7552]/40 transition-all duration-300 hover:shadow-lg shadow-[#3B7552]/5"
+                  className="w-full group relative bg-white border border-[#2D5A3F]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#336647]/40 transition-all duration-300 hover:shadow-lg shadow-[#336647]/5"
                 >
                   <div className="flex items-center gap-6 text-left">
-                    <div className="w-16 h-16 rounded-2xl bg-[#3B7552]/10 flex items-center justify-center text-[#3B7552] group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 rounded-2xl bg-[#336647]/10 flex items-center justify-center text-[#336647] group-hover:scale-110 transition-transform">
                       <Maximize2 className="h-8 w-8" />
                     </div>
                     <div>
-                      <h4 className="text-xl font-black text-[#3E3A33] uppercase">Modo Pantalla</h4>
-                      <p className="text-[#3E3A33]/60 text-sm font-medium">Ejercicios en resolución TV</p>
+                      <h4 className="text-xl font-black text-[#1D3B2A] uppercase">Modo Pantalla</h4>
+                      <p className="text-[#1D3B2A]/60 text-sm font-medium">Ejercicios en resolución TV</p>
                     </div>
                   </div>
-                  <ChevronRight className="h-6 w-6 text-[#9B8C7A] group-hover:text-[#3B7552] group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="h-6 w-6 text-[#2D5A3F] group-hover:text-[#336647] group-hover:translate-x-1 transition-all" />
                 </button>
 
                 <Link href="/dashboard" className="block w-full">
-                  <div className="w-full group relative bg-white border border-[#9B8C7A]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#3B7552]/40 transition-all duration-300 hover:shadow-lg shadow-[#3B7552]/5">
+                  <div className="w-full group relative bg-white border border-[#2D5A3F]/10 rounded-3xl p-8 flex items-center justify-between hover:border-[#336647]/40 transition-all duration-300 hover:shadow-lg shadow-[#336647]/5">
                     <div className="flex items-center gap-6 text-left">
-                      <div className="w-16 h-16 rounded-2xl bg-[#3B7552] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                      <div className="w-16 h-16 rounded-2xl bg-[#336647] flex items-center justify-center text-[#FCFBF6] group-hover:scale-110 transition-transform">
                         <Accessibility className="h-8 w-8" />
                       </div>
                       <div>
-                        <h4 className="text-xl font-black text-[#3E3A33] uppercase">Administrador</h4>
-                        <p className="text-[#3E3A33]/60 text-sm font-medium">Gestión y configuración</p>
+                        <h4 className="text-xl font-black text-[#1D3B2A] uppercase">Administrador</h4>
+                        <p className="text-[#1D3B2A]/60 text-sm font-medium">Gestión y configuración</p>
                       </div>
                     </div>
-                    <ChevronRight className="h-6 w-6 text-[#9B8C7A] group-hover:text-[#3B7552] group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="h-6 w-6 text-[#2D5A3F] group-hover:text-[#336647] group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>
 
                 <div className="text-center pt-4">
-                  <p className="text-[#9B8C7A] text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">
+                  <p className="text-[#2D5A3F] text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">
                     {phrases[phraseIndex]}
                   </p>
                 </div>
@@ -157,7 +157,7 @@ export default function GymApp() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="text-center mt-10 text-[#9B8C7A] text-[10px] font-medium uppercase tracking-[0.4em]"
+            className="text-center mt-10 text-[#2D5A3F] text-[10px] font-medium uppercase tracking-[0.4em]"
           >
             Excellence is not an act, but a habit.
           </motion.p>
