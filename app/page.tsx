@@ -12,8 +12,8 @@ import { motion, AnimatePresence } from "framer-motion"
 
 const FallingLeaves = () => {
     return (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-10">
-            {[...Array(20)].map((_, i) => (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+            {[...Array(30)].map((_, i) => (
                 <motion.div
                     key={i}
                     initial={{
@@ -23,25 +23,25 @@ const FallingLeaves = () => {
                         rotate: 0,
                     }}
                     animate={{
-                        opacity: [0, 0.6, 0.6, 0],
+                        opacity: [0, 0.8, 0.8, 0],
                         y: "110vh",
-                        x: [null, (Math.random() - 0.5) * 30 + "%"],
-                        rotate: 360,
+                        x: [null, (Math.random() - 0.5) * 40 + "%"],
+                        rotate: 720,
                     }}
                     transition={{
-                        duration: 10 + Math.random() * 10,
+                        duration: 8 + Math.random() * 12,
                         repeat: Infinity,
-                        delay: Math.random() * 15,
+                        delay: Math.random() * 20,
                         ease: "linear",
                     }}
                     className="absolute"
                 >
                     <svg
-                        width="28"
-                        height="28"
+                        width="32"
+                        height="32"
                         viewBox="0 0 24 24"
                         fill="none"
-                        className="text-[#3B7552]/25"
+                        className="text-[#3B7552]/40 shadow-sm"
                     >
                         <path
                             d="M12 2L10.5 4.5L12 7L13.5 4.5L12 2Z"

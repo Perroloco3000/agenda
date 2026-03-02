@@ -14,8 +14,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const FallingLeaves = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-20">
-      {[...Array(15)].map((_, i) => (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+      {[...Array(25)].map((_, i) => (
         <motion.div
           key={i}
           initial={{
@@ -25,13 +25,13 @@ const FallingLeaves = () => {
             rotate: 0,
           }}
           animate={{
-            opacity: [0, 0.4, 0.4, 0],
+            opacity: [0, 0.6, 0.6, 0],
             y: "110vh",
-            x: [null, (Math.random() - 0.5) * 20 + "%"],
-            rotate: 360,
+            x: [null, (Math.random() - 0.5) * 35 + "%"],
+            rotate: 720,
           }}
           transition={{
-            duration: 12 + Math.random() * 8,
+            duration: 10 + Math.random() * 10,
             repeat: Infinity,
             delay: Math.random() * 15,
             ease: "linear",
@@ -39,11 +39,11 @@ const FallingLeaves = () => {
           className="absolute"
         >
           <svg
-            width="24"
-            height="24"
+            width="30"
+            height="30"
             viewBox="0 0 24 24"
             fill="none"
-            className="text-[#3B7552]/20"
+            className="text-[#336647]/35 shadow-sm"
           >
             <path
               d="M12 2L10.5 4.5L12 7L13.5 4.5L12 2Z"
