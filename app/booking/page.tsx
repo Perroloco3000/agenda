@@ -87,32 +87,32 @@ export default function BookingPage() {
     if (!currentUser) return null
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950">
+        <div className="min-h-screen bg-[#F5F1E6]">
             {/* Header */}
-            <header className="bg-slate-900/50 backdrop-blur-md border-b border-emerald-500/20 px-6 py-4">
+            <header className="bg-card/50 backdrop-blur-md border-b border-border/10 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                            <Accessibility className="h-6 w-6 text-white" />
+                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                            <Accessibility className="h-6 w-6 text-primary-foreground" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-black tracking-tighter uppercase text-white leading-none">KaiCenter SC</h1>
-                            <p className="text-[10px] font-bold text-emerald-400 tracking-[0.3em] uppercase">Training Osteomuscular</p>
+                            <h1 className="text-xl font-black tracking-tighter uppercase text-foreground leading-none">KaiCenter SC</h1>
+                            <p className="text-[10px] font-bold text-primary tracking-[0.3em] uppercase">Training Osteomuscular</p>
                         </div>
                     </div>
 
                     <div className="hidden md:block flex-1 max-w-xl mx-auto px-8">
-                        <p className="text-center italic text-emerald-400/60 font-medium text-sm">
+                        <p className="text-center italic text-primary/60 font-medium text-sm">
                             "{quote}"
                         </p>
                     </div>
 
                     <div className="flex items-center gap-4">
                         <div className="text-right">
-                            <p className="text-sm font-bold text-white">{currentUser.name}</p>
-                            <p className="text-xs text-slate-400">{currentUser.email}</p>
+                            <p className="text-sm font-bold text-foreground">{currentUser.name}</p>
+                            <p className="text-xs text-muted-foreground">{currentUser.email}</p>
                         </div>
-                        <Button onClick={handleLogout} variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                        <Button onClick={handleLogout} variant="outline" className="border-border/30 text-primary hover:bg-primary/10">
                             <LogOut className="h-4 w-4" />
                         </Button>
                     </div>
@@ -122,38 +122,38 @@ export default function BookingPage() {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto p-6 space-y-8">
                 {/* Date Selector */}
-                <Card className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl">
+                <Card className="border-border/10 bg-card shadow-sm">
                     <CardHeader>
-                        <CardTitle className="text-2xl font-black text-white flex items-center gap-2">
-                            <Calendar className="h-6 w-6 text-emerald-400" />
+                        <CardTitle className="text-2xl font-black text-foreground flex items-center gap-2">
+                            <Calendar className="h-6 w-6 text-primary" />
                             Selecciona tu Fecha
                         </CardTitle>
-                        <CardDescription className="text-slate-400">Elige el día para tu entrenamiento</CardDescription>
+                        <CardDescription className="text-muted-foreground">Elige el día para tu entrenamiento</CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col md:flex-row gap-6">
                         <div className="space-y-2">
-                            <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
+                            <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
                             <input
                                 type="date"
                                 value={selectedDate}
                                 onChange={e => setSelectedDate(e.target.value)}
                                 min={getVenezuelaDateString()}
-                                className="w-full md:w-64 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white font-bold text-lg focus:ring-2 focus:ring-emerald-500/50"
+                                className="w-full md:w-64 px-4 py-3 rounded-xl bg-background border border-border/20 text-foreground font-bold text-lg focus:ring-2 focus:ring-primary/20"
                             />
                         </div>
 
                         <div className="space-y-2 flex-1">
-                            <Label className="text-slate-400 text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
-                            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-800/50 rounded-xl border border-slate-700">
+                            <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
+                            <div className="grid grid-cols-2 gap-2 p-1 bg-background border border-border/20 rounded-xl">
                                 <button
                                     onClick={() => setSelectedArea("gym")}
-                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "gym" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "gym" ? "bg-primary text-primary-foreground shadow-lg" : "text-foreground/40 hover:text-foreground/60"}`}
                                 >
                                     Gimnasio
                                 </button>
                                 <button
                                     onClick={() => setSelectedArea("cognitive")}
-                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "cognitive" ? "bg-emerald-500 text-white shadow-lg" : "text-white/40 hover:text-white/60"}`}
+                                    className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "cognitive" ? "bg-primary text-primary-foreground shadow-lg" : "text-foreground/40 hover:text-foreground/60"}`}
                                 >
                                     Área Cognitiva
                                 </button>
@@ -178,8 +178,8 @@ export default function BookingPage() {
 
                 {/* Time Slots Grid */}
                 <div>
-                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
-                        <Clock className="h-6 w-6 text-emerald-400" />
+                    <h2 className="text-2xl font-black text-foreground mb-6 flex items-center gap-2">
+                        <Clock className="h-6 w-6 text-primary" />
                         Turnos Disponibles
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -188,28 +188,28 @@ export default function BookingPage() {
                             const isBooked = myBookings.some((b: Booking) => b.timeSlot === slot.time && b.date === selectedDate)
 
                             return (
-                                <Card key={slot.time} className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl hover:border-emerald-500/40 transition-all">
+                                <Card key={slot.time} className="border-border/10 bg-card hover:border-primary/20 transition-all shadow-sm">
                                     <CardContent className="p-6 space-y-4">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                <Clock className="h-5 w-5 text-emerald-400" />
-                                                <span className="text-xl font-black text-white">{slot.time}</span>
+                                                <Clock className="h-5 w-5 text-primary" />
+                                                <span className="text-xl font-black text-foreground">{slot.time}</span>
                                             </div>
                                             <div className={`w-3 h-3 rounded-full ${status.color} animate-pulse`} />
                                         </div>
 
                                         <div className="space-y-2">
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-slate-400 font-medium">Disponibilidad</span>
-                                                <span className="text-white font-bold">{slot.available}/{slot.capacity}</span>
+                                                <span className="text-muted-foreground font-medium">Disponibilidad</span>
+                                                <span className="text-foreground font-bold">{slot.available}/{slot.capacity}</span>
                                             </div>
-                                            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                                            <div className="w-full bg-background rounded-full h-2 overflow-hidden">
                                                 <div
                                                     className={`h-full ${status.color} transition-all`}
                                                     style={{ width: `${(slot.booked / slot.capacity) * 100}%` }}
                                                 />
                                             </div>
-                                            <p className="text-xs text-slate-500 font-medium">{status.text}</p>
+                                            <p className="text-xs text-muted-foreground font-medium">{status.text}</p>
                                         </div>
 
                                         {isBooked ? (
@@ -240,7 +240,7 @@ export default function BookingPage() {
                                                     <Button
                                                         onClick={() => handleBooking(slot.time)}
                                                         disabled={slot.available === 0 || isPastOrClosing}
-                                                        className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
                                                     >
                                                         <Users className="mr-2 h-4 w-4" />
                                                         {isPastOrClosing ? 'No Disponible' : 'Reservar'}
@@ -257,12 +257,12 @@ export default function BookingPage() {
 
                 {/* My Bookings */}
                 {myBookings.length > 0 && (
-                    <Card className="border-emerald-500/20 bg-slate-900/50 backdrop-blur-xl">
+                    <Card className="border-border/10 bg-card shadow-sm">
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <CardTitle className="text-2xl font-black text-white">Mis Reservas</CardTitle>
-                                    <CardDescription className="text-slate-400">Tus próximos entrenamientos</CardDescription>
+                                    <CardTitle className="text-2xl font-black text-foreground">Mis Reservas</CardTitle>
+                                    <CardDescription className="text-muted-foreground">Tus próximos entrenamientos</CardDescription>
                                 </div>
                                 <Button
                                     variant="outline"
@@ -285,19 +285,19 @@ export default function BookingPage() {
                         <CardContent>
                             <div className="space-y-3">
                                 {myBookings.map((booking: Booking) => (
-                                    <div key={booking.id} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-between">
+                                    <div key={booking.id} className="p-4 rounded-xl bg-background border border-border/10 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                                                <Calendar className="h-6 w-6 text-emerald-400" />
+                                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                                <Calendar className="h-6 w-6 text-primary" />
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="font-black text-white">{booking.timeSlot}</p>
-                                                    <span className="text-[10px] font-black uppercase bg-white/5 px-2 py-0.5 rounded-md text-emerald-400 border border-white/10">
+                                                    <p className="font-black text-foreground">{booking.timeSlot}</p>
+                                                    <span className="text-[10px] font-black uppercase bg-primary/5 px-2 py-0.5 rounded-md text-primary border border-primary/10">
                                                         {booking.area === 'gym' ? 'Gimnasio' : 'Área Cognitiva'}
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-slate-400">{new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                                <p className="text-sm text-muted-foreground">{new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">

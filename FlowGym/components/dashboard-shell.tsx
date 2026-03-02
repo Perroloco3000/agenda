@@ -197,9 +197,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="relative group">
                             <Button
-                                variant="outline"
+                                variant="ghost"
                                 size="icon"
-                                className="h-10 w-10 rounded-xl bg-background border-border/10 hover:bg-card hover:border-primary/20 relative transition-all"
+                                className="h-10 w-10 rounded-xl hover:bg-primary/10 relative transition-all"
                                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                             >
                                 <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -247,7 +247,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             )}
                         </div>
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={async () => {
                                 await refreshData()
@@ -256,12 +256,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                     duration: 3000
                                 }))
                             }}
-                            className="h-12 px-6 rounded-2xl bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-black uppercase tracking-widest text-[10px] flex gap-3 shadow-sm"
+                            className="h-12 px-6 rounded-2xl text-primary hover:bg-primary/10 transition-all font-black uppercase tracking-widest text-[10px] flex gap-3"
                         >
                             <RefreshCw className="h-4 w-4" />
                             Actualizar
                         </Button>
-                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shadow-lg shadow-primary/5">
+                        <div className="w-10 h-10 rounded-full bg-primary-foreground/50 flex items-center justify-center shadow-lg shadow-primary/5">
                             <Users className="h-5 w-5 text-primary" />
                         </div>
                     </div>
