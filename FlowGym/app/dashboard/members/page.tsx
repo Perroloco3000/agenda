@@ -168,7 +168,7 @@ export default function MembersPage() {
                             placeholder="Buscar por nombre, email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-16 pl-20 pr-10 rounded-2xl bg-card border-border/10 text-lg font-bold focus-visible:ring-primary/20 transition-all text-foreground"
+                            className="h-16 pl-20 pr-10 rounded-2xl bg-white/[0.03] border-white/10 text-lg font-bold focus-visible:ring-primary/20 transition-all text-white"
                         />
                     </div>
                     <Button variant="outline" className="h-16 px-10 rounded-2xl border-white/10 bg-white/5 font-black uppercase tracking-widest text-xs flex gap-4 hover:bg-white/10">
@@ -183,10 +183,10 @@ export default function MembersPage() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/[0.02]">
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-muted-foreground/20 text-[10px]">Usuario</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-muted-foreground/20 text-[10px]">Contacto</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-muted-foreground/20 text-[10px]">Plan</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-muted-foreground/20 text-[10px]">Estado</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Usuario</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Contacto</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Plan</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Estado</th>
                                     <th className="px-12 py-8 text-right"></th>
                                 </tr>
                             </thead>
@@ -199,8 +199,8 @@ export default function MembersPage() {
                                                     {member.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-2xl tracking-tight text-foreground uppercase">{member.name}</p>
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/20 mt-1">Desde: {member.joinDate}</p>
+                                                    <p className="font-black text-2xl tracking-tight text-white uppercase">{member.name}</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">Desde: {member.joinDate}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -227,8 +227,8 @@ export default function MembersPage() {
                                         </td>
                                         <td className="px-12 py-10">
                                             <button onClick={async () => await toggleMemberStatus(member.id)} className="flex items-center gap-4 hover:scale-105 transition-transform">
-                                                <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'} animate-pulse`} />
-                                                <span className="font-black uppercase tracking-widest text-[10px] text-primary">{member.status}</span>
+                                                <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'} animate-pulse`} />
+                                                <span className="font-black uppercase tracking-widest text-[10px] text-emerald-400">{member.status}</span>
                                             </button>
                                         </td>
                                         <td className="px-12 py-10 text-right">
@@ -252,8 +252,8 @@ export default function MembersPage() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="p-12 border-t border-border/5 bg-white/[0.01] text-center">
-                        <p className="text-muted-foreground/20 font-black uppercase tracking-[0.3em] text-xs">Total de {filteredMembers.length} Usuarios de Élite</p>
+                    <div className="p-12 border-t border-white/5 bg-white/[0.01] text-center">
+                        <p className="text-white/20 font-black uppercase tracking-[0.3em] text-xs">Total de {filteredMembers.length} Usuarios de Élite</p>
                     </div>
                 </div>
             </section>

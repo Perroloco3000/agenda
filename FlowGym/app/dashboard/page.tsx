@@ -110,7 +110,7 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/members/profile?id=${member.id}`}>
-                                        <button className="text-primary font-black px-5 py-3 rounded-xl bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-all uppercase tracking-widest text-[10px]">
+                                        <button className="text-blue-400 font-black px-5 py-3 rounded-xl bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-all uppercase tracking-widest text-[10px]">
                                             Ver Perfil
                                         </button>
                                     </Link>
