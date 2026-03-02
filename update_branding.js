@@ -10,7 +10,7 @@ async function updateBranding() {
     console.log("Updating logoUrl in system_settings...")
     const { data, error } = await supabase
         .from('system_settings')
-        .upsert({ key: 'logoUrl', value: 'https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/Gemini_Generated_Image_g5gqdtg5gqdtg5gq%20(1).png' }, { onConflict: 'key' })
+        .upsert({ key: 'logoUrl', value: '' }, { onConflict: 'key' })
 
     if (error) {
         console.error("Error updating branding:", error)
