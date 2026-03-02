@@ -161,7 +161,7 @@ export default function BookingPage() {
                     />
                     <div className="bg-white/80 backdrop-blur-3xl shadow-[0_10px_50px_rgba(59,117,82,0.03)] rounded-[3.5rem] p-5 flex flex-col md:flex-row gap-4 items-center border border-white/40 ring-1 ring-[#3B7552]/5 relative z-10">
                         <div className="flex-1 w-full pl-8 py-5 border-b md:border-b-0 md:border-r border-[#3B7552]/10 group transition-all">
-                            <div className="flex items-center gap-4 text-[#9B8C7A] mb-2 uppercase tracking-[0.3em] text-[10px] font-black">
+                            <div className="flex items-center gap-4 text-[#3B7552] mb-2 uppercase tracking-[0.3em] text-[10px] font-black">
                                 <Calendar className="h-3.5 w-3.5" />
                                 <span>Fecha de Sesión</span>
                             </div>
@@ -174,7 +174,7 @@ export default function BookingPage() {
                             />
                         </div>
                         <div className="flex-1 w-full pl-6 py-4">
-                            <div className="flex items-center gap-4 text-[#9B8C7A] mb-2 uppercase tracking-[0.3em] text-[10px] font-black">
+                            <div className="flex items-center gap-4 text-[#3B7552] mb-2 uppercase tracking-[0.3em] text-[10px] font-black">
                                 <Sparkles className="h-3.5 w-3.5" />
                                 <span>Experiencia</span>
                             </div>
@@ -185,7 +185,7 @@ export default function BookingPage() {
                                 >
                                     Gimnasio
                                 </button>
-                                <span className="text-[#9B8C7A]/20 font-light">|</span>
+                                <span className="text-[#3B7552]/20 font-light">|</span>
                                 <button
                                     onClick={() => setSelectedArea("cognitive")}
                                     className={`text-lg font-black tracking-tight transition-all duration-500 uppercase ${selectedArea === "cognitive" ? "text-[#3B7552]" : "text-[#3E3A33]/20 hover:text-[#3E3A33]/40"}`}
@@ -226,11 +226,11 @@ export default function BookingPage() {
                     <div className="flex items-end justify-between px-4">
                         <div className="space-y-1">
                             <h2 className="text-3xl font-black text-[#3E3A33] tracking-tighter uppercase leading-none">Turnos de Hoy</h2>
-                            <p className="text-[10px] font-black text-[#9B8C7A] tracking-[0.5em] uppercase pl-1">Horarios exclusivos disponibles</p>
+                            <p className="text-[10px] font-black text-[#3B7552] tracking-[0.5em] uppercase pl-1">Horarios exclusivos disponibles</p>
                         </div>
                         <div className="flex items-center gap-3 text-[10px] font-black text-[#3B7552] tracking-widest uppercase bg-white/80 px-5 py-2.5 rounded-full border border-[#3B7552]/10 shadow-sm">
                             <div className="w-2 h-2 rounded-full bg-[#3B7552] animate-pulse" />
-                            Brillante • Realtime
+                            En línea
                         </div>
                     </div>
 
@@ -254,10 +254,10 @@ export default function BookingPage() {
                                             <div className="flex items-center justify-between">
                                                 <div className="space-y-1">
                                                     <span className="text-4xl font-black text-[#3E3A33] tracking-tighter">{slot.time}</span>
-                                                    <p className="text-[9px] font-black text-[#9B8C7A] tracking-[0.3em] uppercase opacity-60">Duración: 50 Minutos</p>
+                                                    <p className="text-[9px] font-black text-[#3B7552] tracking-[0.3em] uppercase opacity-60">Duración: 50 Minutos</p>
                                                 </div>
                                                 <div className={`p-4 rounded-[1.5rem] ${isBooked ? 'bg-[#3B7552]/10' : 'bg-[#F5F1E6]'} group-hover:scale-110 transition-transform duration-700`}>
-                                                    <Clock className={`h-6 w-6 ${isBooked ? 'text-[#3B7552]' : 'text-[#9B8C7A]'}`} />
+                                                    <Clock className={`h-6 w-6 ${isBooked ? 'text-[#3B7552]' : 'text-[#3B7552]'}`} />
                                                 </div>
                                             </div>
 
@@ -265,7 +265,7 @@ export default function BookingPage() {
                                                 <div className="flex items-center justify-between px-1">
                                                     <div className="flex items-center gap-2">
                                                         <div className={`w-1.5 h-1.5 rounded-full ${status.color}`} />
-                                                        <span className="text-[10px] font-black text-[#9B8C7A] uppercase tracking-widest">{status.text}</span>
+                                                        <span className="text-[10px] font-black text-[#3B7552] uppercase tracking-widest">{status.text}</span>
                                                     </div>
                                                     <span className="text-[10px] font-black text-[#3E3A33] tracking-tighter uppercase">{slot.available} / {slot.capacity} LIBRES</span>
                                                 </div>
@@ -344,7 +344,7 @@ export default function BookingPage() {
                             <div className="bg-gradient-to-r from-[#3B7552]/10 to-transparent px-12 py-10 flex items-center justify-between border-b border-white relative z-10">
                                 <div className="space-y-1">
                                     <h2 className="text-2xl font-black text-[#3E3A33] tracking-tighter uppercase leading-none">Tu Agenda</h2>
-                                    <p className="text-[10px] font-black text-[#9B8C7A] tracking-[0.4em] uppercase">Control de sesiones agendadas</p>
+                                    <p className="text-[10px] font-black text-[#3B7552] tracking-[0.4em] uppercase">Control de sesiones agendadas</p>
                                 </div>
                                 <motion.button
                                     whileHover={{ scale: 1.05, color: "#ef4444" }}
@@ -358,7 +358,7 @@ export default function BookingPage() {
                                             })
                                         }
                                     }}
-                                    className="text-[10px] font-black text-[#9B8C7A] uppercase tracking-[0.2em] px-6 py-3 rounded-2xl border border-[#9B8C7A]/10 hover:border-red-500/20 transition-all"
+                                    className="text-[10px] font-black text-[#3B7552] uppercase tracking-[0.2em] px-6 py-3 rounded-2xl border border-[#9B8C7A]/10 hover:border-red-500/20 transition-all"
                                 >
                                     Limpiar Todo
                                 </motion.button>
@@ -381,7 +381,7 @@ export default function BookingPage() {
                                                         {booking.area === 'gym' ? 'GYM' : 'COGNITIVO'}
                                                     </span>
                                                 </div>
-                                                <p className="text-[10px] text-[#9B8C7A] font-bold uppercase tracking-[0.3em] opacity-80">
+                                                <p className="text-[10px] text-[#3B7552] font-bold uppercase tracking-[0.3em] opacity-80">
                                                     {new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
                                                 </p>
                                             </div>
@@ -389,7 +389,7 @@ export default function BookingPage() {
                                         <div className="flex items-center gap-6">
                                             <div className="hidden sm:flex flex-col items-end mr-4">
                                                 <span className="text-[10px] font-black text-[#3B7552] uppercase tracking-widest">Confirmado</span>
-                                                <span className="text-[8px] font-bold text-[#9B8C7A] uppercase tracking-tighter">Sesión de Paz</span>
+                                                <span className="text-[8px] font-bold text-[#3B7552] uppercase tracking-tighter">Sesión de Paz</span>
                                             </div>
                                             <motion.button
                                                 whileHover={{ scale: 1.1, rotate: 90 }}
@@ -403,7 +403,7 @@ export default function BookingPage() {
                                                         })
                                                     }
                                                 }}
-                                                className="h-12 w-12 rounded-full flex items-center justify-center text-[#9B8C7A]/20 hover:text-red-500/40 transition-colors"
+                                                className="h-12 w-12 rounded-full flex items-center justify-center text-[#3B7552]/20 hover:text-red-500/40 transition-colors"
                                             >
                                                 <XCircle className="h-6 w-6" />
                                             </motion.button>
@@ -425,7 +425,7 @@ export default function BookingPage() {
                                 window.location.reload()
                             }
                         }}
-                        className="text-[9px] text-[#9B8C7A] font-black uppercase tracking-[1em]"
+                        className="text-[9px] text-[#3B7552] font-black uppercase tracking-[1em]"
                     >
                         System Reset
                     </button>

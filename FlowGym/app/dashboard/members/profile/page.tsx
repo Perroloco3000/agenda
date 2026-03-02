@@ -48,10 +48,10 @@ function MemberProfileContent() {
         return (
             <DashboardShell>
                 <div className="flex flex-col items-center justify-center h-[60vh] space-y-6">
-                    <div className="text-6xl">🤷‍♂️</div>
-                    <h2 className="text-3xl font-black">Miembro no encontrado</h2>
+                    <div className="text-6xl italic font-black text-[#3B7552]">?</div>
+                    <h2 className="text-3xl font-black text-[#3B7552] uppercase">Usuario no encontrado</h2>
                     <Link href="/dashboard/members">
-                        <Button>Volver a Miembros</Button>
+                        <Button className="bg-[#3B7552] text-white rounded-xl">Volver a Usuarios</Button>
                     </Link>
                 </div>
             </DashboardShell>
@@ -63,22 +63,22 @@ function MemberProfileContent() {
             <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard/members">
-                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl">
+                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-2xl border-[#3B7552]/10 text-[#3B7552]">
                             <ArrowLeft className="h-6 w-6" />
                         </Button>
                     </Link>
                     <div>
-                        <h2 className="text-4xl font-black tracking-tighter uppercase">Perfil de Miembro</h2>
-                        <p className="text-muted-foreground font-medium">Información detallada</p>
+                        <h2 className="text-4xl font-black tracking-tighter uppercase text-[#3B7552]">Perfil de Usuario</h2>
+                        <p className="text-[#3B7552]/60 font-black uppercase tracking-widest text-[10px]">Expediente de Élite</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Info Card */}
-                    <div className="lg:col-span-2 bg-card p-10 rounded-[3rem] border border-border/50 shadow-sm space-y-8">
+                    <div className="lg:col-span-2 bg-white/5 backdrop-blur-3xl p-10 rounded-[3rem] border border-[#3B7552]/10 shadow-2xl space-y-8">
                         <div className="flex items-center gap-8">
-                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center font-black text-primary text-5xl border-4 border-primary/10 transition-transform hover:scale-105">
-                                {editData?.name?.charAt(0) || "M"}
+                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#3B7552]/20 to-[#3B7552]/5 flex items-center justify-center font-black text-[#3B7552] text-5xl border-4 border-[#3B7552]/10 transition-transform hover:scale-105">
+                                {editData?.name?.charAt(0) || "U"}
                             </div>
                             <div className="flex-1">
                                 {isEditing ? (
@@ -118,10 +118,10 @@ function MemberProfileContent() {
                                     </div>
                                 ) : (
                                     <>
-                                        <h3 className="text-4xl font-black tracking-tight mb-2">{member.name}</h3>
+                                        <h3 className="text-4xl font-black tracking-tight mb-2 text-[#3B7552] uppercase">{member.name}</h3>
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-green-500 animate-pulse' : 'bg-destructive/50'}`} />
-                                            <span className="font-bold text-lg">{member.status}</span>
+                                            <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-[#3B7552] shadow-[0_0_10px_rgba(59,117,82,0.3)]' : 'bg-red-500 shadow-[0_0_10px_#ef4444]'} animate-pulse`} />
+                                            <span className="font-black uppercase tracking-widest text-xs text-[#3B7552]">{member.status}</span>
                                         </div>
                                     </>
                                 )}
@@ -129,56 +129,56 @@ function MemberProfileContent() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
+                            <div className="p-6 rounded-3xl bg-white/[0.03] border border-[#3B7552]/10">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <Mail className="h-5 w-5 text-primary" />
-                                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</span>
+                                    <Mail className="h-5 w-5 text-[#3B7552]" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Email Principal</span>
                                 </div>
                                 {isEditing ? (
                                     <Input
                                         type="email"
                                         value={editData.email}
-                                        onChange={e => setEditData({ ...editData, email: e.target.value })}
-                                        className="font-bold rounded-xl"
+                                        onChange={(e: any) => setEditData({ ...editData, email: e.target.value })}
+                                        className="font-bold rounded-xl border-[#3B7552]/20 text-[#3B7552]"
                                     />
                                 ) : (
-                                    <p className="font-bold text-lg">{member.email}</p>
+                                    <p className="font-black text-lg text-[#3B7552]">{member.email}</p>
                                 )}
                             </div>
 
-                            <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
+                            <div className="p-6 rounded-3xl bg-white/[0.03] border border-[#3B7552]/10">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <Phone className="h-5 w-5 text-primary" />
-                                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Teléfono</span>
+                                    <Phone className="h-5 w-5 text-[#3B7552]" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Teléfono</span>
                                 </div>
                                 {isEditing ? (
                                     <Input
                                         type="tel"
                                         value={editData.phone}
-                                        onChange={e => setEditData({ ...editData, phone: e.target.value })}
-                                        className="font-bold rounded-xl"
+                                        onChange={(e: any) => setEditData({ ...editData, phone: e.target.value })}
+                                        className="font-bold rounded-xl border-[#3B7552]/20 text-[#3B7552]"
                                     />
                                 ) : (
-                                    <p className="font-bold text-lg">{member.phone}</p>
+                                    <p className="font-black text-lg text-[#3B7552]">{member.phone}</p>
                                 )}
                             </div>
 
-                            <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
+                            <div className="p-6 rounded-3xl bg-white/[0.03] border border-[#3B7552]/10">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <Calendar className="h-5 w-5 text-primary" />
-                                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha de Ingreso</span>
+                                    <Calendar className="h-5 w-5 text-[#3B7552]" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Fecha de Ingreso</span>
                                 </div>
-                                <p className="font-bold text-lg">{member.joinDate}</p>
+                                <p className="font-black text-lg text-[#3B7552]">{member.joinDate}</p>
                             </div>
 
-                            <div className="p-6 rounded-3xl bg-muted/30 border border-border/20">
+                            <div className="p-6 rounded-3xl bg-white/[0.03] border border-[#3B7552]/10">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <CreditCard className="h-5 w-5 text-primary" />
-                                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Plan</span>
+                                    <CreditCard className="h-5 w-5 text-[#3B7552]" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Plan de Élite</span>
                                 </div>
                                 {isEditing ? (
                                     <Select value={editData.plan} onValueChange={v => setEditData({ ...editData, plan: v })}>
-                                        <SelectTrigger className="h-10 rounded-xl font-bold">
+                                        <SelectTrigger className="h-10 rounded-xl font-bold border-[#3B7552]/20 text-[#3B7552]">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -188,8 +188,8 @@ function MemberProfileContent() {
                                         </SelectContent>
                                     </Select>
                                 ) : (
-                                    <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20">
-                                        <span className="font-black text-primary uppercase tracking-widest">{member.plan}</span>
+                                    <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-[#3B7552]/10 border border-[#3B7552]/20">
+                                        <span className="font-black text-[#3B7552] uppercase tracking-widest">{member.plan}</span>
                                     </div>
                                 )}
                             </div>
@@ -198,24 +198,24 @@ function MemberProfileContent() {
 
                     {/* Stats Sidebar */}
                     <div className="space-y-6">
-                        <div className="bg-card p-8 rounded-[3rem] border border-border/50 shadow-sm">
-                            <h4 className="text-xl font-black uppercase tracking-tight mb-6">Estadísticas</h4>
+                        <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[3rem] border border-[#3B7552]/10 shadow-2xl">
+                            <h4 className="text-xl font-black uppercase tracking-tight mb-6 text-[#3B7552]">Estadísticas</h4>
                             <div className="space-y-6">
-                                <div className="text-center p-6 rounded-3xl bg-primary/5 border border-primary/10">
-                                    <div className="text-5xl font-black text-primary mb-2">0</div>
-                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Clases Asistidas</p>
+                                <div className="text-center p-6 rounded-3xl bg-[#3B7552]/5 border border-[#3B7552]/10">
+                                    <div className="text-5xl font-black text-[#3B7552] mb-2">0</div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Clases Asistidas</p>
                                 </div>
-                                <div className="text-center p-6 rounded-3xl bg-muted/30 border border-border/20">
-                                    <div className="text-5xl font-black mb-2">0</div>
-                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Días Activo</p>
+                                <div className="text-center p-6 rounded-3xl bg-white/[0.03] border border-[#3B7552]/5">
+                                    <div className="text-5xl font-black mb-2 text-[#3B7552]">0</div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#3B7552]/40">Días Activo</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-card p-8 rounded-[3rem] border border-border/50 shadow-sm">
-                            <h4 className="text-xl font-black uppercase tracking-tight mb-6">Acciones Rápidas</h4>
+                        <div className="bg-white/5 backdrop-blur-3xl p-8 rounded-[3rem] border border-[#3B7552]/10 shadow-2xl">
+                            <h4 className="text-xl font-black uppercase tracking-tight mb-6 text-[#3B7552]">Acciones Rápidas</h4>
                             <div className="space-y-4">
-                                <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest">
+                                <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest bg-[#3B7552] text-white hover:bg-[#3B7552]/90">
                                     <Activity className="mr-2 h-5 w-5" />
                                     Ver Historial
                                 </Button>
@@ -224,13 +224,13 @@ function MemberProfileContent() {
                                         <Button
                                             variant="outline"
                                             onClick={() => setIsEditing(false)}
-                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest"
+                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest border-[#3B7552]/20 text-[#3B7552]"
                                         >
                                             Cancelar
                                         </Button>
                                         <Button
                                             onClick={handleSave}
-                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest bg-emerald-500 hover:bg-emerald-600"
+                                            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest bg-[#3B7552] text-white hover:bg-[#3B7552]/90"
                                         >
                                             Guardar
                                         </Button>
@@ -239,7 +239,7 @@ function MemberProfileContent() {
                                     <Button
                                         variant="outline"
                                         onClick={() => setIsEditing(true)}
-                                        className="w-full h-14 rounded-2xl font-black uppercase tracking-widest"
+                                        className="w-full h-14 rounded-2xl font-black uppercase tracking-widest border-[#3B7552]/20 text-[#3B7552]"
                                     >
                                         Editar Perfil
                                     </Button>

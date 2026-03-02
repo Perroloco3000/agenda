@@ -48,7 +48,7 @@ export default function MembersPage() {
             })
             setIsCreateOpen(false)
             setNewMember({ name: "", email: "", phone: "", plan: "GYM", status: "Activo", password: "" })
-            toast.success("Miembro registrado exitosamente")
+            toast.success("Usuario registrado exitosamente")
         } catch (err: any) {
             console.error("Error adding member:", err)
             if (err.message?.includes("column \"password\" of relation \"members\" does not exist")) {
@@ -71,8 +71,8 @@ export default function MembersPage() {
             <DashboardShell>
                 <div className="flex items-center justify-center min-h-[400px]">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                        <p className="font-bold text-muted-foreground italic">Cargando base de datos...</p>
+                        <div className="w-12 h-12 border-4 border-[#3B7552] border-t-transparent rounded-full animate-spin" />
+                        <p className="font-black text-[#3B7552]/40 uppercase tracking-widest text-xs">Cargando base de datos...</p>
                     </div>
                 </div>
             </DashboardShell>
@@ -82,22 +82,22 @@ export default function MembersPage() {
     return (
         <DashboardShell>
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[3rem] border border-[#3B7552]/10">
                     <div className="space-y-4">
-                        <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white uppercase">Miembros</h2>
-                        <p className="text-xl text-emerald-400 font-bold uppercase tracking-widest pl-1">Comunidad Kai Center</p>
+                        <h2 className="text-4xl md:text-6xl font-black tracking-tight text-[#3B7552] uppercase">Usuarios</h2>
+                        <p className="text-xl text-[#3B7552] font-bold uppercase tracking-widest pl-1">Comunidad Kai Center</p>
                     </div>
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="h-16 px-10 rounded-2xl bg-emerald-500 text-black font-black text-lg shadow-xl shadow-emerald-500/30 hover:scale-105 hover:bg-emerald-400 transition-all active:scale-95 uppercase tracking-wider">
+                            <Button size="lg" className="h-16 px-10 rounded-2xl bg-[#3B7552] text-white font-black text-lg shadow-xl shadow-[#3B7552]/20 hover:scale-105 hover:bg-[#3B7552]/90 transition-all active:scale-95 uppercase tracking-wider">
                                 <UserPlus className="mr-3 h-6 w-6" />
-                                Añadir Miembro
+                                Añadir Usuario
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
-                                <DialogTitle>Registrar Nuevo Miembro</DialogTitle>
+                                <DialogTitle className="text-[#3B7552]">Registrar Nuevo Usuario</DialogTitle>
                                 <DialogDescription>Ingresa los datos del nuevo socio.</DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
@@ -147,13 +147,13 @@ export default function MembersPage() {
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button onClick={handleCreate} disabled={isLoading} className="w-full h-12 rounded-xl font-bold bg-emerald-500 text-black hover:bg-emerald-400">
+                                <Button onClick={handleCreate} disabled={isLoading} className="w-full h-12 rounded-xl font-bold bg-[#3B7552] text-white hover:bg-[#3B7552]/90">
                                     {isLoading ? (
                                         <>
-                                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                                             Procesando...
                                         </>
-                                    ) : "Registrar Miembro"}
+                                    ) : "Registrar Usuario"}
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -163,12 +163,12 @@ export default function MembersPage() {
                 {/* Filters & Search */}
                 <div className="flex flex-col md:flex-row gap-6 bg-white/5 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
                     <div className="relative flex-1 group">
-                        <Search className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-white/20 group-hover:text-emerald-400 transition-colors" />
+                        <Search className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-[#3B7552]/20 group-hover:text-[#3B7552] transition-colors" />
                         <Input
                             placeholder="Buscar por nombre, email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-16 pl-20 pr-10 rounded-2xl bg-white/[0.03] border-white/10 text-lg font-bold focus-visible:ring-emerald-500/20 transition-all text-white"
+                            className="h-16 pl-20 pr-10 rounded-2xl bg-white/[0.03] border-[#3B7552]/10 text-lg font-bold focus-visible:ring-[#3B7552]/20 transition-all text-[#3B7552]"
                         />
                     </div>
                     <Button variant="outline" className="h-16 px-10 rounded-2xl border-white/10 bg-white/5 font-black uppercase tracking-widest text-xs flex gap-4 hover:bg-white/10">
@@ -183,10 +183,10 @@ export default function MembersPage() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/[0.02]">
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Miembro</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Contacto</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Plan</th>
-                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-white/20 text-[10px]">Estado</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-[#3B7552]/20 text-[10px]">Usuario</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-[#3B7552]/20 text-[10px]">Contacto</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-[#3B7552]/20 text-[10px]">Plan</th>
+                                    <th className="px-12 py-8 font-black uppercase tracking-[0.2em] text-[#3B7552]/20 text-[10px]">Estado</th>
                                     <th className="px-12 py-8 text-right"></th>
                                 </tr>
                             </thead>
@@ -199,8 +199,8 @@ export default function MembersPage() {
                                                     {member.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-2xl tracking-tight text-white uppercase">{member.name}</p>
-                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mt-1">Desde: {member.joinDate}</p>
+                                                    <p className="font-black text-2xl tracking-tight text-[#3B7552] uppercase">{member.name}</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/20 mt-1">Desde: {member.joinDate}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -227,8 +227,8 @@ export default function MembersPage() {
                                         </td>
                                         <td className="px-12 py-10">
                                             <button onClick={async () => await toggleMemberStatus(member.id)} className="flex items-center gap-4 hover:scale-105 transition-transform">
-                                                <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-emerald-500 shadow-[0_0_15px_#10b981]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'} animate-pulse`} />
-                                                <span className="font-black uppercase tracking-widest text-[10px] text-white">{member.status}</span>
+                                                <div className={`w-3 h-3 rounded-full ${member.status === 'Activo' ? 'bg-[#3B7552] shadow-[0_0_15px_rgba(59,117,82,0.3)]' : 'bg-red-500 shadow-[0_0_15px_#ef4444]'} animate-pulse`} />
+                                                <span className="font-black uppercase tracking-widest text-[10px] text-[#3B7552]">{member.status}</span>
                                             </button>
                                         </td>
                                         <td className="px-12 py-10 text-right">
@@ -239,7 +239,7 @@ export default function MembersPage() {
                                                     </Button>
                                                 </Link>
                                                 <Button onClick={async () => {
-                                                    if (confirm('¿Eliminar a este miembro?')) {
+                                                    if (confirm('¿Eliminar a este usuario?')) {
                                                         await removeMember(member.id)
                                                     }
                                                 }} variant="ghost" size="icon" className="h-12 w-12 rounded-xl border border-transparent hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400 transition-all">
@@ -252,8 +252,8 @@ export default function MembersPage() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="p-12 border-t border-white/5 bg-white/[0.01] text-center">
-                        <p className="text-white/20 font-black uppercase tracking-[0.3em] text-xs">Total de {filteredMembers.length} Miembros de Élite</p>
+                    <div className="p-12 border-t border-[#3B7552]/5 bg-white/[0.01] text-center">
+                        <p className="text-[#3B7552]/20 font-black uppercase tracking-[0.3em] text-xs">Total de {filteredMembers.length} Usuarios de Élite</p>
                     </div>
                 </div>
             </section>
