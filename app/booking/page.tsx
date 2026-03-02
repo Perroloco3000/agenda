@@ -107,13 +107,12 @@ export default function BookingPage() {
                             )}
                         </motion.div>
                         <div className="mt-2 text-center">
-                            <h1 className="text-sm font-black tracking-[0.3em] uppercase text-foreground leading-none">{gymName || "KAI CENTER"}</h1>
-                            <p className="text-[8px] font-bold text-primary tracking-[0.2em] uppercase mt-1">Osteomuscular Peace</p>
+                            <p className="text-[10px] font-black text-[#ccff00] tracking-[0.4em] uppercase mt-1 drop-shadow-[0_0_8px_rgba(204,255,0,0.5)]">Osteomuscular</p>
                         </div>
                     </div>
 
                     <div className="hidden md:block flex-1 max-w-xl mx-auto px-8">
-                        <p className="text-center italic text-primary/60 font-medium text-sm">
+                        <p className="text-center italic text-[#3E3A33]/60 font-medium text-sm">
                             "{quote}"
                         </p>
                     </div>
@@ -147,25 +146,25 @@ export default function BookingPage() {
                                     </div>
                                     Selecciona tu Fecha
                                 </CardTitle>
-                                <Sparkles className="h-5 w-5 text-primary/30 animate-pulse" />
+                                <Sparkles className="h-5 w-5 text-primary/40 animate-pulse" />
                             </div>
-                            <CardDescription className="text-muted-foreground font-medium ml-12">Elige el día para tu entrenamiento de paz</CardDescription>
+                            <CardDescription className="text-[#3E3A33]/60 font-medium ml-12">Elige el día para tu entrenamiento de paz</CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col md:flex-row gap-6">
                             <div className="space-y-2">
-                                <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
+                                <Label className="text-[#9B8C7A] text-xs font-bold uppercase tracking-widest pl-1">Día</Label>
                                 <input
                                     type="date"
                                     value={selectedDate}
                                     onChange={e => setSelectedDate(e.target.value)}
                                     min={getVenezuelaDateString()}
-                                    className="w-full md:w-64 px-4 py-3 rounded-xl bg-background border border-border/20 text-foreground font-bold text-lg focus:ring-2 focus:ring-primary/20"
+                                    className="w-full md:w-64 px-4 py-3 rounded-xl bg-background border border-[#9B8C7A]/30 text-[#3E3A33] font-bold text-lg focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
 
                             <div className="space-y-2 flex-1">
-                                <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
-                                <div className="grid grid-cols-2 gap-2 p-1 bg-background border border-border/20 rounded-xl">
+                                <Label className="text-[#9B8C7A] text-xs font-bold uppercase tracking-widest pl-1">Área de Entrenamiento</Label>
+                                <div className="grid grid-cols-2 gap-2 p-1 bg-background border border-[#9B8C7A]/30 rounded-xl">
                                     <button
                                         onClick={() => setSelectedArea("gym")}
                                         className={`py-2.5 rounded-lg font-black uppercase tracking-tighter transition-all ${selectedArea === "gym" ? "bg-primary text-primary-foreground shadow-lg" : "text-foreground/40 hover:text-foreground/60"}`}
@@ -228,17 +227,17 @@ export default function BookingPage() {
 
                                                 <div className="space-y-3">
                                                     <div className="flex items-center justify-between text-xs font-bold uppercase tracking-widest">
-                                                        <span className="text-muted-foreground/60">Disponibilidad</span>
-                                                        <span className="text-foreground">{slot.available}/{slot.capacity}</span>
+                                                        <span className="text-[#9B8C7A]">Disponibilidad</span>
+                                                        <span className="text-[#3E3A33]">{slot.available}/{slot.capacity}</span>
                                                     </div>
-                                                    <div className="w-full bg-background/50 rounded-full h-1.5 overflow-hidden">
+                                                    <div className="w-full bg-[#F5F1E6] rounded-full h-1.5 overflow-hidden">
                                                         <motion.div
                                                             initial={{ width: 0 }}
                                                             animate={{ width: `${(slot.booked / slot.capacity) * 100}%` }}
                                                             className={`h-full ${status.color} transition-all duration-1000`}
                                                         />
                                                     </div>
-                                                    <p className="text-[10px] text-muted-foreground/50 font-black uppercase tracking-[0.2em]">{status.text}</p>
+                                                    <p className="text-[10px] text-[#9B8C7A] font-black uppercase tracking-[0.2em]">{status.text}</p>
                                                 </div>
 
                                                 {isBooked ? (
@@ -329,7 +328,7 @@ export default function BookingPage() {
                                             <motion.div
                                                 key={booking.id}
                                                 layout
-                                                className="p-6 rounded-[2rem] bg-background/40 border border-border/5 flex items-center justify-between hover:bg-background/80 transition-all duration-500"
+                                                className="p-6 rounded-[2rem] bg-[#F5F1E6]/40 border border-[#9B8C7A]/10 flex items-center justify-between hover:bg-primary/5 transition-all duration-500 group"
                                             >
                                                 <div className="flex items-center gap-6">
                                                     <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/10">
@@ -342,7 +341,7 @@ export default function BookingPage() {
                                                                 {booking.area === 'gym' ? 'Gimnasio' : 'Área Cognitiva'}
                                                             </span>
                                                         </div>
-                                                        <p className="text-xs text-muted-foreground font-medium mt-1 uppercase tracking-widest opacity-60">
+                                                        <p className="text-xs text-[#9B8C7A] font-medium mt-1 uppercase tracking-widest">
                                                             {new Date(booking.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
                                                         </p>
                                                     </div>

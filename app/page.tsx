@@ -69,16 +69,16 @@ export default function LoginPage() {
 
                 {/* Form Container */}
                 <div className="relative group">
-                    <div className="absolute -inset-1 bg-[#336647]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                    <Card className="relative border-[#2D5A3F]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
+                    <div className="absolute -inset-1 bg-[#3B7552]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                    <Card className="relative border-[#9B8C7A]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
                         <CardHeader className="pt-10 px-10 pb-4">
                             <div className="flex justify-between items-center mb-2">
-                                <CardTitle className="text-3xl font-black tracking-tight text-[#1D3B2A] uppercase">
+                                <CardTitle className="text-3xl font-black tracking-tight text-[#3E3A33] uppercase">
                                     Bienvenido
                                 </CardTitle>
-                                <Sparkles className="h-5 w-5 text-[#336647] animate-pulse" />
+                                <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
                             </div>
-                            <CardDescription className="text-[#1D3B2A]/50 font-medium text-sm">
+                            <CardDescription className="text-[#3E3A33]/50 font-medium text-sm">
                                 Accede a tu cuenta para continuar
                             </CardDescription>
                         </CardHeader>
@@ -86,25 +86,25 @@ export default function LoginPage() {
                             <form onSubmit={handleSubmit} className="space-y-6">
 
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-[#336647]/70 ml-1">Correo Electrónico</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#3B7552]/70 ml-1">Correo Electrónico</Label>
                                     <Input
                                         type="email"
                                         required
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="h-14 rounded-2xl bg-white border-[#2D5A3F]/20 text-[#1D3B2A] placeholder:text-[#2D5A3F]/30 focus:ring-[#336647]/20 focus:border-[#336647]/50 transition-all text-lg"
+                                        className="h-14 rounded-2xl bg-white border-[#9B8C7A]/20 text-[#3E3A33] placeholder:text-[#9B8C7A]/30 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/50 transition-all text-lg"
                                         placeholder="usuario@kaicenter.com"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-[#336647]/70 ml-1">Contraseña</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#3B7552]/70 ml-1">Contraseña</Label>
                                     <Input
                                         type="password"
                                         required
                                         value={formData.password}
                                         onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                        className="h-14 rounded-2xl bg-white border-[#2D5A3F]/20 text-[#1D3B2A] placeholder:text-[#2D5A3F]/30 focus:ring-[#336647]/20 focus:border-[#336647]/50 transition-all text-lg"
+                                        className="h-14 rounded-2xl bg-white border-[#9B8C7A]/20 text-[#3E3A33] placeholder:text-[#9B8C7A]/30 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/50 transition-all text-lg"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -123,7 +123,7 @@ export default function LoginPage() {
                                 <Button
                                     disabled={isLoading}
                                     type="submit"
-                                    className="w-full h-16 rounded-2xl bg-[#336647] hover:bg-[#20422e] text-[#FCFBF6] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#336647]/20 border-t border-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                                    className="w-full h-16 rounded-2xl bg-[#3B7552] hover:bg-[#20422e] text-[#FCFBF6] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#3B7552]/20 border-t border-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <div className="flex items-center gap-2">
@@ -139,8 +139,8 @@ export default function LoginPage() {
                                 </Button>
 
                                 <div className="text-center pt-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/50">
-                                        Acceso exclusivo para miembros registrados por el administrador
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/40">
+                                        Acceso exclusivo para miembros registrados
                                     </p>
                                 </div>
                             </form>
