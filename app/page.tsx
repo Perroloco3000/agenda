@@ -45,14 +45,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-emerald-500/30 overflow-hidden flex items-center justify-center p-4">
-            {/* Background Effects */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 blur-[120px] rounded-full animate-pulse" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-500/10 blur-[120px] rounded-full animate-pulse delay-700" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.05)_0%,transparent_70%)]" />
-            </div>
-
+        <div className="min-h-screen bg-[#F5F1E6] selection:bg-emerald-500/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -64,12 +57,12 @@ export default function LoginPage() {
                     <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full max-w-[400px] h-32 flex items-center justify-center mb-0 cursor-pointer overflow-hidden"
+                        className="w-full max-w-[450px] h-36 flex items-center justify-center mb-0 cursor-pointer overflow-hidden rounded-2xl"
                     >
                         {logoUrl ? (
                             <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
-                            <Accessibility className="h-12 w-12 text-white" />
+                            <Accessibility className="h-16 w-16 text-emerald-600" />
                         )}
                     </motion.div>
                 </div>

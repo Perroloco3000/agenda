@@ -108,7 +108,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <div className={cn("p-8 border-b border-white/5 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-all duration-500 overflow-hidden">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-all duration-500 overflow-hidden">
                                 {logoUrl ? (
                                     <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
                                 ) : (
@@ -122,7 +122,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         </Link>
                     )}
                     {isCollapsed && (
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 hover:scale-110 transition-all duration-500 overflow-hidden">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 hover:scale-110 transition-all duration-500 overflow-hidden">
                             {logoUrl ? (
                                 <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
                             ) : (

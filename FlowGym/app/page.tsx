@@ -65,17 +65,15 @@ export default function GymApp() {
 
   if (mode === 'choice') {
     return (
-      <div className="h-screen w-screen bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">
-        {/* Background Ambience */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-black to-black" />
-
+      <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-1000">
+        {/* Main Branding Container */}
         <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
           <div className="flex flex-col items-center gap-0 text-center">
-            <div className="w-full max-w-[600px] h-40 flex items-center justify-center mb-0 overflow-hidden">
+            <div className="w-full max-w-[600px] h-48 flex items-center justify-center mb-0 overflow-hidden rounded-2xl">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
-                <Accessibility className="h-16 w-16 text-white" />
+                <Accessibility className="h-20 w-20 text-emerald-600" />
               )}
             </div>
           </div>
