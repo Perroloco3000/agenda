@@ -56,7 +56,7 @@ export default function GymApp() {
     return (
       <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 gap-8 animate-in fade-in duration-700">
         <div className="relative">
-          <div className="w-24 h-24 rounded-full border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
+          <div className="w-24 h-24 rounded-3xl border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
           <Accessibility className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 text-[#3B7552]" />
         </div>
         <div className="text-center space-y-2">
@@ -74,7 +74,7 @@ export default function GymApp() {
       <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-1000">
         <div className="relative z-10 flex flex-col items-center gap-16 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
           <div className="flex flex-col items-center gap-0 text-center">
-            <div className="w-full max-w-[550px] h-56 flex items-center justify-center mb-0 overflow-hidden rounded-full border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50">
+            <div className="w-full max-w-[550px] h-56 flex items-center justify-center mb-0 overflow-hidden rounded-3xl border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
@@ -93,7 +93,7 @@ export default function GymApp() {
               </div>
               <div>
                 <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Modo Pantalla</h3>
-                <p className="text-[#3B7552]/70 font-bold mt-2">Circuito de ejercicios en alta resolución</p>
+                <p className="text-[#3E3A33]/60 font-medium mt-2">Circuito de ejercicios en alta resolución</p>
               </div>
             </button>
 
@@ -104,13 +104,13 @@ export default function GymApp() {
                 </div>
                 <div>
                   <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Administrador</h3>
-                  <p className="text-[#3B7552]/70 font-bold mt-2">Gestión de miembros y entrenamientos</p>
+                  <p className="text-[#3E3A33]/60 font-medium mt-2">Gestión de miembros y entrenamientos</p>
                 </div>
               </div>
             </Link>
           </div>
 
-          <div className="text-[#3B7552]/30 text-xs font-black uppercase tracking-[0.5em] animate-pulse">
+          <div className="text-[#9B8C7A] text-xs font-black uppercase tracking-[0.5em] animate-pulse">
             {phrases[phraseIndex]}
           </div>
         </div>
