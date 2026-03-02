@@ -59,7 +59,7 @@ const navigation = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const { refreshData, notifications, clearNotifications, gymName, slogan } = useAppStore()
+    const { refreshData, notifications, markAllAsRead, clearNotifications, gymName, slogan } = useAppStore()
     const adminLogoUrl = "https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/logocircular.png"
     const [isMounted, setIsMounted] = useState(false)
     const [isCollapsed, setIsCollapsed] = useState(false)
@@ -115,7 +115,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <div className={cn("p-8 border-b border-border/10 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
-                            <div className="w-20 h-20 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
+                            <div className="w-32 h-32 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
                                 <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                             </div>
                             <div className="flex flex-col">
@@ -127,7 +127,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         </Link>
                     )}
                     {isCollapsed && (
-                        <div className="w-20 h-20 flex items-center justify-center hover:scale-110 transition-all duration-500">
+                        <div className="w-32 h-32 flex items-center justify-center hover:scale-110 transition-all duration-500">
                             <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                         </div>
                     )}
@@ -203,11 +203,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 variant="ghost"
                                 size="icon"
                                 className="h-10 w-10 rounded-xl hover:bg-primary/10 relative transition-all"
-                                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                                onClick={() => {
+                                    if (!isNotifOpen) markAllAsRead()
+                                    setIsNotifOpen(!isNotifOpen)
+                                }}
                             >
                                 <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                 {notifications.filter(n => !n.read).length > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full text-[10px] font-bold text-primary-foreground flex items-center justify-center border-2 border-background">
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 rounded-full text-[10px] font-bold text-white flex items-center justify-center border-2 border-background">
                                         {notifications.filter(n => !n.read).length}
                                     </span>
                                 )}

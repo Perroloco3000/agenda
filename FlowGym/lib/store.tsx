@@ -586,6 +586,11 @@ export function useAppStoreLogic() {
             const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id)
             if (!error) setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
         },
+        markAllAsRead: async () => {
+            const { error } = await supabase.from('notifications').update({ read: true }).eq('read', false)
+            if (!error) setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+        },
+        markAllAsRead,
         clearNotifications,
         gymName,
         slogan,
