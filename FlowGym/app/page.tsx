@@ -8,7 +8,7 @@ import { DaySelector } from "@/components/day-selector"
 import { F45Timer } from "@/components/f45-timer"
 import { ExerciseList } from "@/components/exercise-list"
 import { Button } from "@/components/ui/button"
-import { Accessibility, Maximize2 } from "lucide-react"
+import { Accessibility, Maximize2, ChevronLeft } from "lucide-react"
 
 export default function GymApp() {
   const { workouts, isLoaded, gymName, slogan, logoUrl } = useAppStore()
@@ -18,13 +18,11 @@ export default function GymApp() {
   const [isMounted, setIsMounted] = useState(false)
 
   const phrases = [
-    "¡SIN EXCUSAS!",
-    "¡TÚ PUEDES!",
-    "KAICENTER POWER",
-    "EL LÍMITE ES EL CIELO",
-    "SUDOR = ÉXITO",
-    "MÁS FUERTE CADA DÍA",
-    "ENFOQUE Y DISCIPLINA"
+    "Diseñando tu mejor versión...",
+    "Calibrando el flujo de energía...",
+    "Preparando el circuito del éxito...",
+    "Sincronizando con tu potencial...",
+    "Inspirando salud y equilibrio..."
   ]
 
   useEffect(() => {
@@ -32,9 +30,9 @@ export default function GymApp() {
     setSelectedDayKey(getCurrentDayKey())
     const interval = setInterval(() => {
       setPhraseIndex((prev) => (prev + 1) % phrases.length)
-    }, 5000)
+    }, 3000)
     return () => clearInterval(interval)
-  }, [phrases.length])
+  }, [])
 
   // Find the workout for the selected day in our Supabase data
   const selectedDayName = dayNames[selectedDayKey]
@@ -54,11 +52,19 @@ export default function GymApp() {
     hydrationDuration: 30
   } : null
 
-  // Prevent hydration error by returning a placeholder or null during server-side render
-  if (!isMounted) {
+  if (!isLoaded || !isMounted) {
     return (
-      <div className="h-screen flex items-center justify-center bg-black">
-        <div className="text-emerald-500 font-black text-2xl animate-pulse italic uppercase tracking-tighter">Cargando Kai Center...</div>
+      <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 gap-8 animate-in fade-in duration-700">
+        <div className="relative">
+          <div className="w-24 h-24 rounded-full border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
+          <Accessibility className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 text-[#3B7552]" />
+        </div>
+        <div className="text-center space-y-2">
+          <p className="text-xl font-black text-[#3E3A33] uppercase tracking-tighter">Cargando KaiCenter</p>
+          <p className="text-[#3B7552] font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">
+            {phrases[phraseIndex]}
+          </p>
+        </div>
       </div>
     )
   }
@@ -66,46 +72,45 @@ export default function GymApp() {
   if (mode === 'choice') {
     return (
       <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-1000">
-        {/* Main Branding Container */}
-        <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
+        <div className="relative z-10 flex flex-col items-center gap-16 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
           <div className="flex flex-col items-center gap-0 text-center">
-            <div className="w-full max-w-[600px] h-48 flex items-center justify-center mb-0 overflow-hidden rounded-2xl">
+            <div className="w-full max-w-[550px] h-56 flex items-center justify-center mb-0 overflow-hidden rounded-full border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
-                <Accessibility className="h-20 w-20 text-emerald-600" />
+                <Accessibility className="h-20 w-20 text-[#3B7552]" />
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full px-4">
             <button
               onClick={() => setMode('tv')}
-              className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-emerald-500/10 hover:border-emerald-500/50 transition-all duration-500 hover:scale-[1.02]"
+              className="group relative bg-[#FCFBF6] border-2 border-[#9B8C7A]/10 rounded-[2.5rem] p-12 flex flex-col items-center text-center gap-6 hover:border-[#3B7552]/40 transition-all duration-500 hover:scale-[1.02] shadow-[0_10px_30px_rgba(62,58,51,0.03)]"
             >
-              <div className="w-20 h-20 rounded-3xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+              <div className="w-20 h-20 rounded-3xl bg-[#3B7552]/10 flex items-center justify-center text-[#3B7552] group-hover:scale-110 transition-transform">
                 <Maximize2 className="h-10 w-10" />
               </div>
               <div>
-                <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Modo TV / Pantalla</h3>
-                <p className="text-white/40 font-medium mt-2">Circuito de ejercicios a pantalla completa</p>
+                <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Modo Pantalla</h3>
+                <p className="text-[#3B7552]/70 font-bold mt-2">Circuito de ejercicios en alta resolución</p>
               </div>
             </button>
 
             <Link href="/dashboard" className="w-full">
-              <div className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.02] h-full">
-                <div className="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+              <div className="group relative bg-[#FCFBF6] border-2 border-[#9B8C7A]/10 rounded-[2.5rem] p-12 flex flex-col items-center text-center gap-6 hover:border-[#3B7552]/40 transition-all duration-500 hover:scale-[1.02] shadow-[0_10px_30px_rgba(62,58,51,0.03)] h-full">
+                <div className="w-20 h-20 rounded-3xl bg-[#3B7552] flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-[#3B7552]/30">
                   <Accessibility className="h-10 w-10" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Administrador</h3>
-                  <p className="text-white/40 font-medium mt-2">Gestionar socios, rutinas y reservas</p>
+                  <h3 className="text-3xl font-black text-[#3E3A33] uppercase italic tracking-tight">Administrador</h3>
+                  <p className="text-[#3B7552]/70 font-bold mt-2">Gestión de miembros y entrenamientos</p>
                 </div>
               </div>
             </Link>
           </div>
 
-          <div className="text-white/20 text-xs font-black uppercase tracking-[0.5em] animate-pulse">
+          <div className="text-[#3B7552]/30 text-xs font-black uppercase tracking-[0.5em] animate-pulse">
             {phrases[phraseIndex]}
           </div>
         </div>
@@ -114,7 +119,7 @@ export default function GymApp() {
   }
 
   return (
-    <div className="h-screen w-screen bg-background overflow-hidden font-sans">
+    <div className="h-screen w-screen bg-[#F5F1E6] overflow-hidden font-sans">
       <main className="h-full w-full">
         {currentWorkout ? (
           <F45Timer
@@ -127,7 +132,7 @@ export default function GymApp() {
             <div className="text-9xl animate-bounce drop-shadow-xl">🧘‍♂️</div>
             <div className="space-y-4">
               <h2 className="text-5xl font-black uppercase tracking-tighter text-[#3E3A33]">Preparando el flujo...</h2>
-              <p className="text-xl text-[#3E3A33]/40 max-w-2xl mx-auto font-medium">No hemos encontrado una rutina para este día. El administrador puede configurarla en el panel.</p>
+              <p className="text-xl text-[#3B7552]/70 max-w-2xl mx-auto font-bold">No hemos encontrado una rutina para este día.</p>
             </div>
             <div className="mt-12 flex flex-col sm:flex-row gap-4">
               <Link href="/dashboard">
