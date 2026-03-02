@@ -70,16 +70,14 @@ export default function GymApp() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-black to-black" />
 
         <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_60px_-10px_rgba(16,185,129,0.5)] mb-4 overflow-hidden">
+          <div className="flex flex-col items-center gap-0 text-center">
+            <div className="w-full max-w-[600px] h-40 flex items-center justify-center mb-0 overflow-hidden">
               {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
                 <Accessibility className="h-16 w-16 text-white" />
               )}
             </div>
-            <h1 className="text-7xl font-black tracking-tighter text-white uppercase italic leading-none">{gymName.split(' ')[0]} <span className="text-emerald-500">{gymName.split(' ').slice(1).join(' ')}</span></h1>
-            <p className="text-emerald-400/60 font-black tracking-[0.6em] uppercase text-sm mt-2">{slogan || "Training Osteomuscular"}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">

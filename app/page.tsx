@@ -60,36 +60,18 @@ export default function LoginPage() {
                 className="w-full max-w-lg relative z-10"
             >
                 {/* Brand Header */}
-                <div className="flex flex-col items-center mb-12">
+                <div className="flex flex-col items-center mb-10">
                     <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_50px_-10px_rgba(16,185,129,0.4)] mb-6 cursor-pointer overflow-hidden"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full max-w-[400px] h-32 flex items-center justify-center mb-0 cursor-pointer overflow-hidden"
                     >
                         {logoUrl ? (
-                            <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                            <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
                             <Accessibility className="h-12 w-12 text-white" />
                         )}
                     </motion.div>
-                    <div className="text-center space-y-2">
-                        <motion.h1
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="text-5xl font-black tracking-tighter uppercase leading-none text-white text-center"
-                        >
-                            {gymName.split(' ')[0]} <span className="text-emerald-500">{gymName.split(' ').slice(1).join(' ')}</span>
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                            className="text-emerald-400/60 font-medium tracking-[0.4em] uppercase text-[10px] text-center"
-                        >
-                            {slogan}
-                        </motion.p>
-                    </div>
                 </div>
 
                 {/* Form Container */}
