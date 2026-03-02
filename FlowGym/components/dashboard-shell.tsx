@@ -115,17 +115,19 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <div className={cn("p-8 border-b border-border/10 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
-                            <div className="w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
+                            <div className="w-20 h-20 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
                                 <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-xl font-black tracking-tight leading-none text-foreground">{gymName}</span>
-                                <span className="text-[9px] font-bold text-primary uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
+                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] leading-none mt-2 opacity-80 text-foreground">
+                                    Training <span className="text-primary">Osteomuscular</span>
+                                </span>
                             </div>
                         </Link>
                     )}
                     {isCollapsed && (
-                        <div className="w-12 h-12 flex items-center justify-center hover:scale-110 transition-all duration-500">
+                        <div className="w-20 h-20 flex items-center justify-center hover:scale-110 transition-all duration-500">
                             <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                         </div>
                     )}

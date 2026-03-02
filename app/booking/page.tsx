@@ -47,6 +47,10 @@ export default function BookingPage() {
 
     useEffect(() => {
         setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
+        const interval = setInterval(() => {
+            setQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
+        }, 8000)
+        return () => clearInterval(interval)
     }, [])
 
     // Derived values directly from store
@@ -309,7 +313,7 @@ export default function BookingPage() {
                                                             disabled={slot.available === 0 || isPastOrClosing}
                                                             className="w-full h-16 rounded-[2rem] bg-[#3B7552] hover:bg-[#2a543b] text-white font-black uppercase tracking-[0.3em] text-[10px] shadow-xl shadow-[#3B7552]/20 transition-all duration-500 disabled:opacity-10 disabled:grayscale overflow-hidden relative group"
                                                         >
-                                                            <span className="relative z-10">{isPastOrClosing ? "Cerrado" : "Confirmar Presencia"}</span>
+                                                            <span className="relative z-10">{isPastOrClosing ? "Cerrado" : "Reservar"}</span>
                                                             <motion.div
                                                                 className="absolute inset-0 bg-[#ccff00]/10 opacity-0 group-hover:opacity-100 transition-opacity"
                                                                 initial={false}
@@ -414,6 +418,43 @@ export default function BookingPage() {
                         </div>
                     </motion.div>
                 )}
+
+                {/* Sección de Frases Motivadoras Premium */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="max-w-7xl mx-auto px-8 py-24 text-center relative overflow-hidden group"
+                >
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-[3s]">
+                        <svg viewBox="0 0 100 100" className="w-[400px] h-[400px] fill-[#3B7552] rotate-12">
+                            <path d="M50 0C50 0 20 20 20 50C20 80 50 100 50 100C50 100 80 80 80 50C80 20 50 0 50 0ZM50 10C50 10 70 25 70 50C70 75 50 90 50 90C50 90 30 75 30 50C30 25 50 10 50 10Z" />
+                        </svg>
+                    </div>
+
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={quote}
+                            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                            exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="relative z-10 space-y-6"
+                        >
+                            <div className="flex items-center justify-center gap-4 text-[#3B7552]/40">
+                                <div className="h-px w-8 bg-current" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.6em] italic">Inspiración</span>
+                                <div className="h-px w-8 bg-current" />
+                            </div>
+                            <h3 className="text-3xl md:text-5xl font-black text-[#3E3A33] tracking-tighter uppercase leading-tight italic max-w-4xl mx-auto">
+                                "{quote}"
+                            </h3>
+                            <div className="flex justify-center">
+                                <Sparkles className="h-6 w-6 text-[#3B7552] animate-pulse" />
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </motion.div>
 
                 {/* Footer Tools */}
                 <div className="pt-20 pb-10 flex justify-center opacity-10 hover:opacity-50 transition-opacity">

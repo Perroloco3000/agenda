@@ -36,7 +36,9 @@ export default function LoginPage() {
                     </div>
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-white uppercase">KaiCenter SC</h1>
-                        <p className="text-emerald-400 font-bold tracking-[0.2em] uppercase text-xs mt-1">Training Osteomuscular</p>
+                        <p className="text-foreground font-bold tracking-[0.2em] uppercase text-xs mt-1">
+                            Training <span className="text-primary">Osteomuscular</span>
+                        </p>
                     </div>
                 </div>
 
