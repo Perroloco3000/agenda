@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export default function BookingPage() {
     const router = useRouter()
-    const { currentUser, logout, getAvailableSlots, createBooking, getUserBookings, cancelBooking, cancelAllUserBookings } = useStore()
+    const { currentUser, logout, getAvailableSlots, createBooking, getUserBookings, cancelBooking, cancelAllUserBookings, gymName, logoUrl } = useStore()
     const [selectedDate, setSelectedDate] = useState("")
     const [selectedArea, setSelectedArea] = useState<"gym" | "cognitive">("gym")
     const [successMessage, setSuccessMessage] = useState("")
