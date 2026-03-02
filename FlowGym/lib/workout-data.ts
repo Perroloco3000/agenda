@@ -147,7 +147,7 @@ export const weeklyWorkouts: Record<string, WorkoutDay> = {
     restTime: 60,
     sets: 1,
     exercises: [
-      createExercise("1", "Pushups", exerciseGifs.pushups, "Mix de flexiones", ["Pecho"]),
+      { ...createExercise("1", "Pushups", exerciseGifs.pushups, "Mix de flexiones", ["Pecho"]), videoUrl: "https://youtu.be/TbCHbkCzbEM" },
       createExercise("2", "Squats", exerciseGifs.squats, "Mix de sentadillas", ["Piernas"]),
       createExercise("3", "Burpees", exerciseGifs.burpees, "Mix de burpees", ["Full"]),
       createExercise("4", "Plank", exerciseGifs.plank, "Mix de planchas", ["Core"]),

@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Coffee, Maximize2, Armchair, Dumbbell, Timer, Zap, Move, Heart } from "lucide-react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Coffee, Maximize2, Armchair, Dumbbell, Timer, Zap, Move, Heart, Home, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { WorkoutDay, Exercise } from "@/lib/workout-data"
 
@@ -9,6 +9,7 @@ type TimerPhase = "warmup" | "strength" | "hydration" | "movement" | "stretching
 
 interface F45TimerProps {
   workout: WorkoutDay
+  onBack?: () => void
 }
 
 const DURATIONS: Record<TimerPhase, number> = {
@@ -21,7 +22,7 @@ const DURATIONS: Record<TimerPhase, number> = {
   countdown: 10
 }
 
-export function F45Timer({ workout }: F45TimerProps) {
+export function F45Timer({ workout, onBack }: F45TimerProps) {
   const [isMounted, setIsMounted] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [phase, setPhase] = useState<TimerPhase>("warmup")
@@ -105,7 +106,6 @@ export function F45Timer({ workout }: F45TimerProps) {
       interval = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            // Don't call moveToNextPhase here to avoid race conditions
             return 0
           }
           if (prev <= 4) playTone(880, 'sine', 0.1, 0.2)
@@ -116,7 +116,6 @@ export function F45Timer({ workout }: F45TimerProps) {
     return () => { if (interval) clearInterval(interval) }
   }, [isRunning, phase, playTone])
 
-  // Separate effect to handle phase transitions when timeLeft reaches 0
   useEffect(() => {
     if (timeLeft === 0 && phase !== "finished" && isRunning) {
       moveToNextPhase()
@@ -134,46 +133,81 @@ export function F45Timer({ workout }: F45TimerProps) {
   const getPhaseConfig = () => {
     switch (phase) {
       case "warmup": return { label: "Estiramiento y Calentamiento", icon: <Zap />, color: "from-orange-500 to-red-600" }
-      case "strength": return { label: "Bloque 1: Fuerza", icon: <Dumbbell />, color: "from-blue-600 to-indigo-700" }
+      case "strength": return { label: "Fuerza y Movimiento", icon: <Dumbbell />, color: "from-blue-600 to-indigo-700" }
       case "hydration": return { label: "Hidratación", icon: <Coffee />, color: "from-cyan-400 to-blue-500" }
-      case "movement": return { label: "Bloque 2: Movimiento", icon: <Move />, color: "from-purple-600 to-pink-600" }
+      case "movement": return { label: "Fuerza y Movimiento", icon: <Move />, color: "from-purple-600 to-pink-600" }
       case "stretching": return { label: "Estiramiento Final", icon: <Heart />, color: "from-emerald-500 to-teal-600" }
       case "countdown": return { label: "Prepárate", icon: <Timer />, color: "from-gray-700 to-gray-900" }
       default: return { label: "Completado", icon: <Zap />, color: "from-slate-700 to-slate-900" }
     }
   }
 
+  const getYoutubeEmbedUrl = (url: string) => {
+    if (!url) return "";
+    let videoId = "";
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0].split("&")[0];
+    } else if (url.includes("v=")) {
+      videoId = url.split("v=")[1].split("&")[0];
+    } else if (url.includes("embed/")) {
+      videoId = url.split("embed/")[1].split("?")[0];
+    }
+
+    if (!videoId) return url;
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3&fs=0&playlist=${videoId}`;
+  };
+
   const config = getPhaseConfig()
 
-  // Exercise Rendering for 4-Block Layout
   const renderExerciseBlocks = (startIndex: number) => {
     const blocks = exercises.slice(startIndex, startIndex + 4)
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full h-full p-4 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full h-full p-6 overflow-hidden">
         {blocks.map((ex, idx) => (
-          <div key={ex.id || idx} className="relative bg-black/20 rounded-[2.5rem] overflow-hidden border-2 border-white/10 flex flex-col shadow-2xl">
-            <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-xl px-6 py-2 rounded-full border border-white/20">
-              <span className="text-white font-black italic uppercase text-lg">Estación {idx + 1}</span>
+          <div key={ex.id || idx} className="relative bg-white rounded-[2.5rem] overflow-hidden border-2 border-white/20 flex flex-col shadow-2xl transition-all duration-300">
+            <div className="absolute top-6 left-6 z-20 bg-white/90 backdrop-blur-xl px-6 py-2 rounded-full border border-black/10 shadow-lg">
+              <span className="text-black font-black italic uppercase text-lg">Estación {idx + 1}</span>
             </div>
-            <div className="flex-1 relative bg-black">
+            <div className="relative w-full aspect-video bg-white overflow-hidden">
               {ex.videoUrl ? (
-                <iframe
-                  src={ex.videoUrl.replace("watch?v=", "embed/").split("&")[0] + "?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&disablekb=1&playlist=" + (ex.videoUrl.includes("v=") ? ex.videoUrl.split("v=")[1].split("&")[0] : "")}
-                  className="absolute inset-0 w-full h-full pointer-events-none object-cover scale-110"
-                  allow="autoplay; encrypted-media"
-                ></iframe>
+                (() => {
+                  const isDirectVideo = ex.videoUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || ex.videoUrl.includes('supabase.co/storage/v1/object/public/');
+
+                  if (isDirectVideo) {
+                    return (
+                      <video
+                        src={ex.videoUrl}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    );
+                  }
+
+                  return (
+                    <iframe
+                      src={getYoutubeEmbedUrl(ex.videoUrl)}
+                      className="absolute inset-0 w-full h-full pointer-events-none scale-[1.01]"
+                      allow="autoplay; encrypted-media"
+                      style={{ border: 'none' }}
+                    ></iframe>
+                  );
+                })()
               ) : (
                 <img src={ex.gifUrl} className="w-full h-full object-cover" alt={ex.name} />
               )}
-            </div>
-            <div className="bg-black/60 backdrop-blur-2xl p-6 text-center border-t border-white/10">
-              <h4 className="text-white text-3xl font-black uppercase italic tracking-tighter truncate">{ex.name}</h4>
+              {/* Floating Exercise Name Tag */}
+              <div className="absolute bottom-6 left-6 z-20 bg-white/95 backdrop-blur-xl px-6 py-2 rounded-full border border-black/10 shadow-lg max-w-[80%]">
+                <span className="text-black font-black italic uppercase text-xl truncate block">{ex.name}</span>
+              </div>
             </div>
           </div>
         ))}
         {blocks.length < 4 && Array.from({ length: 4 - blocks.length }).map((_, i) => (
-          <div key={`empty-${i}`} className="bg-black/10 rounded-[2.5rem] border-2 border-dashed border-white/5 flex items-center justify-center">
-            <Dumbbell className="text-white/5 w-24 h-24" />
+          <div key={`empty-${i}`} className="bg-white/10 rounded-[2.5rem] border-2 border-dashed border-white/20 flex items-center justify-center aspect-video">
+            <Dumbbell className="text-white/20 w-24 h-24" />
           </div>
         ))}
       </div>
@@ -182,41 +216,53 @@ export function F45Timer({ workout }: F45TimerProps) {
 
   return (
     <div ref={rootRef} className={`flex flex-col h-screen w-screen relative overflow-hidden bg-gradient-to-br ${config.color} text-white font-sans`}>
-
       {/* Top Bar: Timer & Progress */}
-      <div className="relative z-10 w-full p-6 flex flex-col items-center gap-4 bg-black/20 backdrop-blur-xl border-b border-white/10">
-        <div className="w-full max-w-6xl flex justify-between items-center">
+      <div className="relative z-10 w-full p-3 flex flex-col items-center gap-1 bg-black/20 backdrop-blur-xl border-b border-white/10">
+        <div className="w-full flex justify-between items-center px-4">
           <div className="flex items-center gap-4">
-            <div className="p-4 bg-white/10 rounded-[2rem] border border-white/20 shadow-xl">
-              {config.icon}
-            </div>
-            <div>
-              <h2 className="text-5xl font-black uppercase italic tracking-tighter leading-none">{config.label}</h2>
-              <p className="text-white/60 text-sm font-black uppercase tracking-[0.5em] mt-3">CIRCUITO KAI CENTER</p>
+            {onBack && (
+              <Button
+                onClick={onBack}
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all active:scale-90"
+              >
+                <Home className="h-5 w-5" />
+              </Button>
+            )}
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-white/10 rounded-[1.5rem] border border-white/20 shadow-xl">
+                {React.cloneElement(config.icon as React.ReactElement, { className: "w-6 h-6" })}
+              </div>
+              <div>
+                <h2 className="text-4xl font-black uppercase italic tracking-tighter leading-none">{config.label}</h2>
+                <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.5em] mt-1">CIRCUITO KAI CENTER</p>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-8">
-            {phase === "warmup" && isRunning && (
-                <Button 
-                    variant="ghost" 
-                    onClick={moveToNextPhase}
-                    className="text-white/20 hover:text-white/80 uppercase tracking-[0.3em] font-black text-[10px] border border-white/5 rounded-full px-4 py-1.5 hover:bg-white/5 transition-all"
-                >
-                    NEXT
-                </Button>
-            )}
+          <div className="flex items-center gap-6">
             <div className="flex flex-col items-end">
-            <span className="text-9xl font-black tabular-nums tracking-tighter leading-none drop-shadow-2xl">
-              {formatTime(timeLeft)}
-            </span>
-            <span className="text-sm font-black uppercase tracking-[0.4em] text-white/50 mt-2">TIEMPO RESTANTE</span>
+              <span className="text-8xl font-black tabular-nums tracking-tighter leading-none drop-shadow-2xl">
+                {formatTime(timeLeft)}
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">TIEMPO RESTANTE</span>
+            </div>
+            {phase !== "finished" && (
+              <Button
+                onClick={moveToNextPhase}
+                variant="ghost"
+                size="icon"
+                className="h-12 w-12 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all active:scale-90 shadow-lg"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Global Progress Bar */}
-        <div className="w-full max-w-4xl flex gap-1.5 h-1.5 px-4">
+        {/* Global Progress Bar with Maximum Neon Glow */}
+        <div className="w-full max-w-5xl flex gap-1 h-5 px-4 mt-1">
           {["warmup", "strength", "hydration", "movement", "stretching"].map((p, i) => {
             const sequence = ["warmup", "strength", "hydration", "movement", "stretching"];
             const currentIdx = sequence.indexOf(phase);
@@ -224,9 +270,14 @@ export function F45Timer({ workout }: F45TimerProps) {
             const isCurrent = i === currentIdx;
 
             return (
-              <div key={p} className="flex-1 relative h-full rounded-full bg-white/10 overflow-hidden">
+              <div key={p} className="flex-1 relative h-full rounded-full bg-white/5 overflow-hidden border border-white/10">
                 <div
-                  className={`absolute inset-0 transition-all duration-1000 ${isCompleted ? 'bg-white' : isCurrent ? 'bg-white animate-pulse' : 'bg-transparent'}`}
+                  className={`absolute inset-0 transition-all duration-1000 ${isCompleted
+                    ? 'bg-white shadow-[0_0_25px_rgba(255,255,255,1),0_0_10px_rgba(255,255,255,0.8)]'
+                    : isCurrent
+                      ? 'bg-white animate-pulse shadow-[0_0_40px_rgba(255,255,255,1),0_0_20px_rgba(255,255,255,1),0_0_10px_rgba(255,255,255,0.8)]'
+                      : 'bg-transparent'
+                    }`}
                   style={{ width: isCurrent ? `${((DURATIONS[p as TimerPhase] - timeLeft) / DURATIONS[p as TimerPhase]) * 100}%` : isCompleted ? '100%' : '0%' }}
                 />
               </div>

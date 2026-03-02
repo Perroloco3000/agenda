@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Accessibility, Maximize2 } from "lucide-react"
 
 export default function GymApp() {
-  const { workouts, isLoaded } = useAppStore()
+  const { workouts, isLoaded, gymName, slogan, logoUrl } = useAppStore()
   const [selectedDayKey, setSelectedDayKey] = useState<string>("")
   const [mode, setMode] = useState<'choice' | 'tv'>('choice')
   const [phraseIndex, setPhraseIndex] = useState(0)
@@ -66,49 +66,53 @@ export default function GymApp() {
   if (mode === 'choice') {
     return (
       <div className="h-screen w-screen bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">
-         {/* Background Ambience */}
-         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-black to-black" />
-         
-         <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
-            <div className="flex flex-col items-center gap-4 text-center">
-                <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_60px_-10px_rgba(16,185,129,0.5)] mb-4">
-                    <Accessibility className="h-16 w-16 text-white" />
+        {/* Background Ambience */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-black to-black" />
+
+        <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-4xl animate-in fade-in zoom-in duration-1000">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-[0_0_60px_-10px_rgba(16,185,129,0.5)] mb-4 overflow-hidden">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+              ) : (
+                <Accessibility className="h-16 w-16 text-white" />
+              )}
+            </div>
+            <h1 className="text-7xl font-black tracking-tighter text-white uppercase italic leading-none">{gymName.split(' ')[0]} <span className="text-emerald-500">{gymName.split(' ').slice(1).join(' ')}</span></h1>
+            <p className="text-emerald-400/60 font-black tracking-[0.6em] uppercase text-sm mt-2">{slogan || "Training Osteomuscular"}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+            <button
+              onClick={() => setMode('tv')}
+              className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-emerald-500/10 hover:border-emerald-500/50 transition-all duration-500 hover:scale-[1.02]"
+            >
+              <div className="w-20 h-20 rounded-3xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                <Maximize2 className="h-10 w-10" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Modo TV / Pantalla</h3>
+                <p className="text-white/40 font-medium mt-2">Circuito de ejercicios a pantalla completa</p>
+              </div>
+            </button>
+
+            <Link href="/dashboard" className="w-full">
+              <div className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.02] h-full">
+                <div className="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <Accessibility className="h-10 w-10" />
                 </div>
-                <h1 className="text-7xl font-black tracking-tighter text-white uppercase italic leading-none">KaiCenter <span className="text-emerald-500">SC</span></h1>
-                <p className="text-emerald-400/60 font-black tracking-[0.6em] uppercase text-sm mt-2">Training Osteomuscular</p>
-            </div>
+                <div>
+                  <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Administrador</h3>
+                  <p className="text-white/40 font-medium mt-2">Gestionar socios, rutinas y reservas</p>
+                </div>
+              </div>
+            </Link>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                <button 
-                    onClick={() => setMode('tv')}
-                    className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-emerald-500/10 hover:border-emerald-500/50 transition-all duration-500 hover:scale-[1.02]"
-                >
-                    <div className="w-20 h-20 rounded-3xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
-                        <Maximize2 className="h-10 w-10" />
-                    </div>
-                    <div>
-                        <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Modo TV / Pantalla</h3>
-                        <p className="text-white/40 font-medium mt-2">Circuito de ejercicios a pantalla completa</p>
-                    </div>
-                </button>
-
-                <Link href="/dashboard" className="w-full">
-                    <div className="group relative bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-12 flex flex-col items-center text-center gap-6 hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.02] h-full">
-                        <div className="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                            <Accessibility className="h-10 w-10" />
-                        </div>
-                        <div>
-                            <h3 className="text-3xl font-black text-white uppercase italic tracking-tight">Administrador</h3>
-                            <p className="text-white/40 font-medium mt-2">Gestionar socios, rutinas y reservas</p>
-                        </div>
-                    </div>
-                </Link>
-            </div>
-
-            <div className="text-white/20 text-xs font-black uppercase tracking-[0.5em] animate-pulse">
-                {phrases[phraseIndex]}
-            </div>
-         </div>
+          <div className="text-white/20 text-xs font-black uppercase tracking-[0.5em] animate-pulse">
+            {phrases[phraseIndex]}
+          </div>
+        </div>
       </div>
     )
   }
@@ -120,6 +124,7 @@ export default function GymApp() {
           <F45Timer
             key={selectedDayKey}
             workout={currentWorkout}
+            onBack={() => setMode('choice')}
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 p-12 bg-black text-white">

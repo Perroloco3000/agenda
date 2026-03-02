@@ -66,7 +66,7 @@ export function useAppStore() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [gymName, setGymName] = useState("KAICENTER SC")
   const [slogan, setSlogan] = useState("")
-  const [logoUrl, setLogoUrl] = useState("")
+  const [logoUrl, setLogoUrl] = useState("https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/Gemini_Generated_Image_g5gqdtg5gqdtg5gq%20(1).png")
   const [isLoaded, setIsLoaded] = useState(false)
 
   // Load Initial Data from Supabase
