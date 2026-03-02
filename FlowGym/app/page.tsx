@@ -12,6 +12,54 @@ import { Accessibility, Maximize2, ChevronLeft, Sparkles, ChevronRight } from "l
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+const FallingLeaves = () => {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-20">
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{
+            opacity: 0,
+            y: -100,
+            x: Math.random() * 100 + "%",
+            rotate: 0,
+          }}
+          animate={{
+            opacity: [0, 0.4, 0.4, 0],
+            y: "110vh",
+            x: [null, (Math.random() - 0.5) * 20 + "%"],
+            rotate: 360,
+          }}
+          transition={{
+            duration: 12 + Math.random() * 8,
+            repeat: Infinity,
+            delay: Math.random() * 15,
+            ease: "linear",
+          }}
+          className="absolute"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="text-[#3B7552]/20"
+          >
+            <path
+              d="M12 2L10.5 4.5L12 7L13.5 4.5L12 2Z"
+              fill="currentColor"
+            />
+            <path
+              d="M12 7C12 7 6 10 6 15C6 19 12 21 12 21C12 21 18 19 18 15C18 10 12 7 12 7Z"
+              fill="currentColor"
+            />
+          </svg>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 export default function GymApp() {
   const { workouts, isLoaded, gymName, slogan, logoUrl } = useAppStore()
   const [selectedDayKey, setSelectedDayKey] = useState<string>("")
@@ -57,6 +105,7 @@ export default function GymApp() {
   if (!isLoaded || !isMounted) {
     return (
       <div className="h-screen w-screen bg-[#F5F1E6] flex flex-col items-center justify-center p-6 gap-8 animate-in fade-in duration-700">
+        <FallingLeaves />
         <div className="relative">
           <div className="w-24 h-24 rounded-xl border-4 border-[#3B7552]/10 border-t-[#3B7552] animate-spin" />
           <Accessibility className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 text-[#3B7552]" />
@@ -73,12 +122,20 @@ export default function GymApp() {
 
   if (mode === 'choice') {
     return (
-      <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
+      <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000 relative">
+        <FallingLeaves />
+
+        {/* Background Aesthetic */}
+        <div className="absolute inset-0 z-0 opacity-40">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#3B7552]/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#3B7552]/10 rounded-full blur-[120px]" />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-2xl relative z-10"
+          className="w-full max-w-2xl relative z-30"
         >
           {/* Brand Header */}
           <div className="flex flex-col items-center mb-12">

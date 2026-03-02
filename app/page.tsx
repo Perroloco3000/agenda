@@ -12,8 +12,8 @@ import { motion, AnimatePresence } from "framer-motion"
 
 const FallingLeaves = () => {
     return (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-            {[...Array(15)].map((_, i) => (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-10">
+            {[...Array(20)].map((_, i) => (
                 <motion.div
                     key={i}
                     initial={{
@@ -23,13 +23,13 @@ const FallingLeaves = () => {
                         rotate: 0,
                     }}
                     animate={{
-                        opacity: [0, 0.4, 0.4, 0],
+                        opacity: [0, 0.6, 0.6, 0],
                         y: "110vh",
-                        x: [null, (Math.random() - 0.5) * 20 + "%"],
+                        x: [null, (Math.random() - 0.5) * 30 + "%"],
                         rotate: 360,
                     }}
                     transition={{
-                        duration: 12 + Math.random() * 8,
+                        duration: 10 + Math.random() * 10,
                         repeat: Infinity,
                         delay: Math.random() * 15,
                         ease: "linear",
@@ -37,11 +37,11 @@ const FallingLeaves = () => {
                     className="absolute"
                 >
                     <svg
-                        width="24"
-                        height="24"
+                        width="28"
+                        height="28"
                         viewBox="0 0 24 24"
                         fill="none"
-                        className="text-[#3B7552]/15"
+                        className="text-[#3B7552]/25"
                     >
                         <path
                             d="M12 2L10.5 4.5L12 7L13.5 4.5L12 2Z"
@@ -95,11 +95,18 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000 relative">
             <FallingLeaves />
+
+            {/* Background Aesthetic */}
+            <div className="absolute inset-0 z-0 opacity-40">
+                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#3B7552]/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#3B7552]/10 rounded-full blur-[120px]" />
+            </div>
+
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-full max-w-lg relative z-10"
+                className="w-full max-w-lg relative z-20"
             >
                 {/* Brand Header */}
                 <div className="flex flex-col items-center mb-10">
