@@ -120,6 +120,11 @@ export function useAppStoreLogic() {
 
     const clearNotifications = useCallback(() => setNotifications([]), [])
 
+    const markAllAsRead = useCallback(async () => {
+        const { error } = await supabase.from('notifications').update({ read: true }).eq('read', false)
+        if (!error) setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    }, [])
+
     // Load Data from Supabase
     const loadSupabaseData = useCallback(async () => {
         setSyncStatus("connecting")
@@ -585,10 +590,6 @@ export function useAppStoreLogic() {
         markNotificationAsRead: async (id: string) => {
             const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id)
             if (!error) setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-        },
-        markAllAsRead: async () => {
-            const { error } = await supabase.from('notifications').update({ read: true }).eq('read', false)
-            if (!error) setNotifications(prev => prev.map(n => ({ ...n, read: true })))
         },
         markAllAsRead,
         clearNotifications,
