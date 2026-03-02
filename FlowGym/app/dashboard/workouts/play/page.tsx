@@ -34,10 +34,10 @@ function WorkoutPlayerContent() {
         return (
             <DashboardShell>
                 <div className="flex flex-col items-center justify-center h-[60vh] space-y-6">
-                    <div className="text-6xl">🏃‍♂️</div>
-                    <h2 className="text-3xl font-black">Rutina no encontrada</h2>
+                    <div className="text-6xl italic font-black text-primary">?</div>
+                    <h2 className="text-3xl font-black text-foreground uppercase">Rutina no encontrada</h2>
                     <Link href="/dashboard/workouts">
-                        <Button>Volver a Rutinas</Button>
+                        <Button className="bg-primary text-primary-foreground rounded-xl">Volver a Rutinas</Button>
                     </Link>
                 </div>
             </DashboardShell>

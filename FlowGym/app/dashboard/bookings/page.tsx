@@ -44,13 +44,13 @@ export default function BookingsPage() {
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div className="space-y-4">
-                        <h2 className="text-5xl font-black tracking-tighter uppercase leading-none text-[#3B7552]">Reservas</h2>
-                        <p className="text-xl text-[#3B7552]/40 font-black uppercase tracking-widest pl-1 text-[10px]">Gestión de Clases y Asistencias</p>
+                        <h2 className="text-5xl font-black tracking-tighter uppercase leading-none text-foreground">Reservas</h2>
+                        <p className="text-xl text-primary font-black uppercase tracking-widest pl-1 text-[10px]">Gestión de Clases y Asistencias</p>
                     </div>
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="h-16 px-8 rounded-3xl bg-[#3B7552] text-white font-black text-lg shadow-xl shadow-[#3B7552]/20 hover:scale-105 transition-all">
+                            <Button size="lg" className="h-16 px-8 rounded-3xl bg-primary text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                                 <Plus className="mr-2 h-6 w-6" />
                                 Nueva Clase
                             </Button>
@@ -165,10 +165,10 @@ export default function BookingsPage() {
                         <Plus className="h-12 w-12 text-primary" />
                     </div>
                     <div className="max-w-md">
-                        <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 text-[#3B7552]">Programar más clases</h3>
-                        <p className="text-[#3B7552]/40 font-black uppercase tracking-widest text-[10px]">Añade nuevas sesiones al horario para que tus usuarios puedan reservar su lugar.</p>
+                        <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 text-foreground">Programar más clases</h3>
+                        <p className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">Añade nuevas sesiones al horario para que tus usuarios puedan reservar su lugar.</p>
                     </div>
-                    <Button onClick={() => setIsCreateOpen(true)} variant="outline" size="lg" className="h-16 px-12 rounded-3xl border-2 border-[#3B7552]/20 text-[#3B7552] font-black text-lg uppercase tracking-widest hover:bg-[#3B7552]/5">
+                    <Button onClick={() => setIsCreateOpen(true)} variant="outline" size="lg" className="h-16 px-12 rounded-3xl border-2 border-primary/20 text-primary font-black text-lg uppercase tracking-widest hover:bg-primary/5">
                         Añadir Clase Ahora
                     </Button>
                 </div>

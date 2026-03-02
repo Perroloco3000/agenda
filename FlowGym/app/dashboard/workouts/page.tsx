@@ -91,13 +91,13 @@ export default function WorkoutsPage() {
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div className="space-y-4">
-                        <h2 className="text-5xl font-black tracking-tighter uppercase leading-none text-[#3B7552]">Rutinas</h2>
-                        <p className="text-xl text-[#3B7552]/60 font-bold uppercase tracking-widest pl-1">Entrenamientos del Día</p>
+                        <h2 className="text-5xl font-black tracking-tighter uppercase leading-none text-foreground">Rutinas</h2>
+                        <p className="text-xl text-muted-foreground font-bold uppercase tracking-widest pl-1">Entrenamientos del Día</p>
                     </div>
 
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="h-16 px-8 rounded-3xl bg-[#3B7552] text-white font-black text-lg shadow-xl shadow-[#3B7552]/20 hover:scale-105 transition-all">
+                            <Button size="lg" className="h-16 px-8 rounded-3xl bg-primary text-primary-foreground font-black text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                                 <Plus className="mr-2 h-6 w-6" />
                                 Nueva Rutina
                             </Button>
@@ -337,7 +337,7 @@ export default function WorkoutsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     {workouts.map((workout) => (
-                        <div key={workout.id} className="group relative bg-white/80 backdrop-blur-xl rounded-[3.5rem] border border-[#3B7552]/10 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-[#3B7552]/5 transition-all duration-500 hover:-translate-y-2">
+                        <div key={workout.id} className="group relative bg-card rounded-[3.5rem] border border-border/10 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-2">
                             {/* Card Header */}
                             <div className={`${workout.color} p-10 relative overflow-hidden`}>
                                 <div className="flex items-center gap-2 relative z-20">
@@ -371,26 +371,26 @@ export default function WorkoutsPage() {
 
                             {/* Card Body */}
                             <div className="p-10 space-y-8">
-                                <div className="grid grid-cols-3 gap-1 bg-white/50 backdrop-blur-sm p-6 rounded-[2.5rem] border border-[#3B7552]/5">
+                                <div className="grid grid-cols-3 gap-1 bg-background p-6 rounded-[2.5rem] border border-border/5">
                                     <div className="flex flex-col items-center">
-                                        <Layers className="h-5 w-5 text-[#3B7552] mb-2" />
-                                        <span className="text-2xl font-black leading-none text-[#3B7552]">{workout.stations}</span>
-                                        <span className="text-[9px] font-black text-[#3B7552]/40 uppercase tracking-widest mt-1">Estaciones</span>
+                                        <Layers className="h-5 w-5 text-primary mb-2" />
+                                        <span className="text-2xl font-black leading-none text-foreground">{workout.stations}</span>
+                                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Estaciones</span>
                                     </div>
-                                    <div className="flex flex-col items-center border-x border-[#3B7552]/5">
-                                        <Timer className="h-5 w-5 text-[#3B7552] mb-2" />
-                                        <span className="text-2xl font-black leading-none text-[#3B7552]">{workout.work}</span>
-                                        <span className="text-[9px] font-black text-[#3B7552]/40 uppercase tracking-widest mt-1">Trabajo</span>
+                                    <div className="flex flex-col items-center border-x border-border/5">
+                                        <Timer className="h-5 w-5 text-primary mb-2" />
+                                        <span className="text-2xl font-black leading-none text-foreground">{workout.work}</span>
+                                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Trabajo</span>
                                     </div>
                                     <div className="flex flex-col items-center">
-                                        <Zap className="h-5 w-5 text-[#3B7552] mb-2" />
-                                        <span className="text-2xl font-black leading-none text-[#3B7552]">{workout.rest}</span>
-                                        <span className="text-[9px] font-black text-[#3B7552]/40 uppercase tracking-widest mt-1">Descanso</span>
+                                        <Zap className="h-5 w-5 text-primary mb-2" />
+                                        <span className="text-2xl font-black leading-none text-foreground">{workout.rest}</span>
+                                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Descanso</span>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <Button onClick={() => handleEdit(workout)} variant="outline" className="flex-1 h-14 rounded-2xl border-[#3B7552]/10 text-[#3B7552] font-black uppercase tracking-widest hover:bg-[#3B7552]/5 transition-colors">
+                                    <Button onClick={() => handleEdit(workout)} variant="outline" className="flex-1 h-14 rounded-2xl border-border/10 text-foreground font-black uppercase tracking-widest hover:bg-background transition-colors">
                                         <Settings2 className="mr-2 h-5 w-5" />
                                         Editar
                                     </Button>
@@ -402,7 +402,7 @@ export default function WorkoutsPage() {
                                         <Trash2 className="h-6 w-6" />
                                     </Button>
                                     <Link href={`/dashboard/workouts/play?id=${workout.id}`} className="flex-1">
-                                        <Button className="w-full h-14 rounded-2xl bg-[#3B7552] text-white shadow-lg shadow-[#3B7552]/20 font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
+                                        <Button className="w-full h-14 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 font-black uppercase tracking-widest hover:scale-105 transition-transform active:scale-95">
                                             <Play className="mr-2 h-5 w-5 fill-current" />
                                             Iniciar
                                         </Button>
@@ -423,12 +423,12 @@ export default function WorkoutsPage() {
                     ))}
 
                     {/* New Workout Card Turn into Button that opens Modal */}
-                    <button onClick={() => setIsCreateOpen(true)} className="h-[580px] rounded-[3rem] border-4 border-dashed border-[#3B7552]/10 flex flex-col items-center justify-center p-12 text-[#3B7552]/40 hover:bg-[#3B7552]/5 hover:border-[#3B7552]/30 hover:text-[#3B7552] transition-all group">
-                        <div className="w-24 h-24 rounded-full bg-[#3B7552]/5 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[#3B7552]/10 transition-all">
-                            <Plus className="h-12 w-12 text-[#3B7552]" />
+                    <button onClick={() => setIsCreateOpen(true)} className="h-[580px] rounded-[3rem] border-4 border-dashed border-border/10 flex flex-col items-center justify-center p-12 text-muted-foreground/40 hover:bg-card hover:border-primary/30 hover:text-primary transition-all group">
+                        <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/10 transition-all">
+                            <Plus className="h-12 w-12 text-primary" />
                         </div>
-                        <span className="text-2xl font-black uppercase tracking-tighter">Crear Nueva Rutina</span>
-                        <p className="text-center mt-2 font-black uppercase tracking-widest text-[10px] text-[#3B7552]/20">Personaliza tiempos, ejercicios y laps.</p>
+                        <span className="text-2xl font-black uppercase tracking-tighter text-foreground">Crear Nueva Rutina</span>
+                        <p className="text-center mt-2 font-black uppercase tracking-widest text-[10px] text-muted-foreground/20">Personaliza tiempos, ejercicios y laps.</p>
                     </button>
                 </div>
             </section>

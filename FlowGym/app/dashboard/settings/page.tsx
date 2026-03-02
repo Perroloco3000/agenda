@@ -73,15 +73,15 @@ export default function SettingsPage() {
         <DashboardShell>
             <section className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col gap-2">
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tight text-[#3B7552] uppercase">Configuración</h2>
-                    <p className="text-xl text-[#3B7552]/60 font-bold uppercase tracking-widest pl-1">Personalización del Sistema</p>
+                    <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground uppercase">Configuración</h2>
+                    <p className="text-xl text-primary font-bold uppercase tracking-widest pl-1">Personalización del Sistema</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* General Settings */}
-                    <div className="bg-white/8 backdrop-blur-3xl p-10 rounded-[3rem] border border-[#3B7552]/10 shadow-2xl space-y-8">
-                        <div className="flex items-center gap-4 mb-2 text-[#3B7552]">
-                            <div className="w-12 h-12 rounded-xl bg-[#3B7552]/10 border border-[#3B7552]/20 flex items-center justify-center text-[#3B7552]">
+                    <div className="bg-card p-10 rounded-[3rem] border border-border/10 shadow-2xl space-y-8">
+                        <div className="flex items-center gap-4 mb-2 text-foreground">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                                 <Settings className="h-6 w-6" />
                             </div>
                             <h3 className="text-2xl font-black uppercase tracking-tight">General</h3>
@@ -91,42 +91,42 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
-                                        <Moon className="h-5 w-5 text-[#3B7552]/40" />
-                                        <Label className="text-lg font-black uppercase tracking-tight text-[#3B7552]">Modo Oscuro</Label>
+                                        <Moon className="h-5 w-5 text-muted-foreground" />
+                                        <Label className="text-lg font-black uppercase tracking-tight text-foreground">Modo Oscuro</Label>
                                     </div>
-                                    <p className="text-[#3B7552]/20 text-[10px] font-bold uppercase tracking-widest">Interfaz en colores profundos</p>
+                                    <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-widest">Interfaz en colores profundos</p>
                                 </div>
-                                <Switch checked={darkMode} onCheckedChange={setDarkMode} className="data-[state=checked]:bg-[#3B7552]" />
+                                <Switch checked={darkMode} onCheckedChange={setDarkMode} className="data-[state=checked]:bg-primary" />
                             </div>
 
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
-                                        <Volume2 className="h-5 w-5 text-[#3B7552]/40" />
-                                        <Label className="text-lg font-black uppercase tracking-tight text-[#3B7552]">Efectos Audio</Label>
+                                        <Volume2 className="h-5 w-5 text-muted-foreground" />
+                                        <Label className="text-lg font-black uppercase tracking-tight text-foreground">Efectos Audio</Label>
                                     </div>
-                                    <p className="text-[#3B7552]/20 text-[10px] font-bold uppercase tracking-widest">Sonidos de entrenamiento</p>
+                                    <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-widest">Sonidos de entrenamiento</p>
                                 </div>
-                                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} className="data-[state=checked]:bg-[#3B7552]" />
+                                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} className="data-[state=checked]:bg-primary" />
                             </div>
 
                             <div className="flex items-center justify-between p-6 bg-white/[0.03] rounded-2xl border border-white/[0.05] hover:bg-white/[0.07] transition-all">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-3">
-                                        <Bell className="h-5 w-5 text-[#3B7552]/40" />
-                                        <Label className="text-lg font-black uppercase tracking-tight text-[#3B7552]">Notificaciones</Label>
+                                        <Bell className="h-5 w-5 text-muted-foreground" />
+                                        <Label className="text-lg font-black uppercase tracking-tight text-foreground">Notificaciones</Label>
                                     </div>
-                                    <p className="text-[#3B7552]/20 text-[10px] font-bold uppercase tracking-widest">Alertas de sistema</p>
+                                    <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-widest">Alertas de sistema</p>
                                 </div>
-                                <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} className="data-[state=checked]:bg-[#3B7552]" />
+                                <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} className="data-[state=checked]:bg-primary" />
                             </div>
                         </div>
                     </div>
 
                     {/* Branding Settings */}
-                    <div className="bg-white/8 backdrop-blur-3xl p-10 rounded-[3rem] border border-[#3B7552]/10 shadow-2xl space-y-8">
-                        <div className="flex items-center gap-4 mb-2 text-[#3B7552]">
-                            <div className="w-12 h-12 rounded-xl bg-[#3B7552]/10 border border-[#3B7552]/20 flex items-center justify-center text-[#3B7552]">
+                    <div className="bg-card p-10 rounded-[3rem] border border-border/10 shadow-2xl space-y-8">
+                        <div className="flex items-center gap-4 mb-2 text-foreground">
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                                 <Palette className="h-6 w-6" />
                             </div>
                             <h3 className="text-2xl font-black uppercase tracking-tight">Branding</h3>
@@ -134,33 +134,33 @@ export default function SettingsPage() {
 
                         <div className="space-y-8">
                             <div className="space-y-4">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/20 ml-1">Nombre del Centro</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Nombre del Centro</Label>
                                 <input
                                     type="text"
                                     value={gymName}
                                     onChange={(e) => setGymName(e.target.value)}
-                                    className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-[#3B7552]/10 font-black text-xl tracking-tight focus:outline-none focus:ring-2 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/40 transition-all text-[#3B7552]"
+                                    className="w-full h-16 px-6 rounded-xl bg-background border border-border/10 font-black text-xl tracking-tight focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-foreground"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/20 ml-1">Eslogan Principal</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Eslogan Principal</Label>
                                 <input
                                     type="text"
                                     value={slogan}
                                     onChange={(e) => setSlogan(e.target.value)}
-                                    className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-[#3B7552]/10 font-bold text-lg tracking-tight focus:outline-none focus:ring-2 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/40 transition-all text-[#3B7552]"
+                                    className="w-full h-16 px-6 rounded-xl bg-background border border-border/10 font-bold text-lg tracking-tight focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-foreground"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/20 ml-1">URL del Logo (Imagen)</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">URL del Logo (Imagen)</Label>
                                 <input
                                     type="text"
                                     value={logoUrl}
                                     placeholder="https://ejemplo.com/logo.png"
                                     onChange={(e) => setLogoUrl(e.target.value)}
-                                    className="w-full h-16 px-6 rounded-xl bg-white/[0.03] border border-[#3B7552]/10 font-bold text-sm tracking-tight focus:outline-none focus:ring-2 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/40 transition-all text-[#3B7552]"
+                                    className="w-full h-16 px-6 rounded-xl bg-background border border-border/10 font-bold text-sm tracking-tight focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all text-foreground"
                                 />
                             </div>
                         </div>

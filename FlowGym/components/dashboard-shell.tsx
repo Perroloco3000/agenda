@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { useAppStore } from "@/lib/store"
+import { motion, AnimatePresence } from "framer-motion"
 
 function SyncStatus() {
     const { syncStatus } = useAppStore()
@@ -41,9 +42,9 @@ function SyncStatus() {
     )
 
     return (
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3B7552]/10 border border-[#3B7552]/20">
-            <div className="w-2 h-2 rounded-full bg-[#3B7552] shadow-[0_0_8px_rgba(59,117,82,0.4)]" />
-            <span className="text-[10px] font-black text-[#3B7552] uppercase tracking-tighter">En Línea</span>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-[10px] font-bold text-green-500 uppercase tracking-tighter">En Línea</span>
         </div>
     )
 }
@@ -118,8 +119,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xl font-black tracking-tight leading-none text-[#3B7552] uppercase">{gymName}</span>
-                                <span className="text-[9px] font-black text-[#3B7552]/60 uppercase tracking-[0.2em] leading-none mt-1.5">{slogan}</span>
+                                <span className="text-xl font-black tracking-tight leading-none text-foreground">{gymName}</span>
+                                <span className="text-[9px] font-bold text-primary uppercase tracking-[0.2em] leading-none mt-1.5 opacity-80">{slogan}</span>
                             </div>
                         </Link>
                     )}
@@ -133,7 +134,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={cn("hidden md:flex h-8 w-8 rounded-lg bg-background/50 border border-border/10 hover:bg-background text-[#3B7552]/40 hover:text-[#3B7552] transition-all", isCollapsed ? "mt-4" : "")}
+                        className={cn("hidden md:flex h-8 w-8 rounded-lg bg-background/50 border border-border/10 hover:bg-background text-muted-foreground hover:text-primary transition-all", isCollapsed ? "mt-4" : "")}
                     >
                         <ChevronLeft className={cn("h-4 w-4 transition-transform duration-500", isCollapsed ? "rotate-180" : "")} />
                     </Button>
@@ -150,18 +151,18 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                     "flex items-center transition-all duration-300 group relative overflow-hidden",
                                     isCollapsed ? "justify-center h-14 w-14 p-0 mx-auto rounded-xl" : "justify-between px-5 py-4 rounded-[1.5rem]",
                                     isActive
-                                        ? "bg-[#3B7552] text-white shadow-[0_10px_20px_rgba(59,117,82,0.2)] border border-[#3B7552]/10"
-                                        : "text-[#3B7552]/40 hover:bg-[#3B7552]/5 hover:text-[#3B7552]"
+                                        ? "bg-primary/10 text-primary shadow-[0_10px_20px_rgba(59,117,82,0.05)] border border-primary/10"
+                                        : "text-foreground/40 hover:bg-background/50 hover:text-primary"
                                 )}
                             >
                                 <div className={cn("flex items-center relative z-10", isCollapsed ? "justify-center" : "gap-4")}>
                                     <item.icon className={cn("transition-colors duration-300",
-                                        isActive ? "text-white" : "group-hover:text-[#3B7552]",
+                                        isActive ? "text-primary" : "group-hover:text-primary",
                                         isCollapsed ? "h-6 w-6" : "h-5 w-5"
                                     )} />
-                                    {!isCollapsed && <span className="font-black tracking-tight uppercase text-[10px]">{item.name}</span>}
+                                    {!isCollapsed && <span className="font-bold tracking-tight uppercase text-xs">{item.name}</span>}
                                 </div>
-                                {isActive && !isCollapsed && <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)] relative z-10" />}
+                                {isActive && !isCollapsed && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(59,117,82,0.5)] relative z-10" />}
                             </Link>
                         )
                     })}
@@ -186,25 +187,25 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                             <Menu className="h-6 w-6" />
                         </button>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-lg md:text-xl font-black uppercase tracking-[0.2em] text-[#3B7552]/40">Admin Panel</h1>
+                            <h1 className="text-lg md:text-xl font-black uppercase tracking-widest text-muted-foreground">Admin Panel</h1>
                             <SyncStatus />
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
-                            <p className="font-black leading-none text-[#3B7552] uppercase text-sm tracking-tight">Admin Eduardo</p>
-                            <p className="text-[10px] text-[#3B7552]/40 font-black uppercase tracking-widest mt-1">Gym Owner</p>
+                            <p className="font-bold leading-none text-foreground">Admin Eduardo</p>
+                            <p className="text-sm text-muted-foreground font-medium uppercase tracking-tighter">Gym Owner</p>
                         </div>
                         <div className="relative group">
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-10 w-10 rounded-xl hover:bg-[#3B7552]/10 relative transition-all"
+                                className="h-10 w-10 rounded-xl hover:bg-primary/10 relative transition-all"
                                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                             >
-                                <Bell className="h-5 w-5 text-[#3B7552]/40 group-hover:text-[#3B7552] transition-colors" />
+                                <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                 {notifications.filter(n => !n.read).length > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#3B7552] rounded-full text-[10px] font-bold text-white flex items-center justify-center border-2 border-background">
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full text-[10px] font-bold text-primary-foreground flex items-center justify-center border-2 border-background">
                                         {notifications.filter(n => !n.read).length}
                                     </span>
                                 )}
@@ -253,17 +254,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                                 await refreshData()
                                 import("sonner").then(({ toast }) => toast.success("Sincronización completa", {
                                     description: "Los datos se han actualizado correctamente.",
-                                    className: "bg-[#3B7552] text-white border-none rounded-2xl",
                                     duration: 3000
                                 }))
                             }}
-                            className="h-12 px-6 rounded-2xl text-[#3B7552] hover:bg-[#3B7552]/10 transition-all font-black uppercase tracking-widest text-[10px] flex gap-3"
+                            className="h-12 px-6 rounded-2xl text-primary hover:bg-primary/10 transition-all font-black uppercase tracking-widest text-[10px] flex gap-3"
                         >
                             <RefreshCw className="h-4 w-4" />
                             Actualizar
                         </Button>
-                        <div className="w-10 h-10 rounded-full bg-[#3B7552]/10 flex items-center justify-center shadow-lg shadow-[#3B7552]/5">
-                            <Users className="h-5 w-5 text-[#3B7552]" />
+                        <div className="w-10 h-10 rounded-full bg-primary-foreground/50 flex items-center justify-center shadow-lg shadow-primary/5">
+                            <Users className="h-5 w-5 text-primary" />
                         </div>
                     </div>
                 </header>

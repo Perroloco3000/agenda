@@ -9,10 +9,10 @@ import Link from "next/link"
 export default function DashboardPage() {
     const { members, workouts, reservations, isLoaded } = useAppStore()
     const [stats, setStats] = useState([
-        { name: 'Usuarios Activos', value: '0', icon: Users, color: 'bg-[#3B7552]' },
-        { name: 'Rutinas Guardadas', value: '0', icon: Dumbbell, color: 'bg-stone-500' },
-        { name: 'Reservas Hoy', value: '0', icon: Calendar, color: 'bg-[#3B7552]/80' },
-        { name: 'Reservas Totales', value: '0', icon: Calendar, color: 'bg-stone-400' },
+        { name: 'Usuarios Activos', value: '0', icon: Users, color: 'bg-emerald-500' },
+        { name: 'Rutinas Guardadas', value: '0', icon: Dumbbell, color: 'bg-blue-500' },
+        { name: 'Reservas Hoy', value: '0', icon: Calendar, color: 'bg-amber-500' },
+        { name: 'Reservas Totales', value: '0', icon: Calendar, color: 'bg-purple-500' },
     ])
 
     useEffect(() => {
@@ -23,10 +23,10 @@ export default function DashboardPage() {
             const totalReservations = reservations.length
 
             setStats([
-                { name: 'Usuarios Activos', value: String(activeMembers), icon: Users, color: 'bg-[#3B7552]' },
-                { name: 'Rutinas Guardadas', value: String(workouts.length), icon: Dumbbell, color: 'bg-stone-500' },
-                { name: 'Reservas Hoy', value: String(todayBookingsCount), icon: Calendar, color: 'bg-[#3B7552]/80' },
-                { name: 'Reservas Totales', value: String(totalReservations), icon: Calendar, color: 'bg-stone-400' },
+                { name: 'Usuarios Activos', value: String(activeMembers), icon: Users, color: 'bg-emerald-500' },
+                { name: 'Rutinas Guardadas', value: String(workouts.length), icon: Dumbbell, color: 'bg-blue-500' },
+                { name: 'Reservas Hoy', value: String(todayBookingsCount), icon: Calendar, color: 'bg-amber-500' },
+                { name: 'Reservas Totales', value: String(totalReservations), icon: Calendar, color: 'bg-purple-500' },
             ])
         }
     }, [isLoaded, members, workouts, reservations])
@@ -35,8 +35,8 @@ export default function DashboardPage() {
         <DashboardShell>
             <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col gap-2">
-                    <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-[#3B7552] uppercase">Dashboard</h2>
-                    <p className="text-lg sm:text-xl text-[#3B7552]/60 font-bold uppercase tracking-widest pl-1">Gestión Centralizada</p>
+                    <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">Dashboard</h2>
+                    <p className="text-lg sm:text-xl text-muted-foreground font-bold uppercase tracking-widest pl-1">Gestión Centralizada</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -48,8 +48,8 @@ export default function DashboardPage() {
                                     <stat.icon className="h-8 w-8 text-primary-foreground" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/40 mb-1">{stat.name}</p>
-                                    <p className="text-5xl font-black tracking-tight text-[#3B7552]">{stat.value}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">{stat.name}</p>
+                                    <p className="text-5xl font-black tracking-tight text-foreground">{stat.value}</p>
                                 </div>
                             </div>
                         </div>
@@ -58,9 +58,9 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-12">
                     <div className="bg-card p-10 rounded-[3.5rem] border border-border/10 shadow-sm transition-all hover:border-primary/20">
-                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-[#3B7552]">
-                            <div className="p-2.5 bg-[#3B7552]/10 rounded-xl border border-[#3B7552]/20">
-                                <Calendar className="h-5 w-5 text-[#3B7552]" />
+                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-foreground">
+                            <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
+                                <Calendar className="h-5 w-5 text-primary" />
                             </div>
                             Próximas Reservas
                         </h3>
@@ -68,17 +68,17 @@ export default function DashboardPage() {
                             {reservations.filter(r => r.status === 'confirmed').slice(0, 4).map((res) => (
                                 <div key={res.id} className="group flex items-center justify-between p-6 rounded-[2rem] bg-background/50 border border-border/5 hover:bg-background hover:border-primary/20 transition-all duration-300">
                                     <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-2xl bg-[#3B7552]/10 border border-[#3B7552]/20 flex flex-col items-center justify-center font-black transition-transform">
-                                            <span className="text-[#3B7552] text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">HOY</span>
-                                            <span className="text-2xl leading-none text-[#3B7552]">{res.timeSlot?.split(':')[0] || '12'}</span>
+                                        <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex flex-col items-center justify-center font-black transition-transform">
+                                            <span className="text-primary text-[9px] font-black uppercase tracking-widest leading-none mb-1.5">HOY</span>
+                                            <span className="text-2xl leading-none text-foreground">{res.timeSlot?.split(':')[0] || '12'}</span>
                                         </div>
                                         <div>
-                                            <p className="font-black text-xl tracking-tight text-[#3B7552] uppercase">{res.memberName || 'Usuario'}</p>
-                                            <p className="text-[#3B7552]/40 font-bold text-[10px] tracking-widest mt-1">{res.timeSlot} • {res.date}</p>
+                                            <p className="font-black text-xl tracking-tight text-foreground uppercase">{res.memberName || 'Usuario'}</p>
+                                            <p className="text-muted-foreground font-bold text-[10px] tracking-widest mt-1">{res.timeSlot} • {res.date}</p>
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/reservations`}>
-                                        <button className="bg-[#3B7552] hover:bg-[#3B7552]/90 text-white font-black px-6 py-3 rounded-xl shadow-lg shadow-[#3B7552]/10 hover:scale-105 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
+                                        <button className="bg-primary hover:bg-primary/90 text-primary-foreground font-black px-6 py-3 rounded-xl shadow-lg shadow-primary/10 hover:scale-105 transition-all active:scale-95 uppercase tracking-widest text-[10px]">
                                             Gestionar
                                         </button>
                                     </Link>
@@ -91,9 +91,9 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="bg-card p-10 rounded-[3.5rem] border border-border/10 shadow-sm transition-all hover:border-primary/20">
-                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-[#3B7552]">
-                            <div className="p-2.5 bg-[#3B7552]/10 rounded-xl border border-[#3B7552]/20">
-                                <Users className="h-5 w-5 text-[#3B7552]" />
+                        <h3 className="text-2xl font-black mb-8 uppercase tracking-tight flex items-center gap-4 text-foreground">
+                            <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
+                                <Users className="h-5 w-5 text-primary" />
                             </div>
                             Nuevos Usuarios
                         </h3>
@@ -105,12 +105,12 @@ export default function DashboardPage() {
                                             {member.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="font-black text-xl tracking-tight text-[#3B7552] uppercase">{member.name}</p>
-                                            <p className="text-[#3B7552]/40 font-bold text-[10px] tracking-widest mt-1">PLAN {member.plan?.toUpperCase()} • {member.status?.toUpperCase()}</p>
+                                            <p className="font-black text-xl tracking-tight text-foreground uppercase">{member.name}</p>
+                                            <p className="text-muted-foreground font-bold text-[10px] tracking-widest mt-1">PLAN {member.plan?.toUpperCase()} • {member.status?.toUpperCase()}</p>
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/members/profile?id=${member.id}`}>
-                                        <button className="text-[#3B7552] font-black px-5 py-3 rounded-xl bg-[#3B7552]/5 border border-[#3B7552]/10 hover:bg-[#3B7552]/10 transition-all uppercase tracking-widest text-[10px]">
+                                        <button className="text-primary font-black px-5 py-3 rounded-xl bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-all uppercase tracking-widest text-[10px]">
                                             Ver Perfil
                                         </button>
                                     </Link>
