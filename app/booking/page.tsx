@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
 import { getVenezuelaTime, getVenezuelaDateString, cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle, Sparkles } from "lucide-react"
+import { Accessibility, LogOut, Calendar, Clock, Users, CheckCircle2, XCircle, Sparkles, ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function BookingPage() {
