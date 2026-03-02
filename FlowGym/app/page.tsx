@@ -85,7 +85,7 @@ export default function GymApp() {
             <motion.div
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="w-full max-w-[550px] h-52 flex items-center justify-center mb-0 cursor-pointer overflow-hidden rounded-xl border-[10px] border-[#FCFBF6] shadow-[0_20px_50px_rgba(62,58,51,0.05)] bg-white/50"
+              className="w-full max-w-[550px] h-52 flex items-center justify-center mb-0 cursor-pointer"
             >
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
