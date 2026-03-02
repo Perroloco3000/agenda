@@ -86,7 +86,7 @@ export default function LoginPage() {
                             <form onSubmit={handleSubmit} className="space-y-6">
 
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-[#9B8C7A] ml-1">Correo Electrónico</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#3B7552]/70 ml-1">Correo Electrónico</Label>
                                     <Input
                                         type="email"
                                         required
@@ -98,7 +98,7 @@ export default function LoginPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-[#9B8C7A] ml-1">Contraseña</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#3B7552]/70 ml-1">Contraseña</Label>
                                     <Input
                                         type="password"
                                         required
@@ -139,7 +139,7 @@ export default function LoginPage() {
                                 </Button>
 
                                 <div className="text-center pt-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9B8C7A]">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3B7552]/50">
                                         Acceso exclusivo para miembros registrados por el administrador
                                     </p>
                                 </div>
