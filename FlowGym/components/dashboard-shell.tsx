@@ -60,7 +60,7 @@ const navigation = [
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const { refreshData, notifications, clearNotifications, gymName, slogan } = useAppStore()
-    const adminLogoUrl = "https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/LogoKaiCenter.png"
+    const adminLogoUrl = "https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/logocircular.png"
     const [isMounted, setIsMounted] = useState(false)
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
