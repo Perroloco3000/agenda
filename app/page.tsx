@@ -45,7 +45,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F1E6] selection:bg-emerald-500/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
+        <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -57,55 +57,54 @@ export default function LoginPage() {
                     <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full max-w-[450px] h-36 flex items-center justify-center mb-0 cursor-pointer overflow-hidden rounded-2xl"
+                        className="w-full max-w-[500px] h-40 flex items-center justify-center mb-0 cursor-pointer overflow-hidden rounded-full border-[8px] border-[#FCFBF6] shadow-[0_20px_40px_rgba(62,58,51,0.05)]"
                     >
                         {logoUrl ? (
                             <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
-                            <Accessibility className="h-16 w-16 text-emerald-600" />
+                            <Accessibility className="h-16 w-16 text-[#3B7552]" />
                         )}
                     </motion.div>
                 </div>
 
                 {/* Form Container */}
                 <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 to-green-500/20 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                    <Card className="relative border-white/5 bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden">
+                    <div className="absolute -inset-1 bg-[#3B7552]/10 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                    <Card className="relative border-[#9B8C7A]/10 bg-[#FCFBF6] rounded-[2.5rem] shadow-xl overflow-hidden">
                         <CardHeader className="pt-10 px-10 pb-4">
                             <div className="flex justify-between items-center mb-2">
-                                <CardTitle className="text-3xl font-black tracking-tight text-white uppercase">
+                                <CardTitle className="text-3xl font-black tracking-tight text-[#3E3A33] uppercase">
                                     Bienvenido
                                 </CardTitle>
-                                <Sparkles className="h-5 w-5 text-emerald-500 animate-pulse" />
+                                <Sparkles className="h-5 w-5 text-[#3B7552] animate-pulse" />
                             </div>
-                            <CardDescription className="text-white/40 font-medium text-sm">
+                            <CardDescription className="text-[#3E3A33]/50 font-medium text-sm">
                                 Accede a tu cuenta para continuar
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="p-10 pt-4">
                             <form onSubmit={handleSubmit} className="space-y-6">
 
-
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Correo Electrónico</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#9B8C7A] ml-1">Correo Electrónico</Label>
                                     <Input
                                         type="email"
                                         required
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                        className="h-14 rounded-2xl bg-white border-[#9B8C7A]/20 text-[#3E3A33] placeholder:text-[#9B8C7A]/30 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/50 transition-all text-lg"
                                         placeholder="usuario@kaicenter.com"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-black uppercase tracking-widest text-white/40 ml-1">Contraseña</Label>
+                                    <Label className="text-xs font-black uppercase tracking-widest text-[#9B8C7A] ml-1">Contraseña</Label>
                                     <Input
                                         type="password"
                                         required
                                         value={formData.password}
                                         onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                        className="h-14 rounded-2xl bg-white/[0.03] border-white/10 text-white placeholder:text-white/10 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all text-lg"
+                                        className="h-14 rounded-2xl bg-white border-[#9B8C7A]/20 text-[#3E3A33] placeholder:text-[#9B8C7A]/30 focus:ring-[#3B7552]/20 focus:border-[#3B7552]/50 transition-all text-lg"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -114,7 +113,7 @@ export default function LoginPage() {
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-3"
+                                        className="p-4 rounded-2xl bg-red-500/5 border border-red-500/10 text-red-500 text-sm font-medium flex items-center gap-3"
                                     >
                                         <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                                         {error}
@@ -124,7 +123,7 @@ export default function LoginPage() {
                                 <Button
                                     disabled={isLoading}
                                     type="submit"
-                                    className="w-full h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black uppercase tracking-[0.2em] shadow-xl shadow-emerald-500/20 border-t border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                                    className="w-full h-16 rounded-2xl bg-[#3B7552] hover:bg-[#2d5a3f] text-white font-black uppercase tracking-[0.2em] shadow-lg shadow-[#3B7552]/20 border-t border-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <div className="flex items-center gap-2">
@@ -140,7 +139,7 @@ export default function LoginPage() {
                                 </Button>
 
                                 <div className="text-center pt-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9B8C7A]">
                                         Acceso exclusivo para miembros registrados por el administrador
                                     </p>
                                 </div>
@@ -154,11 +153,13 @@ export default function LoginPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="text-center mt-8 text-white/20 text-[10px] font-medium uppercase tracking-[0.4em]"
+                    className="text-center mt-8 text-[#9B8C7A] text-[10px] font-medium uppercase tracking-[0.4em]"
                 >
                     Excellence is not an act, but a habit.
                 </motion.p>
             </motion.div>
         </div>
+    )
+}
     )
 }

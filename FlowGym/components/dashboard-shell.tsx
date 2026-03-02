@@ -58,7 +58,8 @@ const navigation = [
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const { refreshData, notifications, clearNotifications, gymName, slogan, logoUrl } = useAppStore()
+    const { refreshData, notifications, clearNotifications, gymName, slogan } = useAppStore()
+    const adminLogoUrl = "https://ympbzkquwhylijdqaktl.supabase.co/storage/v1/object/public/exercise-videos/LogoKaiCenter.png"
     const [isMounted, setIsMounted] = useState(false)
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -108,12 +109,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <div className={cn("p-8 border-b border-white/5 flex items-center transition-all duration-500", isCollapsed ? "justify-center" : "justify-between")}>
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 group-hover:scale-110 transition-all duration-500 overflow-hidden">
-                                {logoUrl ? (
-                                    <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
-                                ) : (
-                                    <Accessibility className="h-7 w-7 text-white" />
-                                )}
+                            <div className="w-12 h-12 rounded-full border border-emerald-500/20 bg-white flex items-center justify-center shadow-lg shadow-emerald-500/10 group-hover:scale-110 transition-all duration-500 overflow-hidden">
+                                <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain p-1" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-xl font-black tracking-tight leading-none text-white">{gymName}</span>
@@ -122,12 +119,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                         </Link>
                     )}
                     {isCollapsed && (
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/40 hover:scale-110 transition-all duration-500 overflow-hidden">
-                            {logoUrl ? (
-                                <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
-                            ) : (
-                                <Accessibility className="h-7 w-7 text-white" />
-                            )}
+                        <div className="w-12 h-12 rounded-full border border-emerald-500/20 bg-white flex items-center justify-center shadow-lg shadow-emerald-500/10 hover:scale-110 transition-all duration-500 overflow-hidden">
+                            <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain p-1" />
                         </div>
                     )}
 
