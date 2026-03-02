@@ -4,27 +4,26 @@
 
 @layer base {
   :root {
-    /* Default to Dark Theme Variables */
-    --background: 240 10% 2%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144.4 96.6% 11.4%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142.1 70.6% 45.3%;
-    --radius: 1rem;
+    --background: #F5F1E6;
+    --foreground: #1D3B2A;
+    --card: #FCFBF6;
+    --card-foreground: #1D3B2A;
+    --popover: #FCFBF6;
+    --popover-foreground: #1D3B2A;
+    --primary: #336647;
+    --primary-foreground: #FCFBF6;
+    --secondary: #9B8C7A;
+    --secondary-foreground: #FCFBF6;
+    --muted: #F5F1E6;
+    --muted-foreground: #2D5A3F;
+    --accent: #F5F1E6;
+    --accent-foreground: #336647;
+    --destructive: #ef4444;
+    --destructive-foreground: #FCFBF6;
+    --border: #9B8C7A;
+    --input: #9B8C7A;
+    --ring: #336647;
+    --radius: 1.5rem;
   }
 }
 
