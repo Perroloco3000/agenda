@@ -123,17 +123,32 @@ export default function GymApp() {
             onBack={() => setMode('choice')}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 p-12 bg-black text-white">
-            <div className="text-8xl animate-bounce">🏋️‍♂️</div>
-            <h2 className="text-5xl font-black uppercase tracking-tighter">Preparando el entrenamiento...</h2>
-            <p className="text-2xl text-white/40 max-w-2xl">No hemos encontrado una rutina para este día en el sistema. Asegúrate de configurarla en el panel de control.</p>
-            <div className="mt-8 flex gap-4">
-              <Link href="/dashboard">
-                <Button size="lg" className="h-16 px-10 rounded-2xl font-black text-xl">Dashboard Admin</Button>
-              </Link>
-              <Button size="lg" variant="outline" onClick={() => setSelectedDayKey(getCurrentDayKey())} className="h-16 px-10 rounded-2xl font-black text-xl border-white/10 hover:bg-white/5">Reintentar</Button>
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-8 p-12 bg-[#F5F1E6]">
+            <div className="text-9xl animate-bounce drop-shadow-xl">🧘‍♂️</div>
+            <div className="space-y-4">
+              <h2 className="text-5xl font-black uppercase tracking-tighter text-[#3E3A33]">Preparando el flujo...</h2>
+              <p className="text-xl text-[#3E3A33]/40 max-w-2xl mx-auto font-medium">No hemos encontrado una rutina para este día. El administrador puede configurarla en el panel.</p>
             </div>
-            <button onClick={() => setMode('choice')} className="text-emerald-500/40 hover:text-emerald-500 font-black uppercase tracking-widest text-xs mt-12">Volver al inicio</button>
+            <div className="mt-12 flex flex-col sm:flex-row gap-4">
+              <Link href="/dashboard">
+                <Button size="lg" className="h-16 px-10 rounded-2xl font-black text-xl bg-[#3B7552] hover:bg-[#2d5a3f] shadow-lg shadow-[#3B7552]/20">Panel Control</Button>
+              </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setSelectedDayKey(getCurrentDayKey())}
+                className="h-16 px-10 rounded-2xl font-black text-xl border-[#9B8C7A]/20 text-[#3E3A33] hover:bg-white/50"
+              >
+                Reintentar
+              </Button>
+            </div>
+            <button
+              onClick={() => setMode('choice')}
+              className="group flex items-center gap-2 text-[#3B7552] font-black uppercase tracking-widest text-xs mt-16 transition-all hover:gap-3"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Volver al inicio
+            </button>
           </div>
         )}
       </main>
