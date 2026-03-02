@@ -10,6 +10,54 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accessibility, UserPlus, LogIn, ChevronRight, Sparkles } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
+const FallingLeaves = () => {
+    return (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+            {[...Array(15)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    initial={{
+                        opacity: 0,
+                        y: -100,
+                        x: Math.random() * 100 + "%",
+                        rotate: 0,
+                    }}
+                    animate={{
+                        opacity: [0, 0.4, 0.4, 0],
+                        y: "110vh",
+                        x: [null, (Math.random() - 0.5) * 20 + "%"],
+                        rotate: 360,
+                    }}
+                    transition={{
+                        duration: 12 + Math.random() * 8,
+                        repeat: Infinity,
+                        delay: Math.random() * 15,
+                        ease: "linear",
+                    }}
+                    className="absolute"
+                >
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="text-[#3B7552]/15"
+                    >
+                        <path
+                            d="M12 2L10.5 4.5L12 7L13.5 4.5L12 2Z"
+                            fill="currentColor"
+                        />
+                        <path
+                            d="M12 7C12 7 6 10 6 15C6 19 12 21 12 21C12 21 18 19 18 15C18 10 12 7 12 7Z"
+                            fill="currentColor"
+                        />
+                    </svg>
+                </motion.div>
+            ))}
+        </div>
+    );
+};
+
 export default function LoginPage() {
     const router = useRouter()
     const { login, register, currentUser, gymName, slogan, logoUrl } = useStore()
@@ -45,7 +93,8 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000">
+        <div className="min-h-screen bg-[#F5F1E6] selection:bg-[#3B7552]/30 overflow-hidden flex items-center justify-center p-4 transition-colors duration-1000 relative">
+            <FallingLeaves />
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -155,7 +204,7 @@ export default function LoginPage() {
                     transition={{ delay: 0.8 }}
                     className="text-center mt-8 text-[#9B8C7A] text-[10px] font-medium uppercase tracking-[0.4em]"
                 >
-                    Excellence is not an act, but a habit.
+                    La excelencia no es un acto, sino un hábito.
                 </motion.p>
             </motion.div>
         </div>

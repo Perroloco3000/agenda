@@ -159,7 +159,7 @@ export default function GymApp() {
             transition={{ delay: 1 }}
             className="text-center mt-10 text-[#2D5A3F] text-[10px] font-medium uppercase tracking-[0.4em]"
           >
-            Excellence is not an act, but a habit.
+            La excelencia no es un acto, sino un hábito.
           </motion.p>
         </motion.div>
       </div>
