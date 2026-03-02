@@ -110,7 +110,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     {!isCollapsed && (
                         <Link href="/" className="flex items-center gap-4 group animate-in fade-in slide-in-from-left-2">
                             <div className="w-12 h-12 flex items-center justify-center group-hover:scale-110 transition-all duration-500">
-                                <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain p-1" />
+                                <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-xl font-black tracking-tight leading-none text-white">{gymName}</span>
@@ -120,7 +120,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     )}
                     {isCollapsed && (
                         <div className="w-12 h-12 flex items-center justify-center hover:scale-110 transition-all duration-500">
-                            <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain p-1" />
+                            <img src={adminLogoUrl} alt="Logo Admin" className="w-full h-full object-contain" />
                         </div>
                     )}
 
