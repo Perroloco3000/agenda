@@ -396,18 +396,12 @@ export function useAppStoreLogic() {
                 if (ns.key === 'logoUrl') setLogoUrl(ns.value)
             }).subscribe()
 
-        const refreshInterval = setInterval(() => {
-            console.log("Automatic Heartbeat Refresh...")
-            loadSupabaseData()
-        }, 30000)
-
         return () => {
             supabase.removeChannel(membersSub)
             supabase.removeChannel(reservationsSub)
             supabase.removeChannel(workoutsSub)
             supabase.removeChannel(notificationsSub)
             supabase.removeChannel(settingsSub)
-            clearInterval(refreshInterval)
         }
     }, [loadSupabaseData, supabase, addNotification])
 
@@ -424,17 +418,7 @@ export function useAppStoreLogic() {
             password: member.password
         }])
         if (error) throw error
-        const addedMember: Member = {
-            id,
-            name: member.name,
-            email: member.email,
-            phone: member.phone,
-            plan: member.plan || 'GYM',
-            status: member.status,
-            password: member.password,
-            joinDate: getVenezuelaDateString(),
-        }
-        setMembers(prev => [...prev, addedMember])
+        // No manual state update here, Realtime will handle it
     }, [])
 
     const removeMember = useCallback(async (id: string) => {
@@ -448,14 +432,14 @@ export function useAppStoreLogic() {
         // Now remove the member
         const { error } = await supabase.from('members').delete().eq('id', id)
         if (error) throw error
-        setMembers(prev => prev.filter(m => m.id !== id))
+        // Realtime handles state update
     }, [])
 
     const updateMember = useCallback(async (id: string, updates: Partial<Omit<Member, "id" | "joinDate">>) => {
         // Explicitly handle password update if provided
         const { error } = await supabase.from('members').update(updates).eq('id', id)
         if (error) throw error
-        setMembers(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m))
+        // Realtime handles state update
     }, [])
 
     const toggleMemberStatus = useCallback(async (id: string) => {
@@ -465,8 +449,9 @@ export function useAppStoreLogic() {
             const newStatus = member.status === 'Activo' ? 'Inactivo' : 'Activo'
             supabase.from('members').update({ status: newStatus }).eq('id', id).then(({ error }) => {
                 if (error) console.error(error)
+                // Realtime handles state update
             })
-            return prev.map(m => m.id === id ? { ...m, status: newStatus } : m)
+            return prev
         })
     }, [])
 
@@ -474,19 +459,19 @@ export function useAppStoreLogic() {
         const id = Math.random().toString(36).substr(2, 9)
         const { error } = await supabase.from('workouts').insert([{ id, ...workout }])
         if (error) throw error
-        setWorkouts(prev => [...prev, { id, ...workout }])
+        // Realtime handles state update
     }, [])
 
     const deleteWorkout = useCallback(async (id: string) => {
         const { error } = await supabase.from('workouts').delete().eq('id', id)
         if (error) throw error
-        setWorkouts(prev => prev.filter(w => w.id !== id))
+        // Realtime handles state update
     }, [])
 
     const updateWorkout = useCallback(async (id: string, updates: Partial<WorkoutStat>) => {
         const { error } = await supabase.from('workouts').update(updates).eq('id', id)
         if (error) throw error
-        setWorkouts(prev => prev.map(w => w.id === id ? { ...w, ...updates } : w))
+        // Realtime handles state update
     }, [])
 
     const createReservation = useCallback(async (memberId: string, date: string, timeSlot: string, area: "gym" | "cognitive" = "gym") => {
